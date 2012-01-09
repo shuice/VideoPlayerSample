@@ -1,0 +1,134 @@
+UPDATE ON 2011-12-25 FOR XCODE 4.2 IOS 5.0 
+
+
+// copy file "gas-preprocessor/gas-preprocessor.pl" to dir "/usr/local/bin/"
+
+// config armv6
+./configure --target-os=darwin \
+    --prefix='armv6' \
+    --enable-cross-compile \
+    --enable-nonfree \
+    --cpu=armv6 \
+    --arch=arm \
+    --enable-neon \
+    --cc=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc \
+    --as='./gas-preprocessor/gas-preprocessor.pl /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc' \
+    --extra-cflags='-arch armv6' \
+    --extra-ldflags='-arch armv6 -isysroot/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk' \
+    --sysroot=/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk \
+    --enable-static \
+    --disable-shared \
+    --disable-ffmpeg \
+    --disable-ffplay \
+    --disable-ffserver \
+    --disable-avfilter \
+    --disable-muxers \
+    --disable-demuxers \
+    --disable-encoders \
+    --enable-decoders \
+    --disable-pthreads \
+    --disable-parsers \
+    --disable-bsfs \
+    --disable-filters \
+    --disable-network \
+    --disable-protocols \
+    --disable-indevs \
+    --enable-decoder=h264 \
+    --enable-fft \
+    --enable-mdct \
+    --disable-debug \
+    --disable-doc \
+    --disable-postproc \
+    --disable-stripping \
+    --enable-pic 
+    
+
+
+// config armv7
+./configure --target-os=darwin \
+    --prefix='armv7' \
+    --enable-cross-compile \
+    --enable-nonfree \
+    --cpu=cortex-a8 \
+    --arch=armv7 \
+    --enable-neon \
+    --disable-asm \
+    --cc=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc \
+    --as='gas-preprocessor/gas-preprocessor.pl /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc' \
+    --extra-cflags='-arch armv7' \
+    --extra-ldflags='-arch armv7 -isysroot/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk' \
+    --sysroot=/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk \
+    --enable-static \
+    --disable-shared \
+    --disable-ffmpeg \
+    --disable-ffplay \
+    --disable-ffserver \
+    --disable-avfilter \
+    --disable-muxers \
+    --disable-demuxers \
+    --disable-encoders \
+    --enable-decoders \
+    --disable-pthreads \
+    --disable-parsers \
+    --disable-bsfs \
+    --disable-filters \
+    --disable-network \
+    --disable-protocols \
+    --disable-indevs \
+    --enable-decoder=h264 \
+    --enable-fft \
+    --enable-mdct \
+    --disable-debug \
+    --disable-doc \
+    --disable-postproc \
+    --disable-stripping \
+    --enable-pic
+    
+    
+// config i386
+./configure --target-os=darwin \
+    --prefix='i386' \
+    --enable-mmx \
+    --disable-doc \
+    --disable-ffserver \
+    --arch=i386 \
+    --cc=/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/gcc \
+    --as='gas-preprocessor/gas-preprocessor.pl /Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/gcc' \
+    --extra-ldflags='-arch i386 -isysroot/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator5.0.sdk' \
+    --extra-cflags='-arch i386 -fmessage-length=0 -pipe -Wno-trigraphs -fpascal-strings -O0 -fasm-blocks -Wreturn-type \
+    	-Wunused-variable -D__IPHONE_OS_VERSION_MIN_REQUIRED=30000 \
+    	-isysroot /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator5.0.sdk \
+    	-fvisibility=hidden -mmacosx-version-min=10.5 -gdwarf-2' \
+    --enable-static \
+    --disable-shared \
+    --disable-ffmpeg \
+    --disable-ffplay \
+    --disable-ffserver \
+    --disable-avfilter \
+    --disable-muxers \
+    --disable-demuxers \
+    --disable-encoders \
+    --enable-decoders \
+    --disable-pthreads \
+    --disable-parsers \
+    --disable-bsfs \
+    --disable-filters \
+    --disable-network \
+    --disable-protocols \
+    --disable-indevs \
+    --enable-decoder=h264 \
+    --enable-fft \
+    --enable-mdct \
+    --disable-debug \
+    --disable-doc \
+    --disable-postproc \
+    --disable-stripping \
+    --enable-pic
+    
+// how to use lipo
+mkdir universal
+lipo -create -arch armv6 armv6/lib/libavcodec.a -arch armv7 armv7/lib/libavcodec.a -arch i386 i386/lib/libavcodec.a -output universal/libavcodec.a
+lipo -create -arch armv6 armv6/lib/libavdevice.a -arch armv7 armv7/lib/libavdevice.a -arch i386 i386/lib/libavdevice.a -output universal/libavdevice.a
+lipo -create -arch armv6 armv6/lib/libavformat.a -arch armv7 armv7/lib/libavformat.a -arch i386 i386/lib/libavformat.a -output universal/libavformat.a
+lipo -create -arch armv6 armv6/lib/libavutil.a -arch armv7 armv7/lib/libavutil.a -arch i386 i386/lib/libavutil.a -output universal/libavutil.a
+lipo -create -arch armv6 armv6/lib/libswscale.a -arch armv7 armv7/lib/libswscale.a -arch i386 i386/lib/libswscale.a -output universal/libswscale.a
