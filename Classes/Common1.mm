@@ -209,11 +209,12 @@ const SCodePageInfo& GetDefaultCodePage()
 {
 	const vector<SCodePageInfo>& vectSCodePageInfo = GetCodePageInfo();
 	
-	NSUserDefaults* defs = [NSUserDefaults standardUserDefaults];
-	NSArray* languages = [defs objectForKey:@"AppleLanguages"];
-	NSString* preferredLang = [languages objectAtIndex:0];
-	string strName = [preferredLang UTF8String];
-	
+//	NSUserDefaults* defs = [NSUserDefaults standardUserDefaults];
+//	NSArray* languages = [defs objectForKey:@"AppleLanguages"];
+//	NSString* preferredLang = [languages objectAtIndex:0];
+//	string strName = [preferredLang UTF8String];
+    assert(0 && "FIXME");
+    string strName;
 	int iCodePageInfoCount = vectSCodePageInfo.size();
 	for (int iCodePageInfoIndex = 0; iCodePageInfoIndex < iCodePageInfoCount; iCodePageInfoIndex ++)
 	{
@@ -397,7 +398,7 @@ void GetMediaInfo(const string& strFileName, SMediaInfoLocal& sMediaInfoStream)
 	
 	sMediaInfoStream.m_bHasVideo = (video_stream != -1); 
 	sMediaInfoStream.m_bHasAudio = (audio_stream != -1);
-	sMediaInfoStream.m_iDuration =  pAvFormatContext->duration / AV_TIME_BASE;
+	sMediaInfoStream.m_iDuration =  (unsigned long)pAvFormatContext->duration / AV_TIME_BASE;
 	if (video_stream != -1)
 	{
 		AVStream* pAvStream = pAvFormatContext->streams[video_stream];
@@ -465,7 +466,7 @@ void GetFileSize(__int64_t iFileSize, char* pszSize, int iLen)
 
 void GetFileDate(__int64_t iFileData, char* pszDate, int iLen)
 {
-	time_t timerLocal = iFileData;
+	time_t timerLocal = (time_t)iFileData;
 	tm* tm1 = localtime(&timerLocal);
 	snprintf(pszDate, iLen, "%04d-%02d-%02d", 
 								tm1->tm_year + 1900, 

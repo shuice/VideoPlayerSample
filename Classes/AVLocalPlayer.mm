@@ -12,6 +12,16 @@
 #import "ViewPlayerController.h"
 #import <AudioToolbox/AudioToolbox.h>
 
+void RouteChangeListener(	void *                  inClientData,
+						 AudioSessionPropertyID	inID,
+						 UInt32                  inDataSize,
+						 const void *            inData);
+void interruptionListener(	void *	inClientData,
+						  UInt32	inInterruptionState);
+
+ALvoid  alBufferDataStaticProc(const ALint bid, ALenum format, ALvoid* data, ALsizei size, ALsizei freq);
+
+
 void interruptionListener(	void *	inClientData,
 						  UInt32	inInterruptionState)
 {

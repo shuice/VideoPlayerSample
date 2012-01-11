@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 45;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -21,6 +21,34 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		80A1132814BDCC8A006E7D1A /* SmiSubTitleReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 80A1132614BDCC8A006E7D1A /* SmiSubTitleReader.cpp */; };
+		80A1132914BDCC8A006E7D1A /* SmiSubTitleReader.h in Headers */ = {isa = PBXBuildFile; fileRef = 80A1132714BDCC8A006E7D1A /* SmiSubTitleReader.h */; };
+		80A1133014BDE100006E7D1A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
+		80A1133114BDE100006E7D1A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
+		80A1133214BDE100006E7D1A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
+		80A1133814BDE100006E7D1A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 80A1133614BDE100006E7D1A /* InfoPlist.strings */; };
+		80A1133A14BDE100006E7D1A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 80A1133914BDE100006E7D1A /* main.m */; };
+		80A1133E14BDE100006E7D1A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 80A1133D14BDE100006E7D1A /* AppDelegate.m */; };
+		80A1134114BDE100006E7D1A /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 80A1134014BDE100006E7D1A /* ViewController.mm */; };
+		80A1134414BDE100006E7D1A /* ViewController_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 80A1134214BDE100006E7D1A /* ViewController_iPhone.xib */; };
+		80A1134E14BDE34F006E7D1A /* AVLocalPlayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = C3A9D3D514A5983400FBBB38 /* AVLocalPlayer.mm */; };
+		80A1134F14BDE34F006E7D1A /* LocalPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3A9D3DC14A5983400FBBB38 /* LocalPlayer.cpp */; };
+		80A1135014BDE34F006E7D1A /* PacketQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3A9D3E114A5983500FBBB38 /* PacketQueue.cpp */; };
+		80A1135114BDE34F006E7D1A /* PlayerException.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3A9D3E314A5983500FBBB38 /* PlayerException.cpp */; };
+		80A1135314BDE34F006E7D1A /* SrtSubTitleReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3A9D3E814A5983500FBBB38 /* SrtSubTitleReader.cpp */; };
+		80A1135414BDE34F006E7D1A /* TextFileReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3A9D3EA14A5983600FBBB38 /* TextFileReader.cpp */; };
+		80A1135514BDE34F006E7D1A /* Common1.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8EF38C54138AAEE400854811 /* Common1.mm */; };
+		80A1135614BDE34F006E7D1A /* PlayerAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8EF38C62138AAEE400854811 /* PlayerAppDelegate.mm */; };
+		80A1135714BDE34F006E7D1A /* PlayerView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8ECD242D135333C10067D02E /* PlayerView.mm */; };
+		80A1135814BDE34F006E7D1A /* ViewPlayerController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8ECD2423135332250067D02E /* ViewPlayerController.mm */; };
+		80A1135A14BDE377006E7D1A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 80A1133D14BDE100006E7D1A /* AppDelegate.m */; };
+		80A1135B14BDE377006E7D1A /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 80A1134014BDE100006E7D1A /* ViewController.mm */; };
+		80A1135C14BDE377006E7D1A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 80A1133914BDE100006E7D1A /* main.m */; };
+		80A1136714BDE8D7006E7D1A /* SrtSubTitleReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3A9D3E814A5983500FBBB38 /* SrtSubTitleReader.cpp */; };
+		80A1136814BDE8D7006E7D1A /* SmiSubTitleReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 80A1132614BDCC8A006E7D1A /* SmiSubTitleReader.cpp */; };
+		80A1136914BDE8D7006E7D1A /* TextFileReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3A9D3EA14A5983600FBBB38 /* TextFileReader.cpp */; };
+		80A1136F14BDEAB4006E7D1A /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C3A9E99814A5BAF700FBBB38 /* libiconv.dylib */; };
+		80A1137014BDEAE8006E7D1A /* IConvWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C338D75114A72E7500A8978B /* IConvWrapper.cpp */; };
 		C338D75314A72E7500A8978B /* IConvWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C338D75114A72E7500A8978B /* IConvWrapper.cpp */; };
 		C338D75414A72E7500A8978B /* IConvWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = C338D75214A72E7500A8978B /* IConvWrapper.h */; };
 		C3E47A9E14A6E74200BD4223 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3E47A9D14A6E74200BD4223 /* CoreFoundation.framework */; };
@@ -86,6 +114,18 @@
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		288765FC0DF74451002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		80A1132614BDCC8A006E7D1A /* SmiSubTitleReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SmiSubTitleReader.cpp; sourceTree = "<group>"; };
+		80A1132714BDCC8A006E7D1A /* SmiSubTitleReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmiSubTitleReader.h; sourceTree = "<group>"; };
+		80A1132E14BDE100006E7D1A /* UnitTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UnitTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		80A1133514BDE100006E7D1A /* UnitTest-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "UnitTest-Info.plist"; sourceTree = "<group>"; };
+		80A1133714BDE100006E7D1A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		80A1133914BDE100006E7D1A /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		80A1133B14BDE100006E7D1A /* UnitTest-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UnitTest-Prefix.pch"; sourceTree = "<group>"; };
+		80A1133C14BDE100006E7D1A /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		80A1133D14BDE100006E7D1A /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		80A1133F14BDE100006E7D1A /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		80A1134014BDE100006E7D1A /* ViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewController.mm; sourceTree = "<group>"; };
+		80A1134314BDE100006E7D1A /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController_iPhone.xib; sourceTree = "<group>"; };
 		8EB7EFA51353F94B0042C754 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		8EB7EFB11353F9730042C754 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		8EB7EFB61353F9800042C754 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -146,11 +186,6 @@
 		C3A9D3E914A5983600FBBB38 /* SrtSubTitleReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SrtSubTitleReader.h; sourceTree = "<group>"; };
 		C3A9D3EA14A5983600FBBB38 /* TextFileReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextFileReader.cpp; sourceTree = "<group>"; };
 		C3A9D3EB14A5983600FBBB38 /* TextFileReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextFileReader.h; sourceTree = "<group>"; };
-		C3A9E98E14A5B4B200FBBB38 /* libavcodec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavcodec.a; path = lib/libavcodec.a; sourceTree = "<group>"; };
-		C3A9E98F14A5B4B200FBBB38 /* libavdevice.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavdevice.a; path = lib/libavdevice.a; sourceTree = "<group>"; };
-		C3A9E99014A5B4B200FBBB38 /* libavformat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavformat.a; path = lib/libavformat.a; sourceTree = "<group>"; };
-		C3A9E99114A5B4B200FBBB38 /* libavutil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavutil.a; path = lib/libavutil.a; sourceTree = "<group>"; };
-		C3A9E99214A5B4B200FBBB38 /* libswscale.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libswscale.a; path = lib/libswscale.a; sourceTree = "<group>"; };
 		C3A9E99814A5BAF700FBBB38 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
 		C3E47A9C14A6E74200BD4223 /* LocalPlayer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LocalPlayer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3E47A9D14A6E74200BD4223 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
@@ -158,6 +193,17 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		80A1132B14BDE100006E7D1A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				80A1136F14BDEAB4006E7D1A /* libiconv.dylib in Frameworks */,
+				80A1133014BDE100006E7D1A /* UIKit.framework in Frameworks */,
+				80A1133114BDE100006E7D1A /* Foundation.framework in Frameworks */,
+				80A1133214BDE100006E7D1A /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C3E47A9914A6E74200BD4223 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -189,6 +235,8 @@
 				C3A9D3E714A5983500FBBB38 /* SplitString.h */,
 				C3A9D3E814A5983500FBBB38 /* SrtSubTitleReader.cpp */,
 				C3A9D3E914A5983600FBBB38 /* SrtSubTitleReader.h */,
+				80A1132614BDCC8A006E7D1A /* SmiSubTitleReader.cpp */,
+				80A1132714BDCC8A006E7D1A /* SmiSubTitleReader.h */,
 				C3A9D3EA14A5983600FBBB38 /* TextFileReader.cpp */,
 				C3A9D3EB14A5983600FBBB38 /* TextFileReader.h */,
 				8EF38CF7138AB36000854811 /* main.mm */,
@@ -208,6 +256,7 @@
 			isa = PBXGroup;
 			children = (
 				C3E47A9C14A6E74200BD4223 /* LocalPlayer.framework */,
+				80A1132E14BDE100006E7D1A /* UnitTest.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -218,6 +267,7 @@
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
+				80A1133314BDE100006E7D1A /* UnitTest */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
@@ -278,14 +328,33 @@
 				8EB7EFB61353F9800042C754 /* AudioToolbox.framework */,
 				C3A9E99814A5BAF700FBBB38 /* libiconv.dylib */,
 				C3E47AC814A71C8400BD4223 /* libz.dylib */,
-				C3A9E98E14A5B4B200FBBB38 /* libavcodec.a */,
-				C3A9E98F14A5B4B200FBBB38 /* libavdevice.a */,
-				C3A9E99014A5B4B200FBBB38 /* libavformat.a */,
-				C3A9E99114A5B4B200FBBB38 /* libavutil.a */,
-				C3A9E99214A5B4B200FBBB38 /* libswscale.a */,
 				C3E47A9D14A6E74200BD4223 /* CoreFoundation.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		80A1133314BDE100006E7D1A /* UnitTest */ = {
+			isa = PBXGroup;
+			children = (
+				80A1133C14BDE100006E7D1A /* AppDelegate.h */,
+				80A1133D14BDE100006E7D1A /* AppDelegate.m */,
+				80A1133F14BDE100006E7D1A /* ViewController.h */,
+				80A1134014BDE100006E7D1A /* ViewController.mm */,
+				80A1134214BDE100006E7D1A /* ViewController_iPhone.xib */,
+				80A1133414BDE100006E7D1A /* Supporting Files */,
+			);
+			path = UnitTest;
+			sourceTree = "<group>";
+		};
+		80A1133414BDE100006E7D1A /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				80A1133514BDE100006E7D1A /* UnitTest-Info.plist */,
+				80A1133614BDE100006E7D1A /* InfoPlist.strings */,
+				80A1133914BDE100006E7D1A /* main.m */,
+				80A1133B14BDE100006E7D1A /* UnitTest-Prefix.pch */,
+			);
+			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -296,12 +365,30 @@
 			buildActionMask = 2147483647;
 			files = (
 				C338D75414A72E7500A8978B /* IConvWrapper.h in Headers */,
+				80A1132914BDCC8A006E7D1A /* SmiSubTitleReader.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		80A1132D14BDE100006E7D1A /* UnitTest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 80A1134814BDE100006E7D1A /* Build configuration list for PBXNativeTarget "UnitTest" */;
+			buildPhases = (
+				80A1132A14BDE100006E7D1A /* Sources */,
+				80A1132B14BDE100006E7D1A /* Frameworks */,
+				80A1132C14BDE100006E7D1A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = UnitTest;
+			productName = UnitTest;
+			productReference = 80A1132E14BDE100006E7D1A /* UnitTest.app */;
+			productType = "com.apple.product-type.application";
+		};
 		C3E47A9B14A6E74200BD4223 /* LocalPlayer */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C3E47AA614A6E74200BD4223 /* Build configuration list for PBXNativeTarget "LocalPlayer" */;
@@ -327,10 +414,11 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastUpgradeCheck = 0420;
 				ORGANIZATIONNAME = viki;
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "LocalPlayer" */;
-			compatibilityVersion = "Xcode 3.1";
+			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
@@ -347,11 +435,21 @@
 			targets = (
 				C3E47A9B14A6E74200BD4223 /* LocalPlayer */,
 				C338D74614A723A200A8978B /* LIPO */,
+				80A1132D14BDE100006E7D1A /* UnitTest */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		80A1132C14BDE100006E7D1A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				80A1133814BDE100006E7D1A /* InfoPlist.strings in Resources */,
+				80A1134414BDE100006E7D1A /* ViewController_iPhone.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C3E47A9A14A6E74200BD4223 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -378,17 +476,61 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		80A1132A14BDE100006E7D1A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				80A1137014BDEAE8006E7D1A /* IConvWrapper.cpp in Sources */,
+				80A1136714BDE8D7006E7D1A /* SrtSubTitleReader.cpp in Sources */,
+				80A1136814BDE8D7006E7D1A /* SmiSubTitleReader.cpp in Sources */,
+				80A1136914BDE8D7006E7D1A /* TextFileReader.cpp in Sources */,
+				80A1133A14BDE100006E7D1A /* main.m in Sources */,
+				80A1133E14BDE100006E7D1A /* AppDelegate.m in Sources */,
+				80A1134114BDE100006E7D1A /* ViewController.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C3E47A9814A6E74200BD4223 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				80A1135A14BDE377006E7D1A /* AppDelegate.m in Sources */,
+				80A1135B14BDE377006E7D1A /* ViewController.mm in Sources */,
+				80A1135C14BDE377006E7D1A /* main.m in Sources */,
+				80A1134E14BDE34F006E7D1A /* AVLocalPlayer.mm in Sources */,
+				80A1134F14BDE34F006E7D1A /* LocalPlayer.cpp in Sources */,
+				80A1135014BDE34F006E7D1A /* PacketQueue.cpp in Sources */,
+				80A1135114BDE34F006E7D1A /* PlayerException.cpp in Sources */,
+				80A1135314BDE34F006E7D1A /* SrtSubTitleReader.cpp in Sources */,
+				80A1135414BDE34F006E7D1A /* TextFileReader.cpp in Sources */,
+				80A1135514BDE34F006E7D1A /* Common1.mm in Sources */,
+				80A1135614BDE34F006E7D1A /* PlayerAppDelegate.mm in Sources */,
+				80A1135714BDE34F006E7D1A /* PlayerView.mm in Sources */,
+				80A1135814BDE34F006E7D1A /* ViewPlayerController.mm in Sources */,
 				C338D75314A72E7500A8978B /* IConvWrapper.cpp in Sources */,
+				80A1132814BDCC8A006E7D1A /* SmiSubTitleReader.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
+		80A1133614BDE100006E7D1A /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				80A1133714BDE100006E7D1A /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		80A1134214BDE100006E7D1A /* ViewController_iPhone.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				80A1134314BDE100006E7D1A /* en */,
+			);
+			name = ViewController_iPhone.xib;
+			sourceTree = "<group>";
+		};
 		8EF38C81138AAEF500854811 /* MainWindow.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -408,6 +550,75 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		80A1134914BDE100006E7D1A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "UnitTest/UnitTest-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				INFOPLIST_FILE = "UnitTest/UnitTest-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		80A1134A14BDE100006E7D1A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "UnitTest/UnitTest-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				INFOPLIST_FILE = "UnitTest/UnitTest-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		80A1134B14BDE100006E7D1A /* Release-Upload */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "UnitTest/UnitTest-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				INFOPLIST_FILE = "UnitTest/UnitTest-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				WRAPPER_EXTENSION = app;
+			};
+			name = "Release-Upload";
+		};
 		8EB433C61362EDB1000625A4 /* Release-Upload */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -421,9 +632,9 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
 				LIBRARY_SEARCH_PATHS = "";
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				PREBINDING = NO;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				SDKROOT = iphoneos4.1;
+				SDKROOT = iphoneos;
+				USER_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/ffmpeg/include";
 			};
 			name = "Release-Upload";
 		};
@@ -438,8 +649,8 @@
 				HEADER_SEARCH_PATHS = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
 				LIBRARY_SEARCH_PATHS = "";
-				PREBINDING = NO;
-				SDKROOT = iphoneos4.1;
+				SDKROOT = iphoneos;
+				USER_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/ffmpeg/include";
 			};
 			name = Debug;
 		};
@@ -455,8 +666,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
 				LIBRARY_SEARCH_PATHS = "";
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				PREBINDING = NO;
-				SDKROOT = iphoneos4.1;
+				SDKROOT = iphoneos;
+				USER_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/ffmpeg/include";
 			};
 			name = Release;
 		};
@@ -464,7 +675,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos5.0;
+				SDKROOT = iphoneos;
 			};
 			name = Debug;
 		};
@@ -472,7 +683,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos5.0;
+				SDKROOT = iphoneos;
 			};
 			name = Release;
 		};
@@ -480,7 +691,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos5.0;
+				SDKROOT = iphoneos;
 			};
 			name = "Release-Upload";
 		};
@@ -505,6 +716,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
 				LINK_WITH_STANDARD_LIBRARIES = NO;
@@ -535,6 +747,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
 				LINK_WITH_STANDARD_LIBRARIES = NO;
@@ -565,6 +778,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
 				LINK_WITH_STANDARD_LIBRARIES = NO;
@@ -583,6 +797,16 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		80A1134814BDE100006E7D1A /* Build configuration list for PBXNativeTarget "UnitTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				80A1134914BDE100006E7D1A /* Debug */,
+				80A1134A14BDE100006E7D1A /* Release */,
+				80A1134B14BDE100006E7D1A /* Release-Upload */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "LocalPlayer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

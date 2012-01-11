@@ -144,6 +144,9 @@ struct SCodePageInfo
 	}
 };
 
+SThumbBitmapHeader& GetThunbBitmapHeader();
+void InitApplicationSetting();
+
 string GetCodecIDDesc(int iCodecID);
 void InitGetMediaInfo();
 void UnInitGetMediaInfo();
@@ -161,4 +164,6 @@ const SCodePageInfo& GetDefaultCodePage();
 const SCodePageInfo& GetCodePageByIndex(int iIndex);
 const SCodePageInfo& GetCodePagByName(const string& strName);
 const SCodePageInfo& GetCodePageByValue(int iCodePage);
+const vector<SCodePageInfo>& GetCodePageInfo();
+
 #endif

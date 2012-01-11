@@ -331,7 +331,7 @@ bool CLocalPlayer::InitData(const string& strFileName)
 			return false;
 	    }
 	
-		*m_pDuration =  pAvFormatContext->duration / AV_TIME_BASE;
+		*m_pDuration =  (unsigned long)pAvFormatContext->duration / AV_TIME_BASE;
 	    *m_pCurrentTime = 0;
 	}
 	return true;

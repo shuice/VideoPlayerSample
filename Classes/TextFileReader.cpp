@@ -426,7 +426,7 @@ bool CTextFileReader::GetLine(string& strLine)
     }
 
 #define MAX_BUFFER_LENGTH 4096
-	fseek(m_pFile, m_iLastSeekPos, SEEK_SET);
+	fseek(m_pFile, (int)m_iLastSeekPos, SEEK_SET);
 	unsigned char strReaded[MAX_BUFFER_LENGTH] = {0}; 
 	int iReaded = fread(strReaded, 1, MAX_BUFFER_LENGTH, m_pFile);
 	if (iReaded <= 0)

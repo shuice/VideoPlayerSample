@@ -25,7 +25,8 @@
 #include "AVLocalPlayer.h"
 #include "PacketQueue.h"
 #include "pthread.h"
-#include "audioconvert.h"
+
+
 #include "SampleFmt.h"
 #include "SrtSubTitleReader.h"
 

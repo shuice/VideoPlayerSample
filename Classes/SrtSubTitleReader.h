@@ -145,7 +145,7 @@ public:
     // 如果eCharacterCode为eCharaterCodeDefault，采用计算机当前的字符集处理
     // 如果eCharacterCode不为eCharaterCodeDefault，采用eCharacterCode字符集处理
     // 如果文件是有效的srt文件，返回true，否则返回false
-    bool LoadFile(const string& strSrtFileName);
+    virtual bool LoadFile(const string& strSrtFileName);
 
     // 设置字符集
     void SetCodePage(int iCodePage);
@@ -176,6 +176,8 @@ public:
  
 	// 返回所有支持的代码页
 	static const set<SCodePage>& GetCodePage();
+protected:
+     vector<SSrtSubTitleItemReaded> m_vctSrtSubTitleItemReaded;
 private:
    // 在长度为iMaxLen的pStart里面寻找第一个长度为iStrWillBeFindLen的pStrWillBeFind，找到返回指向找到处的指针
     // 没有找到，返回NULL
@@ -213,7 +215,6 @@ private:
 	static void InitCodePage();
 	
     int m_iCodePage;
-    vector<SSrtSubTitleItemReaded> m_vctSrtSubTitleItemReaded;
     bool m_bLoaded;
     EnumTextEncode m_eTextEncode;
 

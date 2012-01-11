@@ -42,6 +42,7 @@ extern "C"
 #include "libavdevice/avdevice.h"
 #include "libswscale/swscale.h"
 #include "libavcodec/opt.h"
+#include "libavcodec/audioconvert.h"
 //#include "libavcodec/avfft.h"
 
 extern void AddLog(const char* pszFormat, ...);
