@@ -10,7 +10,7 @@
 #include <sys/stat.h>
 #import "Common1.h"
 #include "Common.h"
-#import "ViewPlayerController.h"
+#import "PlayerViewControllerImp.h"
 
 
 @implementation UINavigationBar (CustomImage)  
@@ -74,7 +74,7 @@ float version = [[[UIDevice currentDevice] systemVersion] floatValue];
 		}
 	}
 	
-	viewPlayerController = [[ViewPlayerController alloc] 
+	viewPlayerController = [[PlayerViewControllerImp alloc] 
 							initWithNibName:@"ViewPlayerController" bundle:nil];
 	if (viewPlayerController == nil)
 	{

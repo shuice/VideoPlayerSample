@@ -36,7 +36,7 @@
 
 #import <QuartzCore/QuartzCore.h>
 #import <OpenGLES/EAGLDrawable.h>
-#import "ViewPlayerController.h"
+#import "PlayerViewControllerImp.h"
 // A class extension to declare private methods
 @interface PlayerView ()
 

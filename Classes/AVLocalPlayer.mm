@@ -9,7 +9,7 @@
 
 #include "AVLocalPlayer.h"
 #import "PlayerView.h"
-#import "ViewPlayerController.h"
+#import "PlayerViewControllerImp.h"
 #import <AudioToolbox/AudioToolbox.h>
 
 void RouteChangeListener(	void *                  inClientData,
