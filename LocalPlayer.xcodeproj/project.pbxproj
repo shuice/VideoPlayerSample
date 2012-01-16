@@ -71,6 +71,12 @@
 		80A1136F14BDEAB4006E7D1A /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C3A9E99814A5BAF700FBBB38 /* libiconv.dylib */; };
 		80A1137014BDEAE8006E7D1A /* IConvWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C338D75114A72E7500A8978B /* IConvWrapper.cpp */; };
 		80D9A8BD14C4713E00102863 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
+		80D9A8BE14C47B5100102863 /* Backward.png in Resources */ = {isa = PBXBuildFile; fileRef = 8ECD2433135334000067D02E /* Backward.png */; };
+		80D9A8BF14C47B5100102863 /* Control_Down_Background.png in Resources */ = {isa = PBXBuildFile; fileRef = 8ECD2434135334000067D02E /* Control_Down_Background.png */; };
+		80D9A8C014C47B5100102863 /* Control_Up_Background.png in Resources */ = {isa = PBXBuildFile; fileRef = 8ECD2435135334000067D02E /* Control_Up_Background.png */; };
+		80D9A8C114C47B5100102863 /* Forward.png in Resources */ = {isa = PBXBuildFile; fileRef = 8ECD243A135334000067D02E /* Forward.png */; };
+		80D9A8C214C47B5100102863 /* Pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 8ECD2443135334000067D02E /* Pause.png */; };
+		80D9A8C314C47B5100102863 /* Play.png in Resources */ = {isa = PBXBuildFile; fileRef = 8ECD2447135334000067D02E /* Play.png */; };
 		C338D75314A72E7500A8978B /* IConvWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C338D75114A72E7500A8978B /* IConvWrapper.cpp */; };
 		C338D75414A72E7500A8978B /* IConvWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = C338D75214A72E7500A8978B /* IConvWrapper.h */; };
 		C3E47AB714A6EA7400BD4223 /* Backward.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8ECD2433135334000067D02E /* Backward.png */; };
@@ -409,6 +415,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				80D9A8BE14C47B5100102863 /* Backward.png in Resources */,
+				80D9A8BF14C47B5100102863 /* Control_Down_Background.png in Resources */,
+				80D9A8C014C47B5100102863 /* Control_Up_Background.png in Resources */,
+				80D9A8C114C47B5100102863 /* Forward.png in Resources */,
+				80D9A8C214C47B5100102863 /* Pause.png in Resources */,
+				80D9A8C314C47B5100102863 /* Play.png in Resources */,
 				80A1133814BDE100006E7D1A /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

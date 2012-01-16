@@ -87,25 +87,29 @@
     [buttonBackward setShowsTouchWhenHighlighted:YES];
     [buttonForward setImage:[UIImage imageNamed:@"Backward.png"] forState:UIControlStateNormal];
     [buttonForward setShowsTouchWhenHighlighted:YES];
+    
+    [labelLeft setBackgroundColor:[UIColor clearColor]];
+    [labelPlayed setBackgroundColor:[UIColor clearColor]];
 }
 
 - (void) layoutSubviews
 {
-    CGFloat fWidth = 480.0f;
-    CGFloat fHeight = 640.0f;
-    
+//    [[self view] setBackgroundColor:[UIColor greenColor]];
+//    [playerView setBackgroundColor:[UIColor redColor]];
+    CGFloat fWidth = 320.0f;
+    CGFloat fHeight = 400.0f;
     [playerView setFrame:CGRectMake(0.0f, 0.0f, fWidth, fHeight)];
     // top controller
     {
         const CGFloat fHeightOfUpControlelr = 40.0f;
         [viewControlProgress setFrame:CGRectMake(0.0f, 0.0f, fWidth, fHeightOfUpControlelr)];
         const CGFloat fMarginWidth = 5.0f;
-        const CGFloat fHeightOfLabel = 12.0f;
-        const CGFloat fWidthOfLabel = 18.0f;
+        const CGFloat fHeightOfLabel = 18.0f;
+        const CGFloat fWidthOfLabel = 40.0f;
         [labelPlayed setFrame:CGRectMake(fMarginWidth, (fHeightOfUpControlelr-fHeightOfLabel)/2, fWidthOfLabel, fHeightOfLabel)];
         [labelLeft setFrame:CGRectMake(fWidth - fMarginWidth - fWidthOfLabel, (fHeightOfUpControlelr-fHeightOfLabel)/2, fWidthOfLabel, fHeightOfLabel)];
         const CGFloat fHeightOfProgress = 10.0f;
-        [uiSliderProgress setFrame:CGRectMake(fMarginWidth + fWidthOfLabel + fMarginWidth, (fHeightOfUpControlelr-fHeightOfProgress)/2, fMarginWidth - 2*(fMarginWidth + fWidthOfLabel + fMarginWidth), fHeightOfProgress)];
+        [uiSliderProgress setFrame:CGRectMake(fMarginWidth + fWidthOfLabel + fMarginWidth, (fHeightOfUpControlelr-fHeightOfProgress)/2, fWidth - 2*(fMarginWidth + fWidthOfLabel + fMarginWidth), fHeightOfProgress)];
         
     }
     
@@ -113,31 +117,34 @@
     {
         const CGFloat fWidthRate = 0.7f;
         const CGFloat fMarginBottom = 5.0f;
-        const CGFloat fHeightOfBottomController = 100.0f;
-        [viewControlSound setFrame:CGRectMake((fWidth - fWidth*fWidthRate)/2, fHeight - fMarginBottom -fHeightOfBottomController, fWidth*fWidthRate, fHeightOfBottomController)];
+        const CGFloat fHeightOfBottomController = 120.0f;
+        [viewControlSound setFrame:CGRectMake((fWidth - fWidth*fWidthRate)/2, fHeight - fMarginBottom - fHeightOfBottomController, fWidth*fWidthRate, fHeightOfBottomController)];
         const CGFloat fMarginWidth = 5.0f;
-        const CGFloat fWidthOfButton = 20.0f;
-        const CGFloat fHeightOfButton = 20.0f;
+        const CGFloat fWidthOfButton = 100.0f;
+        const CGFloat fHeightOfButton = 100.0f;
         const CGFloat fMarginTop = 5.0f;
         [buttonPlay setFrame:CGRectMake((fWidth*fWidthRate - fWidthOfButton)/2, fMarginTop, fWidthOfButton, fHeightOfButton)];
         [buttonPause setFrame:CGRectMake((fWidth*fWidthRate - fWidthOfButton)/2, fMarginTop, fWidthOfButton, fHeightOfButton)];
         [buttonBackward setFrame:CGRectMake(fMarginWidth, fMarginTop, fWidthOfButton, fHeightOfButton)];
         [buttonForward setFrame:CGRectMake(fWidth*fWidthRate - fMarginWidth - fWidthOfButton, fMarginTop, fWidthOfButton, fHeightOfButton)];
+        const CGFloat fHeightOfProgress = 10.0f;
+        [uiSliderSound setFrame:CGRectMake(fMarginWidth, fMarginTop + fMarginTop + fHeightOfButton, fWidth*fWidthRate - 2*fMarginWidth, fHeightOfProgress)];
     }
 }
 
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
+     [super viewDidLoad];
     [self insertSubViews];
     [self layoutSubviews];
-    buttonPlay.alpha = 0;
-    buttonPause.alpha = 0;
-    buttonBackward.alpha = 0;
-    buttonForward.alpha = 0;
-	[self SetPauseVisiable:NO];
+//    buttonPlay.alpha = 0;
+//    buttonPause.alpha = 0;
+//    buttonBackward.alpha = 0;
+//    buttonForward.alpha = 0;
+//	[self SetPauseVisiable:NO];
     
-    [super viewDidLoad];
+   
 }
 
 
@@ -164,6 +171,17 @@
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
+    self.playerView = nil;
+	self.viewControlProgress = nil;
+	self.viewControlSound = nil;
+	self.buttonPlay = nil;
+	self.buttonPause = nil;
+	self.buttonBackward = nil;
+	self.buttonForward = nil;
+	self.labelPlayed = nil;
+	self.labelLeft = nil;
+	self.uiSliderProgress = nil;
+	self.uiSliderSound  = nil;
 }
 
 
