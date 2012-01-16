@@ -14,17 +14,17 @@ using namespace std;
 #import "PlayerView.h"
 @interface PlayerViewControllerImp : PlayerViewController 
 {
-	IBOutlet PlayerView* playerView;
-	IBOutlet UIView* viewControlProgress;
-	IBOutlet UIView* viewControlSound;
-	IBOutlet UIButton* buttonPlay;
-	IBOutlet UIButton* buttonPause;
-	IBOutlet UIButton* buttonBackward;
-	IBOutlet UIButton* buttonForward;
-	IBOutlet UILabel* labelPlayed;
-	IBOutlet UILabel* labelLeft;
-	IBOutlet UISlider* uiSliderProgress;
-	IBOutlet UISlider* uiSliderSound;
+	 PlayerView* playerView;
+	 UIView* viewControlProgress;
+	 UIView* viewControlSound;
+	 UIButton* buttonPlay;
+	 UIButton* buttonPause;
+	 UIButton* buttonBackward;
+	 UIButton* buttonForward;
+	 UILabel* labelPlayed;
+	 UILabel* labelLeft;
+	 UISlider* uiSliderProgress;
+	 UISlider* uiSliderSound;
 
 	NSTimer* nsTimer;
 	CLocalPlayer* m_pLocalPlayer;

@@ -44,25 +44,99 @@
 #define AUTO_CONTROL_HIDDEN_TIME 150
 #define ALWAYS_SHOW_TIME 0x7FFFFFFF
 
-
-/*
- // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
-    if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
-        // Custom initialization
-    }
-    return self;
+- (void) insertSubViews
+{
+    self.playerView = [[[PlayerView alloc] initWithFrame:CGRectZero] autorelease];
+    self.viewControlProgress = [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
+    self.viewControlSound = [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
+    
+    self.buttonPlay = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.buttonPause = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.buttonBackward = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.buttonForward = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.labelPlayed = [[[UILabel alloc] initWithFrame:CGRectZero] autorelease];
+    self.labelLeft = [[[UILabel alloc] initWithFrame:CGRectZero] autorelease];
+    self.uiSliderProgress = [[[UISlider alloc] initWithFrame:CGRectZero] autorelease];
+    self.uiSliderSound = [[[UISlider alloc] initWithFrame:CGRectZero] autorelease];
+    
+    // subviews
+    [[self view] addSubview:playerView];
+    
+    [playerView addSubview:viewControlProgress];
+    [playerView addSubview:viewControlSound];
+    
+    [viewControlProgress addSubview:labelPlayed];
+    [viewControlProgress addSubview:labelLeft];
+    [viewControlProgress addSubview:uiSliderProgress];
+    
+    [viewControlSound addSubview:buttonPlay];
+    [viewControlSound addSubview:buttonBackward];
+    [viewControlSound addSubview:buttonForward];
+    [viewControlSound addSubview:buttonPause];
+    [viewControlSound addSubview:uiSliderSound];
+    
+    // set control constant property
+    [viewControlProgress setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Control_Up_Background.png"]]];
+    [viewControlSound setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Control_Down_Background.png"]]];
+    
+    [buttonPlay setImage:[UIImage imageNamed:@"Play.png"] forState:UIControlStateNormal];
+    [buttonPlay setShowsTouchWhenHighlighted:YES];
+    [buttonPause setImage:[UIImage imageNamed:@"Pause.png"] forState:UIControlStateNormal];
+    [buttonPause setShowsTouchWhenHighlighted:YES];
+    [buttonBackward setImage:[UIImage imageNamed:@"Forward.png"] forState:UIControlStateNormal];
+    [buttonBackward setShowsTouchWhenHighlighted:YES];
+    [buttonForward setImage:[UIImage imageNamed:@"Backward.png"] forState:UIControlStateNormal];
+    [buttonForward setShowsTouchWhenHighlighted:YES];
 }
-*/
+
+- (void) layoutSubviews
+{
+    CGFloat fWidth = 480.0f;
+    CGFloat fHeight = 640.0f;
+    
+    [playerView setFrame:CGRectMake(0.0f, 0.0f, fWidth, fHeight)];
+    // top controller
+    {
+        const CGFloat fHeightOfUpControlelr = 40.0f;
+        [viewControlProgress setFrame:CGRectMake(0.0f, 0.0f, fWidth, fHeightOfUpControlelr)];
+        const CGFloat fMarginWidth = 5.0f;
+        const CGFloat fHeightOfLabel = 12.0f;
+        const CGFloat fWidthOfLabel = 18.0f;
+        [labelPlayed setFrame:CGRectMake(fMarginWidth, (fHeightOfUpControlelr-fHeightOfLabel)/2, fWidthOfLabel, fHeightOfLabel)];
+        [labelLeft setFrame:CGRectMake(fWidth - fMarginWidth - fWidthOfLabel, (fHeightOfUpControlelr-fHeightOfLabel)/2, fWidthOfLabel, fHeightOfLabel)];
+        const CGFloat fHeightOfProgress = 10.0f;
+        [uiSliderProgress setFrame:CGRectMake(fMarginWidth + fWidthOfLabel + fMarginWidth, (fHeightOfUpControlelr-fHeightOfProgress)/2, fMarginWidth - 2*(fMarginWidth + fWidthOfLabel + fMarginWidth), fHeightOfProgress)];
+        
+    }
+    
+    // bottom controller
+    {
+        const CGFloat fWidthRate = 0.7f;
+        const CGFloat fMarginBottom = 5.0f;
+        const CGFloat fHeightOfBottomController = 100.0f;
+        [viewControlSound setFrame:CGRectMake((fWidth - fWidth*fWidthRate)/2, fHeight - fMarginBottom -fHeightOfBottomController, fWidth*fWidthRate, fHeightOfBottomController)];
+        const CGFloat fMarginWidth = 5.0f;
+        const CGFloat fWidthOfButton = 20.0f;
+        const CGFloat fHeightOfButton = 20.0f;
+        const CGFloat fMarginTop = 5.0f;
+        [buttonPlay setFrame:CGRectMake((fWidth*fWidthRate - fWidthOfButton)/2, fMarginTop, fWidthOfButton, fHeightOfButton)];
+        [buttonPause setFrame:CGRectMake((fWidth*fWidthRate - fWidthOfButton)/2, fMarginTop, fWidthOfButton, fHeightOfButton)];
+        [buttonBackward setFrame:CGRectMake(fMarginWidth, fMarginTop, fWidthOfButton, fHeightOfButton)];
+        [buttonForward setFrame:CGRectMake(fWidth*fWidthRate - fMarginWidth - fWidthOfButton, fMarginTop, fWidthOfButton, fHeightOfButton)];
+    }
+}
 
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
+    [self insertSubViews];
+    [self layoutSubviews];
     buttonPlay.alpha = 0;
     buttonPause.alpha = 0;
     buttonBackward.alpha = 0;
     buttonForward.alpha = 0;
 	[self SetPauseVisiable:NO];
+    
     [super viewDidLoad];
 }
 

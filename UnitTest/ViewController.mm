@@ -8,6 +8,7 @@
 
 #import "ViewController.h"
 #import "../Classes/SmiSubTitleReader.h"
+#import "../Classes/PlayerViewController.h"
 
 @implementation ViewController
 
@@ -22,6 +23,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [[self view] setBackgroundColor:[UIColor grayColor]];
 	// Do any additional setup after loading the view, typically from a nib.
     UIButton* button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [button setFrame:CGRectMake(50, 50, 50, 50)];
@@ -70,8 +72,10 @@
 
 - (void) unitTest:(id)sender
 {
-    CSmiSubTitleReader smiSubTitleReader;
-    smiSubTitleReader.LoadFile("/Users/xiaoyi/Downloads/1s/101.big5.smi");
+//    CSmiSubTitleReader smiSubTitleReader;
+//    smiSubTitleReader.LoadFile("/Users/xiaoyi/Downloads/1s/101.big5.smi");
+    PlayerViewController* viewController = [PlayerViewController retainPlayerViewController];
+    [[self navigationController] pushViewController:viewController animated:YES];
 }
 
 @end
