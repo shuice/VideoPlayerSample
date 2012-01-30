@@ -15,6 +15,7 @@ static int g_iRefrenceCount = 0;
     if (g_playerViewControllerImp == nil)
     {
         g_playerViewControllerImp = [[PlayerViewControllerImp alloc] init];
+        [g_playerViewControllerImp view];
     }
     g_iRefrenceCount ++;
     return g_playerViewControllerImp;

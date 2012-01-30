@@ -46,7 +46,7 @@
 
 - (void) insertSubViews
 {
-    self.playerView = [[[PlayerView alloc] initWithFrame:CGRectZero] autorelease];
+    self.playerView = [[[PlayerView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)] autorelease];
     self.viewControlProgress = [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
     self.viewControlSound = [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
     
@@ -135,7 +135,7 @@
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
-     [super viewDidLoad];
+    [super viewDidLoad];
     [self insertSubViews];
     [self layoutSubviews];
 //    buttonPlay.alpha = 0;

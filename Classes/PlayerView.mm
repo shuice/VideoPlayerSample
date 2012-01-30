@@ -58,17 +58,8 @@
 
 
 - (id)initWithFrame:(CGRect)frame {
-    if (self = [super initWithFrame:frame]) {
-       
-    }
-	
-    return self;
-}
-
-
-- (id)initWithCoder:(NSCoder*)coder {
     pthread_mutex_init(&m_mutexFromView, NULL);
-    if ((self = [super initWithCoder:coder])) 
+    if (self = [super initWithFrame:frame]) 
 	{
         // Get the layer
         CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
@@ -88,20 +79,14 @@
         }
         
        [self layoutSubviews];
-    }
-	
-	
+    }  
     return self;
 }
 
+
+
 - (BOOL)createFramebuffer
 {
-	UIInterfaceOrientation uiInterfaceOrientation = [UIApplication sharedApplication].statusBarOrientation;
-	if ((uiInterfaceOrientation == UIInterfaceOrientationPortrait) 
-		|| (uiInterfaceOrientation == UIInterfaceOrientationPortraitUpsideDown))
-	{
-		return FALSE;
-	}
 	NSLog(@"Create Frame buffer");
     glGenFramebuffersOES(1, &viewFramebuffer);
     glGenRenderbuffersOES(1, &viewRenderbuffer);
