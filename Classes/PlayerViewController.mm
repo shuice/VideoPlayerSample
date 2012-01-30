@@ -49,4 +49,19 @@ static int iRefrenceCount = 0;
 {
     return ePlayerStatusNotImp;
 }
+
+- (EnumPlayerStatus) seek:(unsigned long)iSeekPos
+{
+    return ePlayerStatusNotImp;
+}
+
+- (EnumPlayerStatus) setPlaySpeed:(EnumPlaySpeed)ePlaySpeed
+{
+    return ePlayerStatusNotImp;
+}
+
+- (EnumPlayerStatus) setAspectRatio:(EnumAspectRatio)eAspectRatio
+{
+    return ePlayerStatusNotImp;
+}
 @end
