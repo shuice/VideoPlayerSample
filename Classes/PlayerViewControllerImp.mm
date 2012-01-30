@@ -619,4 +619,23 @@ void ShowAlartMessage(string strMessage)
     return 0;
 }
 
+- (EnumPlayerStatus) seek:(unsigned long)iSeekPos
+{
+    return ePlayerStatusNotImp;
+}
+
+- (EnumPlayerStatus) setPlaySpeed:(EnumPlaySpeed)ePlaySpeed
+{
+    return ePlayerStatusNotImp;
+}
+
+- (EnumPlaySpeed) getPlaySpeed
+{
+    return ePlaySpeedNormal;
+}
+
+- (EnumPlayerStatus) setAspectRatio:(EnumAspectRatio)eAspectRatio
+{
+    return ePlayerStatusNotImp;
+}
 @end

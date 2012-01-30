@@ -2,25 +2,35 @@
 #import "PlayerViewControllerImp.h"
 
 static PlayerViewControllerImp* g_playerViewControllerImp = nil;
-static int iRefrenceCount = 0;
+static int g_iRefrenceCount = 0;
 @implementation PlayerViewController
 
-+(PlayerViewController*) retainPlayerViewController
++(PlayerViewController*) initPlayer
 {
+    if (g_iRefrenceCount < 0)
+    {
+        g_iRefrenceCount = 0;
+    }
+    
     if (g_playerViewControllerImp == nil)
     {
         g_playerViewControllerImp = [[PlayerViewControllerImp alloc] init];
     }
-    iRefrenceCount ++;
+    g_iRefrenceCount ++;
     return g_playerViewControllerImp;
 }
-+(void) releasePlayerViewController
++(void) deallocPlayer
 {
-    iRefrenceCount --;
-    if (iRefrenceCount == 0)
+    g_iRefrenceCount --;
+    if (g_iRefrenceCount == 0)
     {
         [g_playerViewControllerImp release];
         g_playerViewControllerImp = nil;
+    }
+    
+    if (g_iRefrenceCount < 0)
+    {
+        g_iRefrenceCount = 0;
     }
 }
 
@@ -58,6 +68,11 @@ static int iRefrenceCount = 0;
 - (EnumPlayerStatus) setPlaySpeed:(EnumPlaySpeed)ePlaySpeed
 {
     return ePlayerStatusNotImp;
+}
+
+- (EnumPlaySpeed) getPlaySpeed
+{
+    return ePlaySpeedNormal;
 }
 
 - (EnumPlayerStatus) setAspectRatio:(EnumAspectRatio)eAspectRatio

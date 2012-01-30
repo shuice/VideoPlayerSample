@@ -32,14 +32,15 @@ typedef enum EnumPlaySpeed
 }EnumPlaySpeed;
 
 
+
 @protocol PlayerViewControllerDelegate
 
 @end
 
 @interface PlayerViewController : UIViewController 
 
-+(PlayerViewController*) retainPlayerViewController;
-+(void) releasePlayerViewController;
++(PlayerViewController*) initPlayer;
++(void) deallocPlayer;
 
 - (EnumPlayerStatus) open:(NSString*)strFileName; 
 - (EnumPlayerStatus) play;
@@ -48,6 +49,7 @@ typedef enum EnumPlaySpeed
 - (EnumPlayerStatus) setAspectRatio:(EnumAspectRatio)eAspectRatio;
 - (EnumPlayerStatus) seek:(unsigned long)iSeekPos;
 - (EnumPlayerStatus) setPlaySpeed:(EnumPlaySpeed)ePlaySpeed;
+- (EnumPlaySpeed) getPlaySpeed;
 - (unsigned long) getDuration;
 - (unsigned long) getPlayingTime;
 

@@ -123,6 +123,10 @@ CLocalPlayer::CLocalPlayer()
 	m_bRefreshed = true;
 	step = 0;
 	iWindow = 0;
+    
+    av_register_all();
+    avdevice_register_all();
+    avcodec_register_all();
 }
 
 CLocalPlayer::~CLocalPlayer()
@@ -269,7 +273,7 @@ bool CLocalPlayer::InitData(const string& strFileName)
 		avFormatParameters.pix_fmt = PIX_FMT_NONE;
 	
 	//	set_context_opts(pAvFormatContext, avformat_opts, AV_OPT_FLAG_DECODING_PARAM, NULL);
-	    int iRet = av_open_input_file(&pAvFormatContext, m_strFileName.c_str(), 
+	    int iRet = av_open_input_file(&pAvFormatContext, strFileName.c_str(), 
 									  iformat, 0, &avFormatParameters);
 	    if (iRet < 0) 
 		{

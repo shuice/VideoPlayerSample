@@ -74,8 +74,9 @@
 {
 //    CSmiSubTitleReader smiSubTitleReader;
 //    smiSubTitleReader.LoadFile("/Users/xiaoyi/Downloads/1s/101.big5.smi");
-    PlayerViewController* viewController = [PlayerViewController retainPlayerViewController];
+    PlayerViewController* viewController = [PlayerViewController initPlayer];
     [[self navigationController] pushViewController:viewController animated:YES];
+    [viewController open:@"/Users/xiaoyi/Test.flv"];
 }
 
 @end
