@@ -106,13 +106,12 @@
     glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, 
 									GL_RENDERBUFFER_HEIGHT_OES, 
 									&backingHeight);
-	    if(glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES) != GL_FRAMEBUFFER_COMPLETE_OES)
+    if(glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES) != GL_FRAMEBUFFER_COMPLETE_OES)
 	{
         NSLog(@"failed to make complete framebuffer object %x",
 			  glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES));
         return NO;
     }
-	
 	glViewport(0, 0, backingWidth,  backingHeight);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();

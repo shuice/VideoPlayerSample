@@ -46,7 +46,7 @@
 
 - (void) insertSubViews
 {
-    self.playerView = [[[PlayerView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)] autorelease];
+    self.playerView = [[[PlayerView alloc] initWithFrame:CGRectMake(0, 0, 480, 320)] autorelease];
     self.viewControlProgress = [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
     self.viewControlSound = [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
     
@@ -98,7 +98,7 @@
 //    [playerView setBackgroundColor:[UIColor redColor]];
     CGFloat fWidth = 320.0f;
     CGFloat fHeight = 400.0f;
-    [playerView setFrame:CGRectMake(0.0f, 0.0f, fWidth, fHeight)];
+    //[playerView setFrame:CGRectMake(0.0f, 0.0f, fWidth, fHeight)];
     // top controller
     {
         const CGFloat fHeightOfUpControlelr = 40.0f;
