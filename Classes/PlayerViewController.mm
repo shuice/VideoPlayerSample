@@ -1,38 +1,17 @@
 #import "PlayerViewController.h"
 #import "PlayerViewControllerImp.h"
 
-static PlayerViewControllerImp* g_playerViewControllerImp = nil;
-static int g_iRefrenceCount = 0;
 @implementation PlayerViewController
 
-+(PlayerViewController*) initPlayer
++(PlayerViewController*) sharedPlayer
 {
-    if (g_iRefrenceCount < 0)
+    static PlayerViewControllerImp* playerViewControllerImp = nil;
+    if (playerViewControllerImp == nil)
     {
-        g_iRefrenceCount = 0;
+        playerViewControllerImp = [[PlayerViewControllerImp alloc] init];
+        [playerViewControllerImp view];
     }
-    
-    if (g_playerViewControllerImp == nil)
-    {
-        g_playerViewControllerImp = [[PlayerViewControllerImp alloc] init];
-        [g_playerViewControllerImp view];
-    }
-    g_iRefrenceCount ++;
-    return g_playerViewControllerImp;
-}
-+(void) deallocPlayer
-{
-    g_iRefrenceCount --;
-    if (g_iRefrenceCount == 0)
-    {
-        [g_playerViewControllerImp release];
-        g_playerViewControllerImp = nil;
-    }
-    
-    if (g_iRefrenceCount < 0)
-    {
-        g_iRefrenceCount = 0;
-    }
+    return playerViewControllerImp;
 }
 
 - (EnumPlayerStatus) open:(NSString*)strFileName

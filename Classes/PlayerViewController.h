@@ -39,8 +39,8 @@ typedef enum EnumPlaySpeed
 
 @interface PlayerViewController : UIViewController 
 
-+(PlayerViewController*) initPlayer;
-+(void) deallocPlayer;
++(PlayerViewController*) sharedPlayer;
+
 
 - (EnumPlayerStatus) open:(NSString*)strFileName; 
 - (EnumPlayerStatus) play;
