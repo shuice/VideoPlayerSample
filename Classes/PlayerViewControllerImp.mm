@@ -92,7 +92,7 @@
     [labelPlayed setBackgroundColor:[UIColor clearColor]];
 }
 
-- (void) layoutSubviews
+- (void) setSubViewPos
 {
 //    [[self view] setBackgroundColor:[UIColor greenColor]];
 //    [playerView setBackgroundColor:[UIColor redColor]];
@@ -132,19 +132,19 @@
     }
 }
 
-
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self insertSubViews];
-    [self layoutSubviews];
+    [self setSubViewPos];
+//    [self layoutSubviews];
 //    buttonPlay.alpha = 0;
 //    buttonPause.alpha = 0;
 //    buttonBackward.alpha = 0;
 //    buttonForward.alpha = 0;
 //	[self SetPauseVisiable:NO];
     
-   
+    [self performSelector:@selector(open:) withObject:@"/Users/xiaoyi/Test.flv" afterDelay:2.0f];
 }
 
 

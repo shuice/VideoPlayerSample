@@ -160,7 +160,7 @@ float version = [[[UIDevice currentDevice] systemVersion] floatValue];
 	viewPlayerController.m_ePlayerType = ePlayerType;
 	viewPlayerController.m_strSrtPath = strSrtPath;
 	viewPlayerController.m_iCodePage = iCodePage;
-	[viewPlayerController StartPlay:pszFileName];
+	//[viewPlayerController StartPlay:pszFileName];
 	
 	
 }

@@ -78,7 +78,7 @@
             return nil;
         }
         
-       [self layoutSubviews];
+       //[self layoutSubviews];
     }  
     return self;
 }
@@ -208,6 +208,10 @@
 }
 
 - (void)layoutSubviews {
+    // Set the scale factor to be the same as the main screen
+    if ([self respondsToSelector: NSSelectorFromString(@"contentScaleFactor")]) {
+        [self setContentScaleFactor:1.0f];
+    }
     [EAGLContext setCurrentContext:context];
     [self destroyFramebuffer];
     [self createFramebuffer];
