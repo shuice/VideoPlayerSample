@@ -116,9 +116,10 @@
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrthof(0.0f, backingWidth, 0.0f, backingHeight, 0.0f, 1.0f);
-	
+	// 你还好啊
+    // 中文测试
 	widthOfSuitable = backingWidth;
-	heightOfSuitable = backingHeight;
+	heightOfSuitable = backingHeight; 
 	if (widthOfSuitable * heightOfSuitable > 480 * 320)
 	{
 		widthOfSuitable = 480;
