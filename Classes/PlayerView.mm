@@ -111,7 +111,7 @@
         NSLog(@"failed to make complete framebuffer object %x",
 			  glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES));
         return NO;
-    }
+    } 
 	glViewport(0, 0, backingWidth,  backingHeight);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
