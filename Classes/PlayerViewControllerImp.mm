@@ -83,9 +83,9 @@
     [buttonPlay setShowsTouchWhenHighlighted:YES];
     [buttonPause setImage:[UIImage imageNamed:@"Pause.png"] forState:UIControlStateNormal];
     [buttonPause setShowsTouchWhenHighlighted:YES];
-    [buttonBackward setImage:[UIImage imageNamed:@"Forward.png"] forState:UIControlStateNormal];
+    [buttonBackward setImage:[UIImage imageNamed:@"Backward.png"] forState:UIControlStateNormal];
     [buttonBackward setShowsTouchWhenHighlighted:YES];
-    [buttonForward setImage:[UIImage imageNamed:@"Backward.png"] forState:UIControlStateNormal];
+    [buttonForward setImage:[UIImage imageNamed:@"Forward.png"] forState:UIControlStateNormal];
     [buttonForward setShowsTouchWhenHighlighted:YES];
     
     [labelLeft setBackgroundColor:[UIColor clearColor]];
