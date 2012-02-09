@@ -61,25 +61,31 @@
     pthread_mutex_init(&m_mutexFromView, NULL);
     if (self = [super initWithFrame:frame]) 
 	{
-        // Get the layer
+       
         CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
-        
         eaglLayer.opaque = YES;
         eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
-                                        [NSNumber numberWithBool:NO],
-										kEAGLDrawablePropertyRetainedBacking,
-										kEAGLColorFormatRGBA8, 
-										kEAGLDrawablePropertyColorFormat,
-										nil];
-        context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES1];
-        if (!context || ![EAGLContext setCurrentContext:context]) 
+                                        [NSNumber numberWithBool:NO], kEAGLDrawablePropertyRetainedBacking,
+                                        kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat,
+                                        nil];
+        
+        context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES1];        
+        if (!context || ![EAGLContext setCurrentContext:context])
 		{
             [self release];
             return nil;
         }
         
-       //[self layoutSubviews];
-    }  
+		// Create system framebuffer object. The backing will be allocated in -reshapeFramebuffer
+		glGenFramebuffersOES(1, &viewFramebuffer);
+		glGenRenderbuffersOES(1, &viewRenderbuffer);
+		glBindFramebufferOES(GL_FRAMEBUFFER_OES, viewFramebuffer);
+		glBindRenderbufferOES(GL_RENDERBUFFER_OES, viewRenderbuffer);
+		glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_RENDERBUFFER_OES, viewRenderbuffer);
+		[self layoutSubviews];
+		// Perform additional one-time GL initialization
+		//initGL();
+    }
     return self;
 }
 
@@ -88,17 +94,9 @@
 - (BOOL)createFramebuffer
 {
 	NSLog(@"Create Frame buffer");
-    glGenFramebuffersOES(1, &viewFramebuffer);
-    glGenRenderbuffersOES(1, &viewRenderbuffer);
-    
-    glBindFramebufferOES(GL_FRAMEBUFFER_OES,  viewFramebuffer);
-    glBindRenderbufferOES(GL_RENDERBUFFER_OES, viewRenderbuffer);
+
     [context renderbufferStorage:GL_RENDERBUFFER_OES 
 					fromDrawable:(CAEAGLLayer*)self.layer];
-    glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, 
-								 GL_COLOR_ATTACHMENT0_OES, 
-								 GL_RENDERBUFFER_OES, 
-								 viewRenderbuffer);
     
     glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, 
 									GL_RENDERBUFFER_WIDTH_OES, 
@@ -114,7 +112,7 @@
     } 
 	glViewport(0, 0, backingWidth,  backingHeight);
 	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
+	glLoadIdentity(); 
 	glOrthof(0.0f, backingWidth, 0.0f, backingHeight, 0.0f, 1.0f);
 	// 你还好啊
     // 中文测试
@@ -141,12 +139,12 @@
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glEnableClientState(GL_VERTEX_ARRAY);		
 	
-	uiLabel.layer.shadowRadius = 5.0;
-	uiLabel.layer.shadowOpacity = 0.7;
-	uiLabel.layer.shadowColor = [[UIColor orangeColor] CGColor];
-	uiLabel.layer.shadowOffset = CGSizeMake(2.0, 0.0);
-	uiLabel.lineBreakMode = UILineBreakModeWordWrap; 
-	uiLabel.numberOfLines = 0;
+//	uiLabel.layer.shadowRadius = 5.0;
+//	uiLabel.layer.shadowOpacity = 0.7;
+//	uiLabel.layer.shadowColor = [[UIColor orangeColor] CGColor];
+//	uiLabel.layer.shadowOffset = CGSizeMake(2.0, 0.0);
+//	uiLabel.lineBreakMode = UILineBreakModeWordWrap; 
+//	uiLabel.numberOfLines = 0;
 	
     return YES;
 }
@@ -176,11 +174,6 @@
 - (void)destroyFramebuffer {
     
 	NSLog(@"destroyFramebuffer");
-    glDeleteFramebuffersOES(1, &viewFramebuffer);
-    viewFramebuffer = 0;
-    glDeleteRenderbuffersOES(1, &viewRenderbuffer);
-	
-    viewRenderbuffer = 0;
 	backingWidth = 0;
 	backingHeight = 0;
 	widthOfSuitable = 0;
@@ -200,20 +193,13 @@
 		delete[] m_pRGBADataFromView;
 		m_pRGBADataFromView = NULL;
 	}
-	
-	
-//	glDisable(GL_TEXTURE_2D);
-//	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-//	glDisableClientState(GL_VERTEX_ARRAY);
-	
 }
 
 - (void)layoutSubviews {
-    // Set the scale factor to be the same as the main screen
-    if ([self respondsToSelector: NSSelectorFromString(@"contentScaleFactor")]) {
-        [self setContentScaleFactor:1.0f];
-    }
-    [EAGLContext setCurrentContext:context];
+    [context renderbufferStorage:GL_RENDERBUFFER_OES fromDrawable:(CAEAGLLayer*)self.layer];
+    
+    glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_WIDTH_OES, &backingWidth);
+    glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_HEIGHT_OES, &backingHeight);
     [self destroyFramebuffer];
     [self createFramebuffer];
     [self drawView];
@@ -221,17 +207,14 @@
 
 
 
-
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
-}
-
-
 - (void)dealloc {
     
     if ([EAGLContext currentContext] == context) {
         [EAGLContext setCurrentContext:nil];
     }
+    
+    glDeleteFramebuffersOES(1, &viewFramebuffer);
+    glDeleteRenderbuffersOES(1, &viewRenderbuffer);
     
     [context release]; 
 	pthread_mutex_destroy(&m_mutexFromView);
@@ -289,7 +272,7 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
 										length:m_wstrSubTitle.size()*sizeof(wchar_t)];
 		NSString* nsText = [[NSString alloc] initWithData:nsData 
 												 encoding:NSUTF32LittleEndianStringEncoding];
-		uiLabel.text = nsText;
+		//uiLabel.text = nsText;
 		[nsText release];
 	}	
 	pthread_mutex_unlock(&m_mutexFromView);

@@ -33,10 +33,10 @@
 #import <OpenGLES/ES1/gl.h>
 #import <OpenGLES/ES1/glext.h>
 #import "Common.h"
-@class Video;
+
 #define PLAYER_DEG_TO_RAD				0.017453f
 
-@interface PlayerView : UIControl {
+@interface PlayerView : UIView {
 @public   
 	GLint backingWidth;
 	GLint backingHeight;
@@ -56,7 +56,7 @@
     GLuint viewRenderbuffer, viewFramebuffer;
 	GLuint texture;
 	CRect rectAdapt;
-	IBOutlet UILabel* uiLabel;
+    UILabel* uiLabel;
 }
 - (void)destroyTexturebuffer;
 - (BOOL)createTextureAndBuffer:(int)width height:(int)height;

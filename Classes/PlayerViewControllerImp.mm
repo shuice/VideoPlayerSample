@@ -217,7 +217,7 @@
 	// init all controls
 	labelPlayed.text = @"";
 	labelLeft.text = @"";
-	playerView.uiLabel.text = @"";
+	[[playerView uiLabel] setText:@""];
 	uiSliderProgress.value = 0.0;
 	m_bInSeek = NO;
 	try 
