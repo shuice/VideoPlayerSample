@@ -28,6 +28,9 @@
  OTHER DEALINGS IN THE SOFTWARE.
 */
 
+const int iBufferWidth = 480;
+const int iBufferHeight = 480;
+
 #import "PlayerView.h"
 
 //#import "Video.h"
@@ -37,18 +40,13 @@
 #import <QuartzCore/QuartzCore.h>
 #import <OpenGLES/EAGLDrawable.h>
 #import "PlayerViewControllerImp.h"
-// A class extension to declare private methods
-@interface PlayerView ()
 
 
-
-@end
 
 @implementation PlayerView
 
-@synthesize context;
 @synthesize m_wstrSubTitle;
-@synthesize uiLabel;
+
 
 
 // You must implement this method
@@ -56,12 +54,67 @@
     return [CAEAGLLayer class];
 }
 
+- (void) resizeData:(int)iSize
+{
+    if (m_iDataLen >= iSize)
+    {
+        return;
+    }
+    if (m_pData != NULL)
+    {
+        delete m_pData;
+        m_pData = NULL;
+    }
+    m_iDataLen = iSize;
+    m_pData = new unsigned char[iSize];
+}
+
+- (void) test
+{
+    CGImageRef inImage = [[UIImage imageNamed:@"1.png"] CGImage];
+    
+        CGContextRef    context1 = NULL;
+        CGColorSpaceRef colorSpace;
+        int             bitmapByteCount;
+        int             bitmapBytesPerRow;
+        
+        size_t width = CGImageGetWidth(inImage);
+        size_t height = CGImageGetHeight(inImage);
+        bitmapBytesPerRow   = (width * 4);
+        bitmapByteCount     = bitmapBytesPerRow * height;
+        
+        colorSpace = CGColorSpaceCreateDeviceRGB();
+        size_t bitsPerComponent = 8;
+        context1 = CGBitmapContextCreate (NULL, 
+                                         width, 
+                                         height,	
+                                         bitsPerComponent,
+                                         bitmapBytesPerRow, 
+                                         colorSpace, 
+                                         kCGImageAlphaNoneSkipFirst);
+        
+        
+    
+    CGRect rect = {{0,0},{iBufferWidth,iBufferHeight}}; 
+    CGContextDrawImage(context1, rect, inImage); 
+	void *data = CGBitmapContextGetData (context1);
+    memcpy(m_pData, data, iBufferWidth*iBufferHeight*4);
+
+    CGColorSpaceRelease( colorSpace );
+}
 
 - (id)initWithFrame:(CGRect)frame {
     pthread_mutex_init(&m_mutexFromView, NULL);
     if (self = [super initWithFrame:frame]) 
 	{
-       
+        uiLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        uiLabel.layer.shadowRadius = 5.0;
+        uiLabel.layer.shadowOpacity = 0.7;
+        uiLabel.layer.shadowColor = [[UIColor orangeColor] CGColor];
+        uiLabel.layer.shadowOffset = CGSizeMake(2.0, 0.0);
+        uiLabel.lineBreakMode = UILineBreakModeWordWrap; 
+        uiLabel.numberOfLines = 0;
+
         CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
         eaglLayer.opaque = YES;
         eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -70,98 +123,40 @@
                                         nil];
         
         context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES1];        
-        if (!context || ![EAGLContext setCurrentContext:context])
-		{
-            [self release];
-            return nil;
-        }
+        [EAGLContext setCurrentContext:context];
         
-		// Create system framebuffer object. The backing will be allocated in -reshapeFramebuffer
-		glGenFramebuffersOES(1, &viewFramebuffer);
-		glGenRenderbuffersOES(1, &viewRenderbuffer);
-		glBindFramebufferOES(GL_FRAMEBUFFER_OES, viewFramebuffer);
-		glBindRenderbufferOES(GL_RENDERBUFFER_OES, viewRenderbuffer);
-		glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_RENDERBUFFER_OES, viewRenderbuffer);
-		[self layoutSubviews];
-		// Perform additional one-time GL initialization
-		//initGL();
+        glGenFramebuffersOES(1, &glFramebuffer);
+        glGenRenderbuffersOES(1, &glRenderbuffer);
+        glBindFramebufferOES(GL_FRAMEBUFFER_OES, glFramebuffer);
+        glBindRenderbufferOES(GL_RENDERBUFFER_OES, glRenderbuffer);
+        glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_RENDERBUFFER_OES, glRenderbuffer); 
+        
+        [context renderbufferStorage:GL_RENDERBUFFER_OES fromDrawable:(CAEAGLLayer*)self.layer];
+        
+        glViewport(0, 0, iBufferWidth,  iBufferHeight);
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity(); 
+        glOrthof(0.0f, iBufferWidth, 0.0f, iBufferHeight, 0.0f, 1.0f); 
+        
+        // create texture
+        glGenTextures(1, &glTexture);
+        glBindTexture( GL_TEXTURE_2D, glTexture);
+        
+        // Filters
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+        
+        // Wrap
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glEnable(GL_TEXTURE_2D);
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+        glEnableClientState(GL_VERTEX_ARRAY);	
+        
+        [self resizeData:iBufferWidth*iBufferHeight*4];
+        [self test];
     }
     return self;
-}
-
-
-
-- (BOOL)createFramebuffer
-{
-	NSLog(@"Create Frame buffer");
-
-    [context renderbufferStorage:GL_RENDERBUFFER_OES 
-					fromDrawable:(CAEAGLLayer*)self.layer];
-    
-    glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, 
-									GL_RENDERBUFFER_WIDTH_OES, 
-									&backingWidth);
-    glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, 
-									GL_RENDERBUFFER_HEIGHT_OES, 
-									&backingHeight);
-    if(glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES) != GL_FRAMEBUFFER_COMPLETE_OES)
-	{
-        NSLog(@"failed to make complete framebuffer object %x",
-			  glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES));
-        return NO;
-    } 
-	glViewport(0, 0, backingWidth,  backingHeight);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity(); 
-	glOrthof(0.0f, backingWidth, 0.0f, backingHeight, 0.0f, 1.0f);
-	// 你还好啊
-    // 中文测试
-	widthOfSuitable = backingWidth;
-	heightOfSuitable = backingHeight; 
-	if (widthOfSuitable * heightOfSuitable > 480 * 320)
-	{
-		widthOfSuitable = 480;
-		heightOfSuitable = 320;
-	}
-	
-	// create texture
-	glGenTextures(1, &texture);
-	glBindTexture( GL_TEXTURE_2D, texture);
-	
-	// Filters
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-	
-	// Wrap
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glEnable(GL_TEXTURE_2D);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glEnableClientState(GL_VERTEX_ARRAY);		
-	
-//	uiLabel.layer.shadowRadius = 5.0;
-//	uiLabel.layer.shadowOpacity = 0.7;
-//	uiLabel.layer.shadowColor = [[UIColor orangeColor] CGColor];
-//	uiLabel.layer.shadowOffset = CGSizeMake(2.0, 0.0);
-//	uiLabel.lineBreakMode = UILineBreakModeWordWrap; 
-//	uiLabel.numberOfLines = 0;
-	
-    return YES;
-}
-
-- (BOOL)createTextureAndBuffer:(int)width height:(int)height
-{
-	NSLog(@"createTextureAndBuffer");
-	widthOfPicture = width;
-	heightOfPicture = height;
-	
-	CRect rectPicture(0, 0, widthOfPicture, heightOfPicture);
-	CRect rectWindow(0, 0, backingWidth, backingHeight);
-	RectStretchAdapt(&rectPicture, &rectWindow, &rectAdapt);
-	
-
-	m_pRGBADataFromView = new unsigned char[widthOfPicture * heightOfPicture * 4];
-	return YES;
 }
 
 - (void)drawView 
@@ -171,38 +166,8 @@
     [context presentRenderbuffer:GL_RENDERBUFFER_OES];
 }
 
-- (void)destroyFramebuffer {
-    
-	NSLog(@"destroyFramebuffer");
-	backingWidth = 0;
-	backingHeight = 0;
-	widthOfSuitable = 0;
-	heightOfSuitable = 0;
-}
-
-- (void)destroyTexturebuffer 
-{
-	
-	NSLog(@"destroyTexturebuffer");
-	
-	widthOfPicture = 0;
-	heightOfPicture = 0;
-	rectAdapt = CRect(0, 0, 0, 0);
-	if (m_pRGBADataFromView != NULL)
-	{
-		delete[] m_pRGBADataFromView;
-		m_pRGBADataFromView = NULL;
-	}
-}
-
 - (void)layoutSubviews {
-    [context renderbufferStorage:GL_RENDERBUFFER_OES fromDrawable:(CAEAGLLayer*)self.layer];
-    
-    glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_WIDTH_OES, &backingWidth);
-    glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_HEIGHT_OES, &backingHeight);
-    [self destroyFramebuffer];
-    [self createFramebuffer];
-    [self drawView];
+    [self test];
 }
 
 
@@ -213,8 +178,8 @@
         [EAGLContext setCurrentContext:nil];
     }
     
-    glDeleteFramebuffersOES(1, &viewFramebuffer);
-    glDeleteRenderbuffersOES(1, &viewRenderbuffer);
+    glDeleteFramebuffersOES(1, &glFramebuffer);
+    glDeleteRenderbuffersOES(1, &glRenderbuffer);
     
     [context release]; 
 	pthread_mutex_destroy(&m_mutexFromView);
@@ -222,67 +187,137 @@
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glBindTexture(GL_TEXTURE_2D, 0);
-	glDeleteTextures(1, &texture);
+	glDeleteTextures(1, &glTexture);
 	[uiLabel release];
     [super dealloc];
 }
 extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int height,int biBitCount);
 
-- (void)eraseBackground
-{
-	if (m_pRGBADataFromView != NULL)
-	{
-		memset(m_pRGBADataFromView, 0, widthOfPicture * heightOfPicture * 4);
-		for (int i = 0; i < 10; i ++)
-		{
-			[self handleTimer];
 
-		}
-	}
-	return;
+- (CGRect) calcOnScreenRect
+{
+    CRect rectRet(0, 0, 0, 0);
+    bool bPortrait = UIDeviceOrientationIsPortrait([[UIDevice currentDevice] orientation]);
+    const CRect rectScreen(0, 0, bPortrait ? 320 : 480, bPortrait ? 480 : 320);
+    const CRect rect4_3(0, 0, 4, 3);
+    const CRect rect16_9(0, 0, 16, 9);
+    m_sRenderParam.sizeMovie.width = 480.0f;
+    m_sRenderParam.sizeMovie.height = 480.0f;
+    const CRect rectMovie(0, 0, m_sRenderParam.sizeMovie.width, m_sRenderParam.sizeMovie.height);
+    
+    switch (m_sRenderParam.eAspectRatio) 
+    {
+        case eAspectRadio4_3:
+            RectStretchAdapt(&rect4_3, &rectScreen, &rectRet);
+            break;
+        case eAspectRadio16_9:
+            RectStretchAdapt(&rect16_9, &rectScreen, &rectRet);
+            break; 
+        case eAspectRadioFullScreen:
+            AssignRect(rectScreen, rectRet);
+            break; 
+        case eAspectRadioOriginal:
+        default:
+            RectStretchAdapt(&rectMovie, &rectScreen, &rectRet);
+            break;
+    }
+    return CGRectMake(rectRet.left, rectRet.top, rectRet.Width(), rectRet.Height());   
 }
 
+- (void) updateRenderParam
+{
+    CGRect rectOnScreen = [self calcOnScreenRect];
+    
+    m_sRenderParam.arraySquareVertices[0] = rectOnScreen.origin.x;
+    m_sRenderParam.arraySquareVertices[1] = iBufferHeight - rectOnScreen.origin.y;
+    m_sRenderParam.arraySquareVertices[2] = rectOnScreen.origin.x;
+    m_sRenderParam.arraySquareVertices[3] = iBufferHeight - rectOnScreen.origin.y - rectOnScreen.size.height;
+    m_sRenderParam.arraySquareVertices[4] = rectOnScreen.origin.x + rectOnScreen.size.width;
+    m_sRenderParam.arraySquareVertices[5] = iBufferHeight - rectOnScreen.origin.y - rectOnScreen.size.height;
+    m_sRenderParam.arraySquareVertices[6] = rectOnScreen.origin.x + rectOnScreen.size.width;
+    m_sRenderParam.arraySquareVertices[7] = iBufferHeight - rectOnScreen.origin.y;
+    
+    m_sRenderParam.arraySquareTextureCoords[0] = 0.0f;
+    m_sRenderParam.arraySquareTextureCoords[1] = 1.0f;
+    m_sRenderParam.arraySquareTextureCoords[2] = 0.0f;
+    m_sRenderParam.arraySquareTextureCoords[3] = 0.0f;
+    m_sRenderParam.arraySquareTextureCoords[4] = 1.0f;
+    m_sRenderParam.arraySquareTextureCoords[5] = 0.0f;
+    m_sRenderParam.arraySquareTextureCoords[6] = 1.0f;
+    m_sRenderParam.arraySquareTextureCoords[7] = 1.0f;
+}
+
+- (void) clearBackground
+{
+    unsigned long c = 0;
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1,
+                 0, GL_RGBA, GL_UNSIGNED_BYTE, &c);
+    
+    GLfloat arraySquareVertices[] = {0, 480,
+        0,  0,
+        480, 0,
+        480, 480};
+    
+    GLfloat arraySquareTextureCoords[] = {0.0f, 1.0f,
+        0.0f, 0.0f,
+        1.0f, 0.0f,
+        1.0f, 1.0f};
+    
+    glVertexPointer(2, GL_FLOAT, 0, arraySquareVertices);
+    glTexCoordPointer(2, GL_FLOAT, 0, arraySquareTextureCoords);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+}
 - (void)handleTimer
 {
-	const GLfloat squareVertices[] = {
-		rectAdapt.left, rectAdapt.bottom, 
-		rectAdapt.left, rectAdapt.top, 
-		rectAdapt.right, rectAdapt.top, 
-		rectAdapt.right, rectAdapt.bottom};
+//    static int iCount = 0;
+//    iCount ++;
+//    if (iCount > 100) 
+//    {
+//        iCount = 0;
+//        m_sRenderParam.eAspectRatio ++;
+//        if (m_sRenderParam.eAspectRatio > eAspectRadioFullScreen)
+//        {
+//            m_sRenderParam.eAspectRatio = eAspectRadioOriginal;
+//        }
+//        bNeedClearBackground = true;
+//    }
+    
+    if (bNeedClearBackground)
+    {
+        [self clearBackground];
+        bNeedClearBackground = false;
+    }
+    [self updateRenderParam];
 	glColor4f(1.0f, 1.0f, 1.0f, 0.0f);
-	static GLfloat squareTexcoords[] = {
-		0, 1,		// top left
-		0, 0,		// bottom left	
-		1, 0, 		
-		1, 1,	// bottom right	
-		
-	};
-	
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
 	pthread_mutex_lock(&m_mutexFromView);
-	//AddLog("View locked");
-	glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, widthOfPicture, heightOfPicture,
-				 0, GL_RGBA, GL_UNSIGNED_BYTE, m_pRGBADataFromView);
-	{
-		// subtitle;
-		NSData* nsData = [NSData dataWithBytes:m_wstrSubTitle.c_str()
-										length:m_wstrSubTitle.size()*sizeof(wchar_t)];
-		NSString* nsText = [[NSString alloc] initWithData:nsData 
-												 encoding:NSUTF32LittleEndianStringEncoding];
-		//uiLabel.text = nsText;
-		[nsText release];
-	}	
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, iBufferWidth, iBufferHeight,
+				 0, GL_RGBA, GL_UNSIGNED_BYTE, m_pData);
+//	{
+//		// subtitle;
+//		NSData* nsData = [NSData dataWithBytes:m_wstrSubTitle.c_str()
+//										length:m_wstrSubTitle.size()*sizeof(wchar_t)];
+//		NSString* nsText = [[NSString alloc] initWithData:nsData 
+//												 encoding:NSUTF32LittleEndianStringEncoding];
+//		//uiLabel.text = nsText;
+//		[nsText release];
+//	}	
 	pthread_mutex_unlock(&m_mutexFromView);
-	//AddLog("View unlocked");
 	
-	glVertexPointer(2, GL_FLOAT, 0, squareVertices);
-	glTexCoordPointer(2, GL_FLOAT, 0, squareTexcoords);
+	glVertexPointer(2, GL_FLOAT, 0, m_sRenderParam.arraySquareVertices);
+	glTexCoordPointer(2, GL_FLOAT, 0, m_sRenderParam.arraySquareTextureCoords);
 	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
 	[context presentRenderbuffer:GL_RENDERBUFFER_OES];
+}
+
+- (void) setAspectRadio:(EnumAspectRatio)eAspectRatio
+{
+    m_sRenderParam.eAspectRatio = eAspectRatio;
+    bNeedClearBackground = true;
 }
 
 @end

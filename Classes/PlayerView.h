@@ -33,40 +33,43 @@
 #import <OpenGLES/ES1/gl.h>
 #import <OpenGLES/ES1/glext.h>
 #import "Common.h"
+#import "PlayerViewController.h"
 
 #define PLAYER_DEG_TO_RAD				0.017453f
 
+typedef struct SRenderParam
+{
+    CGSize sizeMovie;
+    CGSize sizeMovieResized;
+    EnumAspectRatio eAspectRatio;
+    
+    GLfloat arraySquareVertices[8];
+    GLfloat arraySquareTextureCoords[8];
+}SRenderParam;
+
 @interface PlayerView : UIView {
 @public   
-	GLint backingWidth;
-	GLint backingHeight;
-	
-	GLint widthOfSuitable;
-	GLint heightOfSuitable;
-	
-	GLint widthOfPicture;
-	GLint heightOfPicture;
-	unsigned char* m_pRGBADataFromView;
 	pthread_mutex_t m_mutexFromView;
 	wstring m_wstrSubTitle;
 @private
     EAGLContext *context;
-
-    /* OpenGL names for the renderbuffer and framebuffers used to render to this view */
-    GLuint viewRenderbuffer, viewFramebuffer;
-	GLuint texture;
-	CRect rectAdapt;
+    GLuint glRenderbuffer;
+    GLuint glFramebuffer;
+	GLuint glTexture;
+    
+    unsigned char* m_pDataFromImage; // original data
+    unsigned char* m_pData;
+    unsigned int m_iDataLen;
+    SRenderParam m_sRenderParam;
     UILabel* uiLabel;
+    bool bNeedClearBackground;
 }
-- (void)destroyTexturebuffer;
-- (BOOL)createTextureAndBuffer:(int)width height:(int)height;
+
 - (void)handleTimer;
-- (void)eraseBackground;
-@property (nonatomic, retain) EAGLContext *context;
+
 @property (nonatomic, assign) wstring m_wstrSubTitle;
-@property (nonatomic, retain) UILabel* uiLabel;
 
-
+- (void) setAspectRadio:(EnumAspectRatio)eAspectRatio;
 
 
 @end

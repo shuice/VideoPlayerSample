@@ -1599,6 +1599,15 @@ const char* FormatTime(unsigned long iSecond, bool bPositive, char* pszTime, int
 	return pszTime;
 }
 
+void AssignRect(const CRect& rectFrom, CRect& rectTo)
+{
+    rectTo.left = rectFrom.left;
+    rectTo.right = rectFrom.right;
+    rectTo.top = rectFrom.top;
+    rectTo.bottom = rectFrom.bottom;
+}
+
+
 bool CLocalPlayer::IsPaused()
 {
 	return paused;

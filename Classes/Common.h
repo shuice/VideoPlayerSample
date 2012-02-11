@@ -68,6 +68,8 @@ enum EnumPlayerType
 typedef EnumPlayerType EnumMediaType;
 
 #ifdef __cplusplus
+
+
 class CRect
 {
 public:
@@ -78,6 +80,13 @@ public:
 		right = iRight;
 		bottom = iBottom;
 	}
+    CRect(const CRect& rect)
+    {
+        left = rect.left;
+        top = rect.top;
+        right = rect.right;
+        bottom = rect.bottom;
+    }
 	unsigned long Width() const
 	{
 		unsigned long width = right - left;
@@ -96,6 +105,8 @@ public:
 	
 	
 };
+
+extern void AssignRect(const CRect& rectFrom, CRect& rectTo);
 extern bool IsRectEmpty(const CRect* pRect);
 extern bool RectStretchAdapt(const CRect* pInnerRect, const CRect* pOuterRect, CRect* pAdaptRect);
 extern const char*  FormatTime(unsigned long iSecond, bool bPositive, char* pszTime, int iLen);

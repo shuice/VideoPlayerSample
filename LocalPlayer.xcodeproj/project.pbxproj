@@ -28,7 +28,6 @@
 		8078AA7E14BF339C005D6F52 /* SampleFmt.c in Sources */ = {isa = PBXBuildFile; fileRef = C3A9D3E514A5983500FBBB38 /* SampleFmt.c */; };
 		8078AA7F14BF339C005D6F52 /* Common1.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8EF38C54138AAEE400854811 /* Common1.mm */; };
 		8078AA8014BF339C005D6F52 /* PlayerAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8EF38C62138AAEE400854811 /* PlayerAppDelegate.mm */; };
-		8078AA8114BF339C005D6F52 /* PlayerView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8ECD242D135333C10067D02E /* PlayerView.mm */; };
 		8078AA8214BF339C005D6F52 /* PlayerViewControllerImp.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8ECD2423135332250067D02E /* PlayerViewControllerImp.mm */; };
 		8078AA8814BF33B8005D6F52 /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8078AA8314BF33B8005D6F52 /* libavcodec.a */; };
 		8078AA8914BF33B8005D6F52 /* libavdevice.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8078AA8414BF33B8005D6F52 /* libavdevice.a */; };
@@ -44,6 +43,12 @@
 		8078AA9514BF3470005D6F52 /* PlayerViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 8078AA9314BF3470005D6F52 /* PlayerViewController.h */; };
 		8078AA9614BF3470005D6F52 /* PlayerViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8078AA9414BF3470005D6F52 /* PlayerViewController.mm */; };
 		8078AA9714BF3470005D6F52 /* PlayerViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8078AA9414BF3470005D6F52 /* PlayerViewController.mm */; };
+		809E30DF14E6ADC200426E33 /* 1.png in Resources */ = {isa = PBXBuildFile; fileRef = 809E30DE14E6ADC200426E33 /* 1.png */; };
+		809E30E014E6ADC200426E33 /* 1.png in Resources */ = {isa = PBXBuildFile; fileRef = 809E30DE14E6ADC200426E33 /* 1.png */; };
+		809E30E414E6C3EF00426E33 /* PlayerView.h in Headers */ = {isa = PBXBuildFile; fileRef = 809E30E214E6C3EF00426E33 /* PlayerView.h */; };
+		809E30E514E6C3EF00426E33 /* PlayerView.mm in Headers */ = {isa = PBXBuildFile; fileRef = 809E30E314E6C3EF00426E33 /* PlayerView.mm */; };
+		809E30E614E6C54A00426E33 /* PlayerView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 809E30E314E6C3EF00426E33 /* PlayerView.mm */; };
+		809E30E714E6C54F00426E33 /* PlayerView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 809E30E314E6C3EF00426E33 /* PlayerView.mm */; };
 		80A1132814BDCC8A006E7D1A /* SmiSubTitleReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 80A1132614BDCC8A006E7D1A /* SmiSubTitleReader.cpp */; };
 		80A1132914BDCC8A006E7D1A /* SmiSubTitleReader.h in Headers */ = {isa = PBXBuildFile; fileRef = 80A1132714BDCC8A006E7D1A /* SmiSubTitleReader.h */; };
 		80A1133014BDE100006E7D1A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
@@ -60,7 +65,6 @@
 		80A1135414BDE34F006E7D1A /* TextFileReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3A9D3EA14A5983600FBBB38 /* TextFileReader.cpp */; };
 		80A1135514BDE34F006E7D1A /* Common1.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8EF38C54138AAEE400854811 /* Common1.mm */; };
 		80A1135614BDE34F006E7D1A /* PlayerAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8EF38C62138AAEE400854811 /* PlayerAppDelegate.mm */; };
-		80A1135714BDE34F006E7D1A /* PlayerView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8ECD242D135333C10067D02E /* PlayerView.mm */; };
 		80A1135814BDE34F006E7D1A /* PlayerViewControllerImp.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8ECD2423135332250067D02E /* PlayerViewControllerImp.mm */; };
 		80A1135A14BDE377006E7D1A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 80A1133D14BDE100006E7D1A /* AppDelegate.m */; };
 		80A1135B14BDE377006E7D1A /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 80A1134014BDE100006E7D1A /* ViewController.mm */; };
@@ -128,6 +132,9 @@
 		8078AA8714BF33B8005D6F52 /* libswscale.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libswscale.a; path = ffmpeg/lib/libswscale.a; sourceTree = "<group>"; };
 		8078AA9314BF3470005D6F52 /* PlayerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerViewController.h; sourceTree = "<group>"; };
 		8078AA9414BF3470005D6F52 /* PlayerViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PlayerViewController.mm; sourceTree = "<group>"; };
+		809E30DE14E6ADC200426E33 /* 1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = 1.png; path = Picture/1.png; sourceTree = "<group>"; };
+		809E30E214E6C3EF00426E33 /* PlayerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerView.h; sourceTree = "<group>"; };
+		809E30E314E6C3EF00426E33 /* PlayerView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PlayerView.mm; sourceTree = "<group>"; };
 		80A1132614BDCC8A006E7D1A /* SmiSubTitleReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SmiSubTitleReader.cpp; sourceTree = "<group>"; };
 		80A1132714BDCC8A006E7D1A /* SmiSubTitleReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmiSubTitleReader.h; sourceTree = "<group>"; };
 		80A1132E14BDE100006E7D1A /* UnitTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UnitTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -152,8 +159,6 @@
 		8ECB86A0134B65FC00DF9E15 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		8ECD2422135332250067D02E /* PlayerViewControllerImp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PlayerViewControllerImp.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		8ECD2423135332250067D02E /* PlayerViewControllerImp.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; lineEnding = 0; path = PlayerViewControllerImp.mm; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		8ECD242C135333C10067D02E /* PlayerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerView.h; sourceTree = "<group>"; };
-		8ECD242D135333C10067D02E /* PlayerView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PlayerView.mm; sourceTree = "<group>"; };
 		8ECD2433135334000067D02E /* Backward@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Backward@2x.png"; path = "Picture/Backward@2x.png"; sourceTree = "<group>"; };
 		8ECD2434135334000067D02E /* Control_Down_Background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Control_Down_Background@2x.png"; path = "Picture/Control_Down_Background@2x.png"; sourceTree = "<group>"; };
 		8ECD2435135334000067D02E /* Control_Up_Background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Control_Up_Background@2x.png"; path = "Picture/Control_Up_Background@2x.png"; sourceTree = "<group>"; };
@@ -254,8 +259,8 @@
 				8EF38C54138AAEE400854811 /* Common1.mm */,
 				8EF38C61138AAEE400854811 /* PlayerAppDelegate.h */,
 				8EF38C62138AAEE400854811 /* PlayerAppDelegate.mm */,
-				8ECD242C135333C10067D02E /* PlayerView.h */,
-				8ECD242D135333C10067D02E /* PlayerView.mm */,
+				809E30E214E6C3EF00426E33 /* PlayerView.h */,
+				809E30E314E6C3EF00426E33 /* PlayerView.mm */,
 				8ECD2422135332250067D02E /* PlayerViewControllerImp.h */,
 				8ECD2423135332250067D02E /* PlayerViewControllerImp.mm */,
 			);
@@ -286,6 +291,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				809E30DE14E6ADC200426E33 /* 1.png */,
 				80B287E614E430490046304C /* Backward.png */,
 				80B287E714E430490046304C /* Control_Down_Background.png */,
 				80B287E814E430490046304C /* Control_Up_Background.png */,
@@ -360,6 +366,8 @@
 				C338D75414A72E7500A8978B /* IConvWrapper.h in Headers */,
 				80A1132914BDCC8A006E7D1A /* SmiSubTitleReader.h in Headers */,
 				8078AA9514BF3470005D6F52 /* PlayerViewController.h in Headers */,
+				809E30E414E6C3EF00426E33 /* PlayerView.h in Headers */,
+				809E30E514E6C3EF00426E33 /* PlayerView.mm in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -452,6 +460,7 @@
 				80B287F314E430490046304C /* Forward.png in Resources */,
 				80B287F514E430490046304C /* Pause.png in Resources */,
 				80B287F714E430490046304C /* Play.png in Resources */,
+				809E30E014E6ADC200426E33 /* 1.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -465,6 +474,7 @@
 				80B287F214E430490046304C /* Forward.png in Resources */,
 				80B287F414E430490046304C /* Pause.png in Resources */,
 				80B287F614E430490046304C /* Play.png in Resources */,
+				809E30DF14E6ADC200426E33 /* 1.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -491,6 +501,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				809E30E714E6C54F00426E33 /* PlayerView.mm in Sources */,
 				8078AA7A14BF339C005D6F52 /* AVLocalPlayer.mm in Sources */,
 				8078AA7B14BF339C005D6F52 /* LocalPlayer.cpp in Sources */,
 				8078AA7C14BF339C005D6F52 /* PacketQueue.cpp in Sources */,
@@ -498,7 +509,6 @@
 				8078AA7E14BF339C005D6F52 /* SampleFmt.c in Sources */,
 				8078AA7F14BF339C005D6F52 /* Common1.mm in Sources */,
 				8078AA8014BF339C005D6F52 /* PlayerAppDelegate.mm in Sources */,
-				8078AA8114BF339C005D6F52 /* PlayerView.mm in Sources */,
 				8078AA8214BF339C005D6F52 /* PlayerViewControllerImp.mm in Sources */,
 				80A1137014BDEAE8006E7D1A /* IConvWrapper.cpp in Sources */,
 				80A1136714BDE8D7006E7D1A /* SrtSubTitleReader.cpp in Sources */,
@@ -515,6 +525,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				809E30E614E6C54A00426E33 /* PlayerView.mm in Sources */,
 				80A1135A14BDE377006E7D1A /* AppDelegate.m in Sources */,
 				80A1135B14BDE377006E7D1A /* ViewController.mm in Sources */,
 				80A1135C14BDE377006E7D1A /* main.m in Sources */,
@@ -526,7 +537,6 @@
 				80A1135414BDE34F006E7D1A /* TextFileReader.cpp in Sources */,
 				80A1135514BDE34F006E7D1A /* Common1.mm in Sources */,
 				80A1135614BDE34F006E7D1A /* PlayerAppDelegate.mm in Sources */,
-				80A1135714BDE34F006E7D1A /* PlayerView.mm in Sources */,
 				80A1135814BDE34F006E7D1A /* PlayerViewControllerImp.mm in Sources */,
 				C338D75314A72E7500A8978B /* IConvWrapper.cpp in Sources */,
 				80A1132814BDCC8A006E7D1A /* SmiSubTitleReader.cpp in Sources */,

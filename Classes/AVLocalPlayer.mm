@@ -323,8 +323,8 @@ bool CVideoLocalPlayerSDL::Init(long iWindow, int iMediaWidth, int iMediaHeight,
 	CRect rectMedia(0, 0, iMediaWidth, iMediaHeight);
 	CRect rectWindow(0,
 					 0, 
-					 playerView->widthOfSuitable, 
-					 playerView->heightOfSuitable);
+					 0, 
+					 0);
 	CRect rectAdapt;
 	if(!RectStretchAdapt(&rectMedia, &rectWindow, &rectAdapt))
 	{
@@ -336,12 +336,6 @@ bool CVideoLocalPlayerSDL::Init(long iWindow, int iMediaWidth, int iMediaHeight,
 	m_iDesWidth = rectAdapt.Width();
 	m_iDesHeight = rectAdapt.Height();
 	
-	if(YES != [playerView createTextureAndBuffer:m_iDesWidth height:m_iDesHeight])
-	{
-		throw new CPlayerException("createTextureAndBuffer(width=%d, height=%d) return NO",
-							   m_iDesWidth, m_iDesHeight);
-		return false;
-	}
 
 
 	m_pSwsContext = sws_getContext(m_iSrcWidth, m_iSrcHeight, ePixelFormat, 
@@ -365,9 +359,9 @@ bool CVideoLocalPlayerSDL::Init(long iWindow, int iMediaWidth, int iMediaHeight,
 	}
 	
 	
-	m_pRGBADataFromView = playerView->m_pRGBADataFromView;
-	m_pwstrSubTitle = &(playerView->m_wstrSubTitle);
-	m_pMutexFromView = &(playerView->m_mutexFromView);
+	//m_pRGBADataFromView = playerView->m_pRGBADataFromView;
+	//m_pwstrSubTitle = &(playerView->m_wstrSubTitle);
+	//m_pMutexFromView = &(playerView->m_mutexFromView);
 	return true;
 }
 

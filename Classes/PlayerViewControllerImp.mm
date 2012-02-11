@@ -46,7 +46,7 @@
 
 - (void) insertSubViews
 {
-    self.playerView = [[[PlayerView alloc] initWithFrame:CGRectMake(0, 0, 480, 320)] autorelease];
+    self.playerView = [[[PlayerView alloc] initWithFrame:CGRectMake(0, 0, 480.0f, 480.0f)] autorelease];
     self.viewControlProgress = [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
     self.viewControlSound = [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
     
@@ -217,7 +217,7 @@
 	// init all controls
 	labelPlayed.text = @"";
 	labelLeft.text = @"";
-	[[playerView uiLabel] setText:@""];
+	//[[playerView uiLabel] setText:@""];
 	uiSliderProgress.value = 0.0;
 	m_bInSeek = NO;
 	try 
@@ -294,8 +294,6 @@
 	labelPlayed.text = @"";
 	labelLeft.text = @"";
 	uiSliderProgress.value = 0.0;
-	[playerView eraseBackground];
-	[playerView destroyTexturebuffer];
 	
 	// FIXME close timer
 }
@@ -421,6 +419,8 @@
 
 -(void)handleTimer:(NSTimer*)timer
 {
+    [playerView handleTimer];
+    return;
 	if (m_bIsReadEndOfFile)
 	{
 		[self Close];
@@ -513,7 +513,7 @@ void ShowAlartMessage(string strMessage)
 
 -(void) StartPlay:(string)strFileName
 {
-	[playerView eraseBackground];
+    return;
 	m_strFileName = strFileName;
 	if (YES != [self Open])
 	{
@@ -567,21 +567,20 @@ void ShowAlartMessage(string strMessage)
 
 - (EnumPlayerStatus) open:(NSString*)strFileName
 {
-    [playerView eraseBackground];
-	m_strFileName = [strFileName UTF8String] ;
-	if (YES != [self Open])
-	{
-		[self Exit];
-		return ePlayerStatusError;
-	}
-	
-	bool bHasVideo = m_pLocalPlayer->HasVideo();
-	m_iControlLife = bHasVideo ? AUTO_CONTROL_HIDDEN_TIME : ALWAYS_SHOW_TIME;
-	m_pLocalPlayer->Start();
-	[self SetPauseVisiable:YES];
-	[self SetPlayVisiable:NO];
-    
-	[self SetControlVisiable:YES];
+//	m_strFileName = [strFileName UTF8String] ;
+//	if (YES != [self Open])
+//	{
+//		[self Exit];
+//		return ePlayerStatusError;
+//	}
+//	
+//	bool bHasVideo = m_pLocalPlayer->HasVideo();
+//	m_iControlLife = bHasVideo ? AUTO_CONTROL_HIDDEN_TIME : ALWAYS_SHOW_TIME;
+//	m_pLocalPlayer->Start();
+//	[self SetPauseVisiable:YES];
+//	[self SetPlayVisiable:NO];
+//    
+//	[self SetControlVisiable:YES];
 	
 	nsTimer = [NSTimer scheduledTimerWithTimeInterval:1.0/25.0 
                                                target:self
