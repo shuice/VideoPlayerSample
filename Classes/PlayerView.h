@@ -36,6 +36,8 @@
 #import "PlayerViewController.h"
 
 #define PLAYER_DEG_TO_RAD				0.017453f
+#define PLAYER_FRAME_WIDTH 480.0f
+#define PLAYER_FRAME_HEIGHT 480.0f
 
 typedef struct SRenderParam
 {

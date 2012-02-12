@@ -9,22 +9,24 @@
 #import <UIKit/UIKit.h>
 #import "LocalPlayer.h"
 #include <string>
+#import "UserDefaultHelper.h"
 using namespace std;
 #import "PlayerViewController.h"
 #import "PlayerView.h"
 @interface PlayerViewControllerImp : PlayerViewController 
 {
-	 PlayerView* playerView;
-	 UIView* viewControlProgress;
-	 UIView* viewControlSound;
-	 UIButton* buttonPlay;
-	 UIButton* buttonPause;
-	 UIButton* buttonBackward;
-	 UIButton* buttonForward;
-	 UILabel* labelPlayed;
-	 UILabel* labelLeft;
-	 UISlider* uiSliderProgress;
-	 UISlider* uiSliderSound;
+    PlayerView* playerView;
+    UIView* viewControlProgress;
+    UIView* viewControlSound;
+    UIButton* buttonPlay;
+    UIButton* buttonPause;
+    UIButton* buttonBackward;
+    UIButton* buttonForward;
+    UILabel* labelPlayed;
+    UILabel* labelLeft;
+    UISlider* uiSliderProgress;
+    UISlider* uiSliderSound;
+    UIButton* buttonChangeAspect;
 
 	NSTimer* nsTimer;
 	CLocalPlayer* m_pLocalPlayer;
@@ -54,6 +56,8 @@ using namespace std;
 @property (nonatomic, retain) UIButton* buttonForward;
 @property (nonatomic, retain) UILabel* labelPlayed;
 @property (nonatomic, retain) UILabel* labelLeft;
+@property (nonatomic, retain) UIButton* buttonChangeAspect;
+
 
 @property (nonatomic, assign) string m_strSrtPath;
 @property (nonatomic, assign) int m_iCodePage;

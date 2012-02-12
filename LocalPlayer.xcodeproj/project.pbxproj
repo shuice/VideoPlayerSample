@@ -43,6 +43,9 @@
 		8078AA9514BF3470005D6F52 /* PlayerViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 8078AA9314BF3470005D6F52 /* PlayerViewController.h */; };
 		8078AA9614BF3470005D6F52 /* PlayerViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8078AA9414BF3470005D6F52 /* PlayerViewController.mm */; };
 		8078AA9714BF3470005D6F52 /* PlayerViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8078AA9414BF3470005D6F52 /* PlayerViewController.mm */; };
+		8097337214E7A0AF005CB264 /* UserDefaultHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 8097337114E7A0AF005CB264 /* UserDefaultHelper.h */; };
+		8097337514E7A3C0005CB264 /* UserDefaultHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 8097337414E7A3C0005CB264 /* UserDefaultHelper.m */; };
+		8097337614E7A3C0005CB264 /* UserDefaultHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 8097337414E7A3C0005CB264 /* UserDefaultHelper.m */; };
 		809E30DF14E6ADC200426E33 /* 1.png in Resources */ = {isa = PBXBuildFile; fileRef = 809E30DE14E6ADC200426E33 /* 1.png */; };
 		809E30E014E6ADC200426E33 /* 1.png in Resources */ = {isa = PBXBuildFile; fileRef = 809E30DE14E6ADC200426E33 /* 1.png */; };
 		809E30E414E6C3EF00426E33 /* PlayerView.h in Headers */ = {isa = PBXBuildFile; fileRef = 809E30E214E6C3EF00426E33 /* PlayerView.h */; };
@@ -132,6 +135,8 @@
 		8078AA8714BF33B8005D6F52 /* libswscale.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libswscale.a; path = ffmpeg/lib/libswscale.a; sourceTree = "<group>"; };
 		8078AA9314BF3470005D6F52 /* PlayerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerViewController.h; sourceTree = "<group>"; };
 		8078AA9414BF3470005D6F52 /* PlayerViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PlayerViewController.mm; sourceTree = "<group>"; };
+		8097337114E7A0AF005CB264 /* UserDefaultHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserDefaultHelper.h; sourceTree = "<group>"; };
+		8097337414E7A3C0005CB264 /* UserDefaultHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserDefaultHelper.m; sourceTree = "<group>"; };
 		809E30DE14E6ADC200426E33 /* 1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = 1.png; path = Picture/1.png; sourceTree = "<group>"; };
 		809E30E214E6C3EF00426E33 /* PlayerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerView.h; sourceTree = "<group>"; };
 		809E30E314E6C3EF00426E33 /* PlayerView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PlayerView.mm; sourceTree = "<group>"; };
@@ -232,6 +237,8 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				8097337114E7A0AF005CB264 /* UserDefaultHelper.h */,
+				8097337414E7A3C0005CB264 /* UserDefaultHelper.m */,
 				8078AA9314BF3470005D6F52 /* PlayerViewController.h */,
 				8078AA9414BF3470005D6F52 /* PlayerViewController.mm */,
 				C338D75114A72E7500A8978B /* IConvWrapper.cpp */,
@@ -368,6 +375,7 @@
 				8078AA9514BF3470005D6F52 /* PlayerViewController.h in Headers */,
 				809E30E414E6C3EF00426E33 /* PlayerView.h in Headers */,
 				809E30E514E6C3EF00426E33 /* PlayerView.mm in Headers */,
+				8097337214E7A0AF005CB264 /* UserDefaultHelper.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -518,6 +526,7 @@
 				80A1133E14BDE100006E7D1A /* AppDelegate.m in Sources */,
 				80A1134114BDE100006E7D1A /* ViewController.mm in Sources */,
 				8078AA9714BF3470005D6F52 /* PlayerViewController.mm in Sources */,
+				8097337614E7A3C0005CB264 /* UserDefaultHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -541,6 +550,7 @@
 				C338D75314A72E7500A8978B /* IConvWrapper.cpp in Sources */,
 				80A1132814BDCC8A006E7D1A /* SmiSubTitleReader.cpp in Sources */,
 				8078AA9614BF3470005D6F52 /* PlayerViewController.mm in Sources */,
+				8097337514E7A3C0005CB264 /* UserDefaultHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

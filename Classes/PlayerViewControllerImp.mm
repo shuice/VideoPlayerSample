@@ -13,6 +13,10 @@
 #import "Common.h"
 #import <sys/time.h>
 
+@interface PlayerViewControllerImp(method)
+    - (void) refreshChangeAspectButton;
+@end
+
 
 @implementation PlayerViewControllerImp
 
@@ -40,13 +44,14 @@
 @synthesize m_ePlayerType;
 @synthesize m_strSrtPath;
 @synthesize m_iCodePage;
+@synthesize buttonChangeAspect;
 // 5 seconds
 #define AUTO_CONTROL_HIDDEN_TIME 150
 #define ALWAYS_SHOW_TIME 0x7FFFFFFF
 
 - (void) insertSubViews
 {
-    self.playerView = [[[PlayerView alloc] initWithFrame:CGRectMake(0, 0, 480.0f, 480.0f)] autorelease];
+    self.playerView = [[[PlayerView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, PLAYER_FRAME_WIDTH, PLAYER_FRAME_HEIGHT)] autorelease];
     self.viewControlProgress = [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
     self.viewControlSound = [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
     
@@ -58,9 +63,12 @@
     self.labelLeft = [[[UILabel alloc] initWithFrame:CGRectZero] autorelease];
     self.uiSliderProgress = [[[UISlider alloc] initWithFrame:CGRectZero] autorelease];
     self.uiSliderSound = [[[UISlider alloc] initWithFrame:CGRectZero] autorelease];
+    self.buttonChangeAspect = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [buttonChangeAspect addTarget:self action:@selector(onTouchUpInsideChangeAspect:) forControlEvents:UIControlEventTouchUpInside];
     
     // subviews
     [[self view] addSubview:playerView];
+    [[self view] addSubview:buttonChangeAspect];
     
     [playerView addSubview:viewControlProgress];
     [playerView addSubview:viewControlSound];
@@ -94,11 +102,11 @@
 
 - (void) setSubViewPos
 {
-//    [[self view] setBackgroundColor:[UIColor greenColor]];
-//    [playerView setBackgroundColor:[UIColor redColor]];
     CGFloat fWidth = 320.0f;
     CGFloat fHeight = 400.0f;
-    //[playerView setFrame:CGRectMake(0.0f, 0.0f, fWidth, fHeight)];
+    
+    [buttonChangeAspect setFrame:CGRectMake(50, 100, 50, 50)];
+    [self refreshChangeAspectButton];
     // top controller
     {
         const CGFloat fHeightOfUpControlelr = 40.0f;
@@ -182,6 +190,7 @@
 	self.labelLeft = nil;
 	self.uiSliderProgress = nil;
 	self.uiSliderSound  = nil;
+    self.buttonChangeAspect = nil;
 }
 
 
@@ -197,7 +206,7 @@
 	[labelLeft release];
 	[uiSliderProgress release];
 	[uiSliderSound release];
-
+    [buttonChangeAspect release];
 	[nsTimer release];
     [super dealloc];
 }
@@ -565,6 +574,34 @@ void ShowAlartMessage(string strMessage)
     buttonPlay.alpha = (bVisiable == YES) ? 100 : NO;
 }
 
+- (void) refreshChangeAspectButton
+{
+    EnumAspectRatio eAspectRatio = (EnumAspectRatio)[[UserDefaultHelper getValue:USER_DEFAULT_ASPECT_RATIO] intValue];
+    eAspectRatio ++;
+    if (eAspectRatio > eAspectRadioFullScreen)
+    {
+        eAspectRatio = eAspectRadioOriginal;
+    }
+    NSArray* arrayTitle = [NSArray arrayWithObjects:@"1:1", @"4:3", @"16:9", @"FS", nil];
+    [buttonChangeAspect setTitle:[arrayTitle objectAtIndex:eAspectRatio] forState:UIControlStateNormal];
+}
+
+- (void) onTouchUpInsideChangeAspect:(id)sender
+{
+    EnumAspectRatio eAspectRatio = (EnumAspectRatio)[[UserDefaultHelper getValue:USER_DEFAULT_ASPECT_RATIO] intValue];
+    eAspectRatio ++;
+    if (eAspectRatio > eAspectRadioFullScreen)
+    {
+        eAspectRatio = eAspectRadioOriginal;
+    }
+    [NSString stringWithFormat:@"%d", eAspectRatio];
+    [UserDefaultHelper setValue:USER_DEFAULT_ASPECT_RATIO iValue:eAspectRatio];
+    [playerView setAspectRadio:eAspectRatio];
+    [self refreshChangeAspectButton];
+
+}
+
+#pragma mark interface imp
 - (EnumPlayerStatus) open:(NSString*)strFileName
 {
 //	m_strFileName = [strFileName UTF8String] ;
@@ -637,4 +674,6 @@ void ShowAlartMessage(string strMessage)
 {
     return ePlayerStatusNotImp;
 }
+
+
 @end

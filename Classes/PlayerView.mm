@@ -1,42 +1,4 @@
-/*
- 
- glgif
- 
- PlayerView - example view to play the GifVideo.
- 
- Copyright (C) 2009 James S Urquhart
- 
- Permission is hereby granted, free of charge, to any person
- obtaining a copy of this software and associated documentation
- files (the "Software"), to deal in the Software without
- restriction, including without limitation the rights to use,
- copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the
- Software is furnished to do so, subject to the following
- conditions:
- 
- The above copyright notice and this permission notice shall be
- included in all copies or substantial portions of the Software.
- 
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
- OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
- WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
- OTHER DEALINGS IN THE SOFTWARE.
-*/
-
-const int iBufferWidth = 480;
-const int iBufferHeight = 480;
-
 #import "PlayerView.h"
-
-//#import "Video.h"
-//#import "GifVideo.h"
-//#import "GLGifExampleAppDelegate.h"
-
 #import <QuartzCore/QuartzCore.h>
 #import <OpenGLES/EAGLDrawable.h>
 #import "PlayerViewControllerImp.h"
@@ -95,10 +57,10 @@ const int iBufferHeight = 480;
         
         
     
-    CGRect rect = {{0,0},{iBufferWidth,iBufferHeight}}; 
+    CGRect rect = {{0,0},{PLAYER_FRAME_WIDTH, PLAYER_FRAME_HEIGHT}}; 
     CGContextDrawImage(context1, rect, inImage); 
 	void *data = CGBitmapContextGetData (context1);
-    memcpy(m_pData, data, iBufferWidth*iBufferHeight*4);
+    memcpy(m_pData, data, PLAYER_FRAME_WIDTH*PLAYER_FRAME_HEIGHT*4);
 
     CGColorSpaceRelease( colorSpace );
 }
@@ -133,10 +95,10 @@ const int iBufferHeight = 480;
         
         [context renderbufferStorage:GL_RENDERBUFFER_OES fromDrawable:(CAEAGLLayer*)self.layer];
         
-        glViewport(0, 0, iBufferWidth,  iBufferHeight);
+        glViewport(0, 0, PLAYER_FRAME_WIDTH,  PLAYER_FRAME_HEIGHT);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity(); 
-        glOrthof(0.0f, iBufferWidth, 0.0f, iBufferHeight, 0.0f, 1.0f); 
+        glOrthof(0.0f, PLAYER_FRAME_WIDTH, 0.0f, PLAYER_FRAME_HEIGHT, 0.0f, 1.0f); 
         
         // create texture
         glGenTextures(1, &glTexture);
@@ -153,7 +115,7 @@ const int iBufferHeight = 480;
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
         glEnableClientState(GL_VERTEX_ARRAY);	
         
-        [self resizeData:iBufferWidth*iBufferHeight*4];
+        [self resizeData:PLAYER_FRAME_WIDTH*PLAYER_FRAME_HEIGHT*4];
         [self test];
     }
     return self;
@@ -229,13 +191,13 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
     CGRect rectOnScreen = [self calcOnScreenRect];
     
     m_sRenderParam.arraySquareVertices[0] = rectOnScreen.origin.x;
-    m_sRenderParam.arraySquareVertices[1] = iBufferHeight - rectOnScreen.origin.y;
+    m_sRenderParam.arraySquareVertices[1] = PLAYER_FRAME_HEIGHT - rectOnScreen.origin.y;
     m_sRenderParam.arraySquareVertices[2] = rectOnScreen.origin.x;
-    m_sRenderParam.arraySquareVertices[3] = iBufferHeight - rectOnScreen.origin.y - rectOnScreen.size.height;
+    m_sRenderParam.arraySquareVertices[3] = PLAYER_FRAME_HEIGHT - rectOnScreen.origin.y - rectOnScreen.size.height;
     m_sRenderParam.arraySquareVertices[4] = rectOnScreen.origin.x + rectOnScreen.size.width;
-    m_sRenderParam.arraySquareVertices[5] = iBufferHeight - rectOnScreen.origin.y - rectOnScreen.size.height;
+    m_sRenderParam.arraySquareVertices[5] = PLAYER_FRAME_HEIGHT - rectOnScreen.origin.y - rectOnScreen.size.height;
     m_sRenderParam.arraySquareVertices[6] = rectOnScreen.origin.x + rectOnScreen.size.width;
-    m_sRenderParam.arraySquareVertices[7] = iBufferHeight - rectOnScreen.origin.y;
+    m_sRenderParam.arraySquareVertices[7] = PLAYER_FRAME_HEIGHT - rectOnScreen.origin.y;
     
     m_sRenderParam.arraySquareTextureCoords[0] = 0.0f;
     m_sRenderParam.arraySquareTextureCoords[1] = 1.0f;
@@ -268,20 +230,7 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 }
 - (void)handleTimer
-{
-//    static int iCount = 0;
-//    iCount ++;
-//    if (iCount > 100) 
-//    {
-//        iCount = 0;
-//        m_sRenderParam.eAspectRatio ++;
-//        if (m_sRenderParam.eAspectRatio > eAspectRadioFullScreen)
-//        {
-//            m_sRenderParam.eAspectRatio = eAspectRadioOriginal;
-//        }
-//        bNeedClearBackground = true;
-//    }
-    
+{    
     if (bNeedClearBackground)
     {
         [self clearBackground];
@@ -294,7 +243,7 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
 	glLoadIdentity();
 
 	pthread_mutex_lock(&m_mutexFromView);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, iBufferWidth, iBufferHeight,
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, PLAYER_FRAME_WIDTH, PLAYER_FRAME_HEIGHT,
 				 0, GL_RGBA, GL_UNSIGNED_BYTE, m_pData);
 //	{
 //		// subtitle;
