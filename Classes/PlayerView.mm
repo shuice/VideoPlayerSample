@@ -142,30 +142,66 @@
 }
 extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int height,int biBitCount);
 
-
+- (void) crop
+{
+    int iLineByteFrom = m_sRenderParam.sizeMovie.width * 4;
+    int iLineByteOffsetFrom = m_sRenderParam.rectMovieCroped.left * 4;
+    int iCropedHeight = m_sRenderParam.rectMovieCroped.Height();
+    int iLineByteCroped = m_sRenderParam.rectMovieCroped.Width() * 4;
+    for (int iHeight = 0; iHeight < iCropedHeight; iHeight ++)
+    {
+        unsigned char* pDataFrom = m_pDataResized + (iLineByteFrom * iHeight + iLineByteOffsetFrom);
+        unsigned char* pDataTo = m_pDataCorped + (iLineByteCroped * iHeight);
+        memcpy(pDataTo, pDataFrom, iLineByteCroped);
+    }
+}
 - (CGRect) calcOnScreenRect
 {
     CRect rectRet(0, 0, 0, 0);
     bool bPortrait = UIDeviceOrientationIsPortrait([[UIDevice currentDevice] orientation]);
     const CRect rectScreen(0, 0, bPortrait ? 320 : 480, bPortrait ? 480 : 320);
+    const CRect rectScreenMin(0, 0, bPortrait ? 2 : 3, bPortrait ? 3 : 2);
     const CRect rect4_3(0, 0, 4, 3);
     const CRect rect16_9(0, 0, 16, 9);
     const CRect rectMovie(0, 0, m_sRenderParam.sizeMovie.width, m_sRenderParam.sizeMovie.height);
+    CRect rectTmp(0, 0, 0, 0);
     
     switch (m_sRenderParam.eAspectRatio) 
     {
         case eAspectRadio4_3:
             RectStretchAdapt(&rect4_3, &rectScreen, &rectRet);
+            m_sizeRendered = m_sRenderParam.sizeMovieResized;
+            m_pDateRendered = m_pDataResized;
             break;
+            
         case eAspectRadio16_9:
             RectStretchAdapt(&rect16_9, &rectScreen, &rectRet);
+            m_sizeRendered = m_sRenderParam.sizeMovieResized;
+            m_pDateRendered = m_pDataResized;
             break; 
+            
         case eAspectRadioFullScreen:
             AssignRect(rectScreen, rectRet);
+            RectStretchAdapt(&rectScreenMin, &rectMovie, &m_sRenderParam.rectMovieCroped);
+            if ((m_sRenderParam.rectMovieCroped.Width() != rectMovie.Width()) 
+                || (m_sRenderParam.rectMovieCroped.Height() != rectMovie.Height()))
+            {
+                m_sizeRendered = CGSizeMake(m_sRenderParam.rectMovieCroped.Width(), m_sRenderParam.rectMovieCroped.Height());
+                m_pDateRendered = m_pDataCorped;
+                [self crop];
+            }
+            else
+            {
+                m_sizeRendered = m_sRenderParam.sizeMovieResized;
+                m_pDateRendered = m_pDataResized;
+            }
             break; 
+            
         case eAspectRadioOriginal:
         default:
             RectStretchAdapt(&rectMovie, &rectScreen, &rectRet);
+            m_sizeRendered = m_sRenderParam.sizeMovieResized;
+            m_pDateRendered = m_pDataResized;
             break;
     }
     return CGRectMake(rectRet.left, rectRet.top, rectRet.Width(), rectRet.Height());   
@@ -229,8 +265,8 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
 	glLoadIdentity();
 
 	pthread_mutex_lock(&m_mutexFromView);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_sRenderParam.sizeMovieResized.width, m_sRenderParam.sizeMovieResized.height,
-				 0, GL_RGBA, GL_UNSIGNED_BYTE, m_pDataResized);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_sizeRendered.width, m_sizeRendered.height,
+				 0, GL_RGBA, GL_UNSIGNED_BYTE, m_pDateRendered);
 //	{
 //		// subtitle;
 //		NSData* nsData = [NSData dataWithBytes:m_wstrSubTitle.c_str()
@@ -267,5 +303,7 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
     m_sRenderParam.sizeMovieResized.width = iWidthResized;
     m_sRenderParam.sizeMovieResized.height = iHeightResized;
 }
+
+
 
 @end

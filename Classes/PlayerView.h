@@ -43,6 +43,7 @@ typedef struct SRenderParam
 {
     CGSize sizeMovie;
     CGSize sizeMovieResized;
+    CRect  rectMovieCroped;
     EnumAspectRatio eAspectRatio;
     GLfloat arraySquareVertices[8];
     GLfloat arraySquareTextureCoords[8];
@@ -63,6 +64,8 @@ typedef struct SRenderParam
     SRenderParam m_sRenderParam;
     UILabel* uiLabel;
     bool bNeedClearBackground;
+    unsigned char* m_pDateRendered;
+    CGSize m_sizeRendered;
 }
 
 - (void)handleTimer;
