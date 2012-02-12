@@ -29,6 +29,7 @@
 
 #include "SampleFmt.h"
 #include "SrtSubTitleReader.h"
+#include "PlayerViewDefine.h"
 
 #define MAX_QUEUE_SIZE (10 * 1024 * 1024)
 #define MIN_AUDIOQ_SIZE (120 * 1024)
@@ -168,6 +169,7 @@ typedef struct VideoState
 	char* m_pBufferReaded;
 	AVCodecContext* m_pCodecContextAudio;
 	AVCodecContext* m_pCodecContextVideo;
+    EnumPlaySpeed m_ePlaySpeed;
 } VideoState;
 typedef VideoState SVideoState;
 
@@ -181,7 +183,7 @@ class CLocalPlayer : private VideoState
 public:
 	CLocalPlayer();
 	~CLocalPlayer();
-	bool Open(const string& strFileName, long iWindow);
+	EnumPlayerStatus Open(const string& strFileName, long iWindow);
 	bool Start();
 	bool Play();
 	bool Pause();
@@ -191,18 +193,17 @@ public:
 	void SetVolume(int iVolume);
 	bool HasVideo();
 	bool IsPaused();
+    void SetPlaySpeed(EnumPlaySpeed ePlaySpeed);
+    EnumPlaySpeed GetPlaySpeed();
 	
 	void AudioCallBack(unsigned char *stream, int len);
-	unsigned long* m_pCurrentTime;
-	unsigned long* m_pDuration;
-	unsigned long* m_iBufferLen;
-	unsigned long* m_pInNetSeeking;
-	bool	*m_pIsReadEndOfFile;
+	unsigned long m_iCurrentTime;
+	unsigned long m_iDuration;
+	bool	m_bReadEndOfFile;
+   
 	
 	int socketCommand;
 	int socketCache;
-	
-	EnumPlayerType m_ePlayerType;
 	
 	string m_strSubTitleLocal;
 	int m_iCodePage;
@@ -211,8 +212,8 @@ private:
 	CSrtSubTitleReader m_srtSubTitleReader;
 private:
 	// open invoked
-	bool InitData(const string& strFileName); // 初始化播放器数据
-	bool InitUIAndAudioDevice(); // 初始化播放器界面和音频设备
+	EnumPlayerStatus InitData(const string& strFileName); // 初始化播放器数据
+	EnumPlayerStatus InitUIAndAudioDevice(); // 初始化播放器界面和音频设备
 	static int DecodeInterruptCallBack();
 	int OpenStream(int stream_index);
 	static void* ThreadVideo(void* pParam);

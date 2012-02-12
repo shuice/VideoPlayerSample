@@ -44,7 +44,6 @@ typedef struct SRenderParam
     CGSize sizeMovie;
     CGSize sizeMovieResized;
     EnumAspectRatio eAspectRatio;
-    
     GLfloat arraySquareVertices[8];
     GLfloat arraySquareTextureCoords[8];
 }SRenderParam;
@@ -53,15 +52,14 @@ typedef struct SRenderParam
 @public   
 	pthread_mutex_t m_mutexFromView;
 	wstring m_wstrSubTitle;
+    unsigned char* m_pDataResized;
+    unsigned char* m_pDataCorped;
 @private
     EAGLContext *context;
     GLuint glRenderbuffer;
     GLuint glFramebuffer;
 	GLuint glTexture;
     
-    unsigned char* m_pDataFromImage; // original data
-    unsigned char* m_pData;
-    unsigned int m_iDataLen;
     SRenderParam m_sRenderParam;
     UILabel* uiLabel;
     bool bNeedClearBackground;
@@ -73,6 +71,7 @@ typedef struct SRenderParam
 
 - (void) setAspectRadio:(EnumAspectRatio)eAspectRatio;
 - (void) setNeedEraseBackground;
+- (void) setMovieSize:(int)iWidth iHeight:(int)iHeight iWidthResized:(int)iWidthResized iHeightResized:(int)iHeightResized;
 
 
 @end

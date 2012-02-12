@@ -311,6 +311,26 @@ CVideoLocalPlayerSDL::~CVideoLocalPlayerSDL()
 	}
 }
 
+void CVideoLocalPlayerSDL::CalcDesSize()
+{
+    m_iDesWidth = m_iSrcWidth;
+    m_iDesHeight = m_iSrcHeight;
+    
+    if (m_iDesWidth > PLAYER_FRAME_WIDTH)
+    {
+        m_iDesHeight /= (m_iDesWidth * 1.0 / PLAYER_FRAME_WIDTH);
+        m_iDesHeight &= 1;
+        m_iDesWidth = PLAYER_FRAME_WIDTH;
+    }
+    
+    if (m_iDesHeight > PLAYER_FRAME_HEIGHT)
+    {
+        m_iDesWidth /= (m_iDesHeight * 1.0 / PLAYER_FRAME_HEIGHT);
+        m_iDesWidth &= 1;
+        m_iDesHeight = PLAYER_FRAME_HEIGHT;
+    }
+}
+
 bool CVideoLocalPlayerSDL::Init(long iWindow, int iMediaWidth, int iMediaHeight, PixelFormat ePixelFormat, int iCacheCount)
 {
 	if (iCacheCount > MAX_CACHE_COUNT)
@@ -319,26 +339,14 @@ bool CVideoLocalPlayerSDL::Init(long iWindow, int iMediaWidth, int iMediaHeight,
 		return false;
 	}
     m_iWindow = iWindow;
-    PlayerView* playerView = (PlayerView*)iWindow;
-	CRect rectMedia(0, 0, iMediaWidth, iMediaHeight);
-	CRect rectWindow(0,
-					 0, 
-					 0, 
-					 0);
-	CRect rectAdapt;
-	if(!RectStretchAdapt(&rectMedia, &rectWindow, &rectAdapt))
-	{
-		throw new CPlayerException("RectStretchAdapt return false");
-		return false;
-	}
 	m_iSrcWidth = iMediaWidth;
     m_iSrcHeight = iMediaHeight;
-	m_iDesWidth = rectAdapt.Width();
-	m_iDesHeight = rectAdapt.Height();
-	
+    CalcDesSize();
+    
+    PlayerView* playerView = (PlayerView*)iWindow;
+    [playerView setMovieSize:m_iSrcWidth iHeight:m_iSrcHeight iWidthResized:m_iDesWidth iHeightResized:m_iDesHeight];
 
-
-	m_pSwsContext = sws_getContext(m_iSrcWidth, m_iSrcHeight, ePixelFormat, 
+    m_pSwsContext = sws_getContext(m_iSrcWidth, m_iSrcHeight, ePixelFormat, 
 								   m_iDesWidth, m_iDesHeight, PIX_FMT_RGBA,
 								   SWS_FAST_BILINEAR, NULL, NULL, NULL);
 	if (m_pSwsContext == NULL) 
@@ -370,17 +378,16 @@ void CVideoLocalPlayerSDL::UpdateData(AVFrame* pAvFrame, int iCacheIndex)
 {	
 	sws_scale(m_pSwsContext, pAvFrame->data, pAvFrame->linesize,
  			  0, m_iSrcHeight, m_avPicture[iCacheIndex].data, m_avPicture[iCacheIndex].linesize);   
-	*m_pwstrSubTitle = m_wstrSubTitle;
 }
 
 void CVideoLocalPlayerSDL::Show(int iCacheIndex)
 {
-	pthread_mutex_lock(m_pMutexFromView);
-	//usleep(1000000000);
-	//AddLog("Data locked");
-	memcpy(m_pRGBADataFromView, m_pRGBAData[0], m_iDesWidth*m_iDesHeight*4);
-	pthread_mutex_unlock(m_pMutexFromView);
-	//AddLog("Data unlocked");
+    PlayerView* playerView = (PlayerView*)m_iWindow;
+    pthread_mutex_t mutex = playerView->m_mutexFromView;
+	pthread_mutex_lock(&mutex);
+	memcpy(playerView->m_pDataResized, m_pRGBAData[0], m_iDesWidth*m_iDesHeight*4);
+    //saveBmp("/Users/xiaoyi/1.bmp",playerView->m_pDataResized,m_iDesWidth,m_iDesHeight,32);
+	pthread_mutex_unlock(&mutex);
 }
 
 void CVideoLocalPlayerSDL::Close()
@@ -410,7 +417,7 @@ bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int height,int 
     if(biBitCount == 8)
         colorTablesize =1024;
     int lineByte = (width * biBitCount/8+3)/4*4;
-    FILE *fp = fopen(bmpName,"wb");
+    FILE *fp = fopen(bmpName,"wb+");
     if(fp == 0) return 0;
     BITMAPFILEHEADER fileHead;
     fileHead.bfType= 0x4d42;

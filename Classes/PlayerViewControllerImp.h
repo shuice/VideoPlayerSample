@@ -36,15 +36,10 @@ using namespace std;
 	int m_iControlLife;
 	
 	
-	unsigned long m_iDuration;
-	unsigned long m_iCurrentTime;
-	unsigned long m_iInNetSeeking;
-	bool m_bIsReadEndOfFile;
 	int socketCommand;
 	int socketCache;
 	BOOL m_bInSeek;
 	unsigned long m_iSeekPos;
-	EnumPlayerType	m_ePlayerType;
 	string m_strSrtPath;
 	int m_iCodePage;
 }
@@ -74,17 +69,6 @@ using namespace std;
 @property (nonatomic, assign) string m_strFileName;
 @property (nonatomic, assign) int m_iControlLife;
 
-
-@property (nonatomic, assign)unsigned long m_iDuration;
-@property (nonatomic, assign)unsigned long m_iCurrentTime;
-@property (nonatomic, assign)unsigned long m_iInNetSeeking;
-@property (nonatomic, assign)bool m_bIsReadEndOfFile;
-@property (nonatomic, assign) int socketCommand;
-@property (nonatomic, assign) int socketCache;
-@property (nonatomic, assign) EnumPlayerType m_ePlayerType;
-
--(void) StartPlay:(string)strFileName;
--(BOOL) Open;
 -(void) Pause;
 -(void) Close;
 -(void) onTouchPlayerView:(id)sender;

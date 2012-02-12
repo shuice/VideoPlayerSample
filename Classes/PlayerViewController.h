@@ -7,31 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
-typedef enum EnumPlayerStatus
-{
-    ePlayerStatusOk = 0,
-    ePlayerStatusError,
-    ePlayerStatusNotImp,
-}EnumPlayerStatus;
-
-typedef enum EnumAspectRatio
-{
-    eAspectRadioOriginal = 0, // 1:1
-    eAspectRadio4_3,
-    eAspectRadio16_9,
-    eAspectRadioFullScreen,
-}EnumAspectRatio;
-
-typedef enum EnumPlaySpeed
-{
-    ePlaySpeedHalf = -1,
-    ePlaySpeedNormal,
-    ePlaySpeedDouble,
-    ePlaySpeedForth,
-}EnumPlaySpeed;
-
-
+#import "PlayerViewDefine.h"
 
 @protocol PlayerViewControllerDelegate
 

@@ -74,6 +74,7 @@ public:
 	virtual void Show(int iCacheIndex);
 	virtual void Close();
 private:
+    void CalcDesSize();
 	unsigned char* m_pRGBAData[MAX_CACHE_COUNT];
 	AVPicture m_avPicture[MAX_CACHE_COUNT];
 	pthread_mutex_t m_mutex[MAX_CACHE_COUNT];
@@ -85,8 +86,4 @@ private:
 
 	SwsContext* m_pSwsContext;
     int m_iWindow;
-
-	unsigned char* m_pRGBADataFromView;
-	wstring* m_pwstrSubTitle;
-	pthread_mutex_t* m_pMutexFromView;
 };

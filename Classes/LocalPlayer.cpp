@@ -27,9 +27,10 @@
 bool CLocalPlayer::m_bDecodeAbortRequest = false;
 CLocalPlayer::CLocalPlayer()
 {
-	m_pCurrentTime = NULL;
-	m_pDuration = NULL;
-	
+    m_ePlaySpeed = ePlaySpeedNormal;
+	m_iCurrentTime = NULL;
+	m_iDuration = NULL;
+	m_bReadEndOfFile = false;
 	m_pVideoLocalPlayer = NULL;
 	m_pAudioLocalPlayer = NULL;
 	read_tid = NULL;
@@ -146,20 +147,15 @@ CLocalPlayer::~CLocalPlayer()
 }
 
 // sFileName is filekey
-bool CLocalPlayer::Open(const string& strFileName, long iWindow1)
+EnumPlayerStatus CLocalPlayer::Open(const string& strFileName, long iWindow1)
 {
-	if (!InitData(strFileName))
-	{
-		return false;
-	}
-	iWindow = iWindow1;
-	if (!InitUIAndAudioDevice())
-	{
-		return false;
-	}
+    iWindow = iWindow1;
+    RETURN_STATUS_IF_ERROR(InitData(strFileName));
+    RETURN_STATUS_IF_ERROR(InitUIAndAudioDevice());
+    
 	m_srtSubTitleReader.LoadFile(m_strSubTitleLocal);
 	m_srtSubTitleReader.SetCodePage(m_iCodePage);
-	return true;
+	return ePlayerStatusOk;
 }
 
 bool CLocalPlayer::Start()
@@ -226,17 +222,10 @@ void CLocalPlayer::Close()
 
 bool CLocalPlayer::HasVideo()
 {
-	if (m_ePlayerType == ePlayerTypeStream)
-	{
-		return sMediaInfoStream.m_bHasVideo;
-	}
-	else
-	{
-		if (video_st != NULL)
-		{
-			return true;
-		}
-	}
+    if (video_st != NULL)
+    {
+        return true;
+    }
 	return false;
 }
 
@@ -245,7 +234,7 @@ int CLocalPlayer::DecodeInterruptCallBack()
 	return m_bDecodeAbortRequest;
 }
 
-bool CLocalPlayer::InitData(const string& strFileName)
+EnumPlayerStatus CLocalPlayer::InitData(const string& strFileName)
 {
 	m_strFileName = strFileName;
 	
@@ -253,7 +242,7 @@ bool CLocalPlayer::InitData(const string& strFileName)
 	    AVFormatContext* pAvFormatContext = avformat_alloc_context();
 		if (pAvFormatContext == NULL)
 		{
-			throw new CPlayerException("avformat_alloc_context return NULL");
+            return ePlayerStatusNotEnoughMemory;
 		}
 		int st_index[AVMEDIA_TYPE_NB];
 		for (int iStIndex = 0; iStIndex < AVMEDIA_TYPE_NB; iStIndex ++)
@@ -277,7 +266,7 @@ bool CLocalPlayer::InitData(const string& strFileName)
 									  iformat, 0, &avFormatParameters);
 	    if (iRet < 0) 
 		{
-			throw new CPlayerException("av_open_input_file return false", m_strFileName.c_str());
+			return ePlayerStatusCanNotOpenFile;
 	    }
 	    ic = pAvFormatContext;
 
@@ -287,7 +276,7 @@ bool CLocalPlayer::InitData(const string& strFileName)
 	    iRet = av_find_stream_info(pAvFormatContext);
 	    if (iRet < 0)
 		{
-	        throw new CPlayerException("%s: could not find codec parameters", m_strFileName.c_str());
+	        return ePlayerStatusNoMediaStream;
 	    }
 	    if(pAvFormatContext->pb)
 		{
@@ -331,74 +320,51 @@ bool CLocalPlayer::InitData(const string& strFileName)
 	
 	    if (video_stream < 0 && audio_stream < 0) 
 		{
-	        throw new CPlayerException("can not find any valid streams");
-			return false;
+	        return ePlayerStatusNoMediaStream;
 	    }
 	
-		*m_pDuration =  (unsigned long)pAvFormatContext->duration / AV_TIME_BASE;
-	    *m_pCurrentTime = 0;
+		m_iDuration =  (unsigned long)pAvFormatContext->duration / AV_TIME_BASE;
+	    m_iCurrentTime = 0;
 	}
-	return true;
+	return ePlayerStatusOk;
 }
 
-bool CLocalPlayer::InitUIAndAudioDevice()
+EnumPlayerStatus CLocalPlayer::InitUIAndAudioDevice()
 {
 	m_pAudioLocalPlayer = new CAudioLocalPlayerImp;
 	if (m_pAudioLocalPlayer == NULL)
 	{
-		throw new CPlayerException("new CAudioLocalPlayerImp return NULL");
+        return ePlayerStatusNotEnoughMemory;
 	}
 	m_pVideoLocalPlayer = new CVideoLocalPlayerImp;
 	if (m_pVideoLocalPlayer == NULL)
 	{
-		throw new CPlayerException("new CVideoLocalPlayerImp return NULL");
+		return ePlayerStatusNotEnoughMemory;
 	}
 	
-	if (m_ePlayerType == ePlayerTypeStream)
-	{
-		if (!m_pAudioLocalPlayer->Init(2, 44100, 8192, this))
-		{
-			throw new CPlayerException("init audio error");
-			return false;
-		}
+    if (audio_stream >= 0)
+    {
+        if (!m_pAudioLocalPlayer->Init(audio_st->codec->channels, 
+                                                 audio_st->codec->sample_rate,
+                                                 audio_st->codec->frame_size * 10,
+                                                    this))
+        {
+            return ePlayerStatusCanNotInitialAudioDevice;
+        }
+    }
+    if (video_stream >= 0)
+    {
+        if (!m_pVideoLocalPlayer->Init(iWindow,
+                                                 video_st->codec->width,
+                                                 video_st->codec->height,
+                                                 video_st->codec->pix_fmt,
+                                                 VIDEO_PICTURE_QUEUE_SIZE))
+        {
+            return ePlayerStatusCanNotInitialVideoDevice;
+        }
+    }
 
-		if (!m_pVideoLocalPlayer->Init(iWindow, sMediaInfoStream.m_iWidthEncoded,
-												 sMediaInfoStream.m_iHeightEncoded,
-												 PIX_FMT_YUV420P,
-												 VIDEO_PICTURE_QUEUE_SIZE))
-		{
-			throw new CPlayerException("init video error");
-			return false;
-		}
-	}
-	else
-	{		
-		if (audio_stream >= 0)
-		{
-			if (!m_pAudioLocalPlayer->Init(audio_st->codec->channels, 
-													 audio_st->codec->sample_rate,
-													 audio_st->codec->frame_size * 10,
-														this))
-			{
-				throw new CPlayerException("init audio error");
-				return false;
-			}
-		}
-		if (video_stream >= 0)
-		{
-			if (!m_pVideoLocalPlayer->Init(iWindow,
-													 video_st->codec->width,
-													 video_st->codec->height,
-													 video_st->codec->pix_fmt,
-													 VIDEO_PICTURE_QUEUE_SIZE))
-			{
-				throw new CPlayerException("init video error");
-				return false;
-			}
-		}
-	}
-
-	return true;
+	return ePlayerStatusOk;
 }
 
 
@@ -488,7 +454,7 @@ int CLocalPlayer::OutputPicture(AVFrame *src_frame, double pts1)
         pts = video_clock;
     }
     /* update video clock for next frame */
-	double frame_delay = (m_ePlayerType == ePlayerTypeStream) ? 1.0/25 : av_q2d(video_st->codec->time_base);	
+	double frame_delay = av_q2d(video_st->codec->time_base);	
 
     /* for MPEG2, the frame can be repeated, so we update the
 	 clock accordingly */
@@ -511,46 +477,24 @@ double CLocalPlayer::ComputeTargetTime(double frame_current_pts)
     }
     frame_last_pts = frame_current_pts;
 	
-	if (m_ePlayerType == ePlayerTypeStream)
-	{
-		if (((av_sync_type == AV_SYNC_AUDIO_MASTER) ||
-	         av_sync_type == AV_SYNC_EXTERNAL_CLOCK)) {
-	        /* if video is slave, we try to correct big delays by
-			 duplicating or deleting a frame */
-	        diff = GetVideoClock() - GetMasterClock();
-			//AddLog("v:%.3f   a:%.3f", GetVideoClock(), GetAudioClock());
-	        /* skip or repeat frame. We take into account the
-			 delay to compute the threshold. I still don't know
-			 if it is the best guess */
-	        sync_threshold = FFMAX(AV_SYNC_THRESHOLD, delay);
-	        if (fabs(diff) < AV_NOSYNC_THRESHOLD) {
-	            if (diff <= -sync_threshold)
-	                delay = 0;
-	            else if (diff >= sync_threshold)
-	                delay = 2 * delay;
-	        }
-	    }
-	}
-	else
-	{
-		 if (((av_sync_type == AV_SYNC_AUDIO_MASTER && audio_st) ||
-	         av_sync_type == AV_SYNC_EXTERNAL_CLOCK)) {
-	        /* if video is slave, we try to correct big delays by
-			 duplicating or deleting a frame */
-	        diff = GetVideoClock() - GetMasterClock();
-		
-	        /* skip or repeat frame. We take into account the
-			 delay to compute the threshold. I still don't know
-			 if it is the best guess */
-	        sync_threshold = FFMAX(AV_SYNC_THRESHOLD, delay);
-	        if (fabs(diff) < AV_NOSYNC_THRESHOLD) {
-	            if (diff <= -sync_threshold)
-	                delay = 0;
-	            else if (diff >= sync_threshold)
-	                delay = 2 * delay;
-	        }
-	    }
-	}
+	
+     if (((av_sync_type == AV_SYNC_AUDIO_MASTER && audio_st) ||
+         av_sync_type == AV_SYNC_EXTERNAL_CLOCK)) {
+        /* if video is slave, we try to correct big delays by
+         duplicating or deleting a frame */
+        diff = GetVideoClock() - GetMasterClock();
+    
+        /* skip or repeat frame. We take into account the
+         delay to compute the threshold. I still don't know
+         if it is the best guess */
+        sync_threshold = FFMAX(AV_SYNC_THRESHOLD, delay);
+        if (fabs(diff) < AV_NOSYNC_THRESHOLD) {
+            if (diff <= -sync_threshold)
+                delay = 0;
+            else if (diff >= sync_threshold)
+                delay = 2 * delay;
+        }
+    }
     /* update delay to follow master synchronisation source */
    
     frame_timer += delay;
@@ -636,8 +580,7 @@ void* CLocalPlayer::ThreadRefreshRoute()
 {
 	while (!abort_request)
 	{
-		if ((m_ePlayerType == ePlayerTypeStream)
-		|| ((m_ePlayerType != ePlayerTypeStream) && video_st)) 
+		if (video_st)
 		{
 			//AddLog("VideoRefreshTimer\n");
 			if (pictq_size == 0) 
@@ -654,7 +597,7 @@ void* CLocalPlayer::ThreadRefreshRoute()
 					usleep(1000);
 					continue;
 				}
-				*m_pCurrentTime = GetMasterClock();
+				m_iCurrentTime = GetMasterClock();
 				
 				/* update current video pts */
 				video_current_pts = pts[pictq_rindex];
@@ -716,10 +659,7 @@ void* CLocalPlayer::ThreadVideoRoute()
 		
         if(pkt1.data == CPacketQueue::GetFlushAvPacket().data)
 		{
-			if (m_ePlayerType != ePlayerTypeStream)
-			{
-            	avcodec_flush_buffers(video_st->codec);
-			}
+            avcodec_flush_buffers(video_st->codec);
 			frame_last_pts = AV_NOPTS_VALUE;
 			frame_last_delay = 0;
 			frame_timer = (double)av_gettime() / 1000000.0;
@@ -728,20 +668,11 @@ void* CLocalPlayer::ThreadVideoRoute()
 
         /* NOTE: ipts is the PTS of the _first_ picture beginning in
 		 this packet, if any */
-		if (m_ePlayerType == ePlayerTypeStream)
-		{
-        	len1 = avcodec_decode_video2(m_pCodecContextVideo,
-									 frame, &got_picture,
-									 &pkt1);
-		}
-		else
-		{
-			video_st->codec->reordered_opaque= pkt1.pts;
-        	len1 = avcodec_decode_video2(video_st->codec,
-									 frame, &got_picture,
-									 &pkt1);
-		}
-		
+
+        video_st->codec->reordered_opaque= pkt1.pts;
+        len1 = avcodec_decode_video2(video_st->codec,
+                                 frame, &got_picture,
+                                 &pkt1);
         if((pkt1.dts == AV_NOPTS_VALUE) && (frame->reordered_opaque != AV_NOPTS_VALUE))
 		{
             pts= frame->reordered_opaque;
@@ -754,14 +685,8 @@ void* CLocalPlayer::ThreadVideoRoute()
 		{
             pts= 0;
 		}
-		if (m_ePlayerType == ePlayerTypeStream)
-		{
-			pts /= 1000;
-		}
-		else
-		{
-       		pts *= av_q2d(video_st->time_base);
-		}
+		
+        pts *= av_q2d(video_st->time_base);
 		
         if (got_picture) 
 		{
@@ -868,7 +793,7 @@ void* CLocalPlayer::ThreadReadRoute()
 				usleep(10000);
 	            if(audioq.GetSize() + videoq.GetSize() ==0)
 				{
-					*m_pIsReadEndOfFile = true;
+					m_bReadEndOfFile = true;
 					break;
 	            }
 	            continue;
@@ -946,21 +871,14 @@ void CLocalPlayer::VideoImageDisplay()
 /* display the current picture, if any */
 void CLocalPlayer::VideoDisplay()
 {
-	if (m_ePlayerType == ePlayerTypeStream)
-	{
-		VideoImageDisplay();
-	}
-	else
-	{
-	    if (video_st)
-		{
-			VideoImageDisplay();
-		}
-		else if (audio_st)
-		{
-			VideoAudioDisplay();
-		}
-	}
+    if (video_st)
+    {
+        VideoImageDisplay();
+    }
+    else if (audio_st)
+    {
+        VideoAudioDisplay();
+    }
 }
 
 
@@ -972,18 +890,12 @@ double CLocalPlayer::GetAudioClock()
     pts = audio_clock;
     hw_buf_size = AudioWriteGetBufSize();
     bytes_per_sec = 0;
-	if (m_ePlayerType == ePlayerTypeStream)
-	{
-			 bytes_per_sec = 44100 * 2 * 2;
-	}
-	else
-	{
-	    if (audio_st) 
-		{
-	        bytes_per_sec = audio_st->codec->sample_rate *
-			2 * audio_st->codec->channels;
-	    }
-	}
+
+    if (audio_st) 
+    {
+        bytes_per_sec = audio_st->codec->sample_rate *
+        2 * audio_st->codec->channels;
+    }
     if (bytes_per_sec)
 	{
         pts -= (double)hw_buf_size / bytes_per_sec;
@@ -1015,73 +927,46 @@ double CLocalPlayer::GetExternalClock()
 /* get the current master clock value */
 double CLocalPlayer::GetMasterClock()
 {
-	if (m_ePlayerType == ePlayerTypeStream)
-	{
-		return GetAudioClock();
-	}
-	else
-	{
-	    double val;
-	
-	    if (av_sync_type == AV_SYNC_VIDEO_MASTER)
-		{
-	        if (video_st)
-			{
-	            val = GetVideoClock();
-	        }
-			else
-	        {
-				val = GetAudioClock();
-			}
-	    } 
-		else if (av_sync_type == AV_SYNC_AUDIO_MASTER) 
-		{
-	        if (audio_st)
-	        {
-				val = GetAudioClock();
-			}
-	        else
-			{
-				val = GetVideoClock();
-			}
-	    } 
-		else
-		{
-	        val = GetExternalClock();
-	    }
-	    return val;
-	}
+    double val;
+
+    if (av_sync_type == AV_SYNC_VIDEO_MASTER)
+    {
+        if (video_st)
+        {
+            val = GetVideoClock();
+        }
+        else
+        {
+            val = GetAudioClock();
+        }
+    } 
+    else if (av_sync_type == AV_SYNC_AUDIO_MASTER) 
+    {
+        if (audio_st)
+        {
+            val = GetAudioClock();
+        }
+        else
+        {
+            val = GetVideoClock();
+        }
+    } 
+    else
+    {
+        val = GetExternalClock();
+    }
+    return val;
 }
 
 /* seek in the stream */
 void CLocalPlayer::StreamSeek(int64_t pos)
-{
-	if (m_ePlayerType == ePlayerTypeStream)
-	{
-		if (!seek_req)
-		{
-			*m_pInNetSeeking = 1;
-	        seek_pos = pos;
-			seek_flags = AVSEEK_FLAG_FRAME;
-       
-			// clear old data
-			audioq.Flush();
-			audioq.Put(const_cast<AVPacket*>(&CPacketQueue::GetFlushAvPacket()));
-		
-			videoq.Flush();
-			videoq.Put(const_cast<AVPacket*>(&CPacketQueue::GetFlushAvPacket()));
-			seek_req = 1;
-		}
-	}
-	else
-	{	
-	    if (!seek_req)
-		{
-	        seek_pos = pos;
-			seek_flags = AVSEEK_FLAG_FRAME;
-	        seek_req = 1;
-	    }
-	}
+{	
+    if (!seek_req)
+    {
+        seek_pos = pos;
+        seek_flags = AVSEEK_FLAG_FRAME;
+        seek_req = 1;
+    }
 }
 
 /* pause or resume the video */
@@ -1111,19 +996,11 @@ int CLocalPlayer::SynchronizeAudio(short *samples, int samples_size1, double pts
 {
     int n, samples_size;
     double ref_clock;
-	
-	if (m_ePlayerType == ePlayerTypeStream)
-	{
-		n = 2 * 2;
-	}
-	else
-	{
-    	n = 2 * audio_st->codec->channels;
-    }
+    n = 2 * audio_st->codec->channels;
 	samples_size = samples_size1;
 	
     /* if not master, then we try to remove or add samples to correct the clock */
-	bool bHasVideo = (m_ePlayerType == ePlayerTypeStream) ? true : (video_st != NULL);
+	bool bHasVideo = (video_st != NULL);
     if (((av_sync_type == AV_SYNC_VIDEO_MASTER && bHasVideo)
 		 || av_sync_type == AV_SYNC_EXTERNAL_CLOCK))
 	{
@@ -1148,14 +1025,7 @@ int CLocalPlayer::SynchronizeAudio(short *samples, int samples_size1, double pts
 				
                 if (fabs(avg_diff) >= audio_diff_threshold) 
 				{
-					if (m_ePlayerType == ePlayerTypeStream)
-					{
-						wanted_size = samples_size + ((int)(diff * 44100) * n);
-                    }
-					else
-					{
-						wanted_size = samples_size + ((int)(diff * audio_st->codec->sample_rate) * n);
-					}
+                    wanted_size = samples_size + ((int)(diff * audio_st->codec->sample_rate) * n);
 					nb_samples = samples_size / n;
 					
                     min_size = ((nb_samples * (100 - SAMPLE_CORRECTION_PERCENT_MAX)) / 100) * n;
@@ -1213,7 +1083,7 @@ int CLocalPlayer::AudioDecodeFrame(double *pts_ptr)
 {
     AVPacket *pkt_temp = &audio_pkt_temp;
     AVPacket *pkt = &audio_pkt;
-    AVCodecContext *dec= (m_ePlayerType == ePlayerTypeStream) ? m_pCodecContextAudio : audio_st->codec;
+    AVCodecContext *dec= audio_st->codec;
     int n, len1, data_size;
     double pts;
 	
@@ -1315,14 +1185,7 @@ int CLocalPlayer::AudioDecodeFrame(double *pts_ptr)
         /* if update the audio clock with the pts */
 		if (pkt->pts != AV_NOPTS_VALUE) 
 		{
-			if (m_ePlayerType == ePlayerTypeStream)
-			{
-				audio_clock = pkt->pts / 1000.0;
-			}
-			else
-			{
-				audio_clock = av_q2d(audio_st->time_base)*pkt->pts;
-			}
+            audio_clock = av_q2d(audio_st->time_base)*pkt->pts;
 		}
     }
 }
@@ -1456,35 +1319,28 @@ void CLocalPlayer::AudioCallBack(unsigned char *stream, int len)
         stream += len1;
         audio_buf_index += len1;
     }
-	*m_pCurrentTime = GetMasterClock();
+	m_iCurrentTime = GetMasterClock();
 }
 
 void CLocalPlayer::SeekBySecond(int iSecond)
 {
-	if (m_ePlayerType == ePlayerTypeStream)
-	{
-		StreamSeek(iSecond);
-	}
-	else
-	{
-		AVRational timeBase = {1, 1};
-		if (video_st != NULL)
-		{
-			timeBase = video_st->time_base;
-		}
-		else if (audio_st != NULL)
-		{
-			timeBase = audio_st->time_base;
-		}
-		else
-		{
-			printf("Stream Seek but no stream found");	
-			return;
-		}
+    AVRational timeBase = {1, 1};
+    if (video_st != NULL)
+    {
+        timeBase = video_st->time_base;
+    }
+    else if (audio_st != NULL)
+    {
+        timeBase = audio_st->time_base;
+    }
+    else
+    {
+        printf("Stream Seek but no stream found");	
+        return;
+    }
 
-		seek_pos = (int64_t)((double)timeBase.den / timeBase.num * iSecond);
-		StreamSeek(seek_pos);
-	}
+    seek_pos = (int64_t)((double)timeBase.den / timeBase.num * iSecond);
+    StreamSeek(seek_pos);
 }
 
 
@@ -1611,4 +1467,13 @@ void AssignRect(const CRect& rectFrom, CRect& rectTo)
 bool CLocalPlayer::IsPaused()
 {
 	return paused;
+}
+
+void CLocalPlayer::SetPlaySpeed(EnumPlaySpeed ePlaySpeed)
+{
+    m_ePlaySpeed = ePlaySpeed;
+}
+EnumPlaySpeed CLocalPlayer::GetPlaySpeed()
+{
+    return m_ePlaySpeed;
 }

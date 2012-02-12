@@ -15,22 +15,6 @@
 + (Class)layerClass {
     return [CAEAGLLayer class];
 }
-
-- (void) resizeData:(int)iSize
-{
-    if (m_iDataLen >= iSize)
-    {
-        return;
-    }
-    if (m_pData != NULL)
-    {
-        delete m_pData;
-        m_pData = NULL;
-    }
-    m_iDataLen = iSize;
-    m_pData = new unsigned char[iSize];
-}
-
 - (void) test
 {
     CGImageRef inImage = [[UIImage imageNamed:@"1.png"] CGImage];
@@ -60,7 +44,7 @@
     CGRect rect = {{0,0},{PLAYER_FRAME_WIDTH, PLAYER_FRAME_HEIGHT}}; 
     CGContextDrawImage(context1, rect, inImage); 
 	void *data = CGBitmapContextGetData (context1);
-    memcpy(m_pData, data, PLAYER_FRAME_WIDTH*PLAYER_FRAME_HEIGHT*4);
+    memcpy(m_pDataResized, data, PLAYER_FRAME_WIDTH*PLAYER_FRAME_HEIGHT*4);
 
     CGColorSpaceRelease( colorSpace );
 }
@@ -115,7 +99,8 @@
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
         glEnableClientState(GL_VERTEX_ARRAY);	
         
-        [self resizeData:PLAYER_FRAME_WIDTH*PLAYER_FRAME_HEIGHT*4];
+        m_pDataResized = new unsigned char[(int)(PLAYER_FRAME_WIDTH * PLAYER_FRAME_HEIGHT * 4)];
+        m_pDataCorped = new unsigned char[(int)(PLAYER_FRAME_WIDTH * PLAYER_FRAME_HEIGHT * 4)];
         [self test];
     }
     return self;
@@ -151,6 +136,8 @@
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glDeleteTextures(1, &glTexture);
 	[uiLabel release];
+    delete[] m_pDataCorped;
+    delete[] m_pDataResized;
     [super dealloc];
 }
 extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int height,int biBitCount);
@@ -163,8 +150,6 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
     const CRect rectScreen(0, 0, bPortrait ? 320 : 480, bPortrait ? 480 : 320);
     const CRect rect4_3(0, 0, 4, 3);
     const CRect rect16_9(0, 0, 16, 9);
-    m_sRenderParam.sizeMovie.width = 480.0f;
-    m_sRenderParam.sizeMovie.height = 480.0f;
     const CRect rectMovie(0, 0, m_sRenderParam.sizeMovie.width, m_sRenderParam.sizeMovie.height);
     
     switch (m_sRenderParam.eAspectRatio) 
@@ -231,6 +216,7 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
 }
 - (void)handleTimer
 {    
+    //saveBmp("/Users/xiaoyi/1.bmp",m_pDataResized,m_sRenderParam.sizeMovieResized.width,m_sRenderParam.sizeMovieResized.height,32);
     if (bNeedClearBackground)
     {
         [self clearBackground];
@@ -243,8 +229,8 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
 	glLoadIdentity();
 
 	pthread_mutex_lock(&m_mutexFromView);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, PLAYER_FRAME_WIDTH, PLAYER_FRAME_HEIGHT,
-				 0, GL_RGBA, GL_UNSIGNED_BYTE, m_pData);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_sRenderParam.sizeMovieResized.width, m_sRenderParam.sizeMovieResized.height,
+				 0, GL_RGBA, GL_UNSIGNED_BYTE, m_pDataResized);
 //	{
 //		// subtitle;
 //		NSData* nsData = [NSData dataWithBytes:m_wstrSubTitle.c_str()
@@ -272,6 +258,14 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
 - (void) setNeedEraseBackground
 {
     bNeedClearBackground = true;
+}
+
+- (void) setMovieSize:(int)iWidth iHeight:(int)iHeight iWidthResized:(int)iWidthResized iHeightResized:(int)iHeightResized
+{
+    m_sRenderParam.sizeMovie.width = iWidth;
+    m_sRenderParam.sizeMovie.height = iHeight;
+    m_sRenderParam.sizeMovieResized.width = iWidthResized;
+    m_sRenderParam.sizeMovieResized.height = iHeightResized;
 }
 
 @end

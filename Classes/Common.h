@@ -57,16 +57,6 @@ extern void AudioCallback(void *opaque, unsigned char *stream, int len);
 // DEL #include <SDL.h>
 // DEL #include <SDL_thread.h>
 
-enum EnumPlayerType
-{
-	ePlayerTypeUnkown = 0,
-	ePlayerTypeLocal,
-	ePlayerTypeLan,
-	ePlayerTypeStream,
-};
-
-typedef EnumPlayerType EnumMediaType;
-
 #ifdef __cplusplus
 
 

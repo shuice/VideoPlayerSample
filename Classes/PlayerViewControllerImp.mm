@@ -8,13 +8,13 @@
 //
 
 #import "PlayerViewControllerImp.h"
-#import "PlayerAppDelegate.h"
 #include "LocalPlayer.h"
 #import "Common.h"
 #import <sys/time.h>
 
 @interface PlayerViewControllerImp(method)
     - (void) refreshChangeAspectButton;
+    -(EnumPlayerStatus) Open;
 @end
 
 
@@ -35,13 +35,6 @@
 @synthesize uiSliderSound;
 @synthesize m_pLocalPlayer;
 @synthesize m_iControlLife;
-@synthesize m_iDuration;
-@synthesize m_iCurrentTime;
-@synthesize m_bIsReadEndOfFile;
-@synthesize socketCommand;
-@synthesize socketCache;
-@synthesize m_iInNetSeeking;
-@synthesize m_ePlayerType;
 @synthesize m_strSrtPath;
 @synthesize m_iCodePage;
 @synthesize buttonChangeAspect;
@@ -110,6 +103,8 @@
 
 - (void) setSubViewPos
 {
+    [viewControlProgress setAlpha:0.0f];
+    [viewControlSound setAlpha:0.0f];
     CRect rectRet(0, 0, 0, 0);
     bool bPortrait = UIDeviceOrientationIsPortrait([[UIDevice currentDevice] orientation]);
     const CRect rectScreen(0, 0, bPortrait ? 320 : 480, bPortrait ? 480 : 320);
@@ -153,7 +148,6 @@
         const CGFloat fHeightOfProgress = 10.0f;
         [uiSliderSound setFrame:CGRectMake(fMarginWidth, fMarginTop + fMarginTop + fHeightOfButton, fWidth*fWidthRate - 2*fMarginWidth, fHeightOfProgress)];
     }
-    
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
@@ -180,6 +174,7 @@
 // Override to allow orientations other than the default portrait orientation.
 -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
+    return YES;
 	if (toInterfaceOrientation != UIInterfaceOrientationPortraitUpsideDown) 
 	{
 		return YES;
@@ -236,69 +231,8 @@
 
 -(string) GetSrtFileName
 {
-	if (m_ePlayerType == ePlayerTypeLocal)
-	{
-		return m_strSrtPath;
-	}
-    return "";
+    return m_strSrtPath;
 }
-
-
--(BOOL) Open
-{
-	// init all controls
-	labelPlayed.text = @"";
-	labelLeft.text = @"";
-	//[[playerView uiLabel] setText:@""];
-	uiSliderProgress.value = 0.0;
-	m_bInSeek = NO;
-	try 
-	{
-		m_pLocalPlayer = new CLocalPlayer;
-		if (m_pLocalPlayer == NULL)
-		{
-			return NO;
-		}
-		{
-			
-			m_pLocalPlayer->m_strSubTitleLocal = [self GetSrtFileName];
-			m_pLocalPlayer->m_iCodePage = m_iCodePage;
-		}
-		m_pLocalPlayer->m_pCurrentTime = &m_iCurrentTime;
-		m_pLocalPlayer->m_pDuration = &m_iDuration;
-		m_pLocalPlayer->m_pIsReadEndOfFile= &m_bIsReadEndOfFile;
-		m_pLocalPlayer->m_pInNetSeeking = &m_iInNetSeeking;
-		m_pLocalPlayer->socketCache = self.socketCache;
-		m_pLocalPlayer->socketCommand = self.socketCommand;
-		m_pLocalPlayer->m_ePlayerType = m_ePlayerType;
-		m_bIsReadEndOfFile = false;	
-		
-		m_pLocalPlayer->Open(m_strFileName, (int)playerView);
-	}
-	catch (CPlayerException* pPlayerException)
-	{
-		ShowAlartMessage(pPlayerException->m_strDescription);
-		delete pPlayerException;
-		
-		try 
-		{
-			m_pLocalPlayer->Close();
-		}
-		catch (CPlayerException* pPlayerException)
-		{
-			delete pPlayerException;
-		}
-		return NO;
-	}
-	m_pLocalPlayer->SetVolume(uiSliderSound.value * 100); 
-	
-	[self SetPauseVisiable:NO];
-	[self SetPlayVisiable:YES];
-	
-	[self SetControlVisiable:YES];
-	return YES;
-}
-
 
 -(void) Close
 {
@@ -326,15 +260,12 @@
 	labelPlayed.text = @"";
 	labelLeft.text = @"";
 	uiSliderProgress.value = 0.0;
-	
 	// FIXME close timer
 }
 
 -(void) Exit
 {
 	[self Close];
-	PlayerAppDelegate* pPlayerAppdelegate = [[UIApplication sharedApplication] delegate];
-	[pPlayerAppdelegate Stop];	
 }
 
 -(void) buttonExit:(id)sender
@@ -373,7 +304,7 @@
 		NSLog(@"buttonPre but m_pLocalPlayer == NULL");
 		return;
 	}
-	m_pLocalPlayer->SeekBySecond(m_iCurrentTime - 30);
+	m_pLocalPlayer->SeekBySecond(m_pLocalPlayer->m_iCurrentTime - 30);
 }
 
 -(void) buttonNext:(id)sender
@@ -384,7 +315,7 @@
 		return;
 	}
 	m_iControlLife = m_pLocalPlayer->HasVideo() ? AUTO_CONTROL_HIDDEN_TIME : ALWAYS_SHOW_TIME;
-	m_pLocalPlayer->SeekBySecond(m_iCurrentTime + 30);
+	m_pLocalPlayer->SeekBySecond(m_pLocalPlayer->m_iCurrentTime + 30);
 }
 
 
@@ -417,7 +348,7 @@
 		return;
 	}
 	m_iControlLife = m_pLocalPlayer->HasVideo() ? AUTO_CONTROL_HIDDEN_TIME : ALWAYS_SHOW_TIME;
-	m_iSeekPos = m_iDuration * 1.0 * uiSliderProgress.value;
+	m_iSeekPos = m_pLocalPlayer->m_iDuration * 1.0 * uiSliderProgress.value;
 	m_bInSeek = YES;
 	
 }
@@ -451,13 +382,14 @@
 
 -(void)handleTimer:(NSTimer*)timer
 {
-    [playerView handleTimer];
-    return;
-	if (m_bIsReadEndOfFile)
+    if (m_pLocalPlayer == NULL)
+    {
+        return;
+    }
+    
+	if (m_pLocalPlayer->m_bReadEndOfFile)
 	{
 		[self Close];
-		PlayerAppDelegate* pPlayerAppdelegate = [[UIApplication sharedApplication] delegate];
-		[pPlayerAppdelegate Stop];	
 	}
 	// check control visiable
 	if ([self isControlVisiable] == YES)
@@ -470,41 +402,25 @@
 		}
 	}
 	// refresh media
-	if (m_pLocalPlayer != NULL && m_pLocalPlayer->HasVideo()) 
+	if (m_pLocalPlayer->HasVideo() && !m_pLocalPlayer->IsPaused()) 
 	{
-		if (!m_pLocalPlayer->IsPaused())
-		{
-			[playerView handleTimer];
-		}
+        [playerView handleTimer];
 	}
 	
 	//return;
-	if ((m_bInSeek == YES) || (m_iInNetSeeking == 1))
+	if (m_bInSeek == YES)
 	{
-		m_iCurrentTime = uiSliderProgress.value * m_iDuration;
+		m_pLocalPlayer->m_iCurrentTime = uiSliderProgress.value * m_pLocalPlayer->m_iDuration;
 	}
 	else
 	{
-		float fValue = m_iCurrentTime * 1.0 / m_iDuration;
+		float fValue = m_pLocalPlayer->m_iCurrentTime * 1.0 / m_pLocalPlayer->m_iDuration;
 		uiSliderProgress.value = fValue;
 	}
 
-
 	char szTime[20] = {0};
-	// update progress
-	{
-		NSString* nsString = [[NSString alloc] initWithUTF8String:
-							 FormatTime(m_iCurrentTime, true, szTime, sizeof(szTime))];
-		labelPlayed.text = nsString;
-		[nsString release];
-	}
-	{
-		NSString* nsString = [[NSString alloc] initWithUTF8String:
-							  FormatTime(m_iDuration - m_iCurrentTime, false, szTime, sizeof(szTime))];
-		labelLeft.text = nsString;
-		[nsString release];
-	}	
-	
+    labelPlayed.text =  [NSString stringWithCString:FormatTime(m_pLocalPlayer->m_iCurrentTime, true, szTime, sizeof(szTime)) encoding:NSASCIIStringEncoding];
+    labelLeft.text = [NSString stringWithCString:FormatTime(m_pLocalPlayer->m_iDuration - m_pLocalPlayer->m_iCurrentTime, false, szTime, sizeof(szTime)) encoding:NSASCIIStringEncoding];
 }
 
 void ShowAlartMessage(string strMessage)
@@ -543,49 +459,6 @@ void ShowAlartMessage(string strMessage)
 
 }
 
--(void) StartPlay:(string)strFileName
-{
-    return;
-	m_strFileName = strFileName;
-	if (YES != [self Open])
-	{
-		ShowAlartMessage("打开文件失败");
-		[self Exit];
-		return;
-	}
-	
-	bool bHasVideo = m_pLocalPlayer->HasVideo();
-	m_iControlLife = bHasVideo ? AUTO_CONTROL_HIDDEN_TIME : ALWAYS_SHOW_TIME;
-	m_pLocalPlayer->Start();
-	[self SetPauseVisiable:YES];
-	[self SetPlayVisiable:NO];
-
-	[self SetControlVisiable:YES];
-	
-	nsTimer = [NSTimer scheduledTimerWithTimeInterval:1.0/25.0 
-												   target:self
-												 selector:@selector(handleTimer:)
-												 userInfo:nil
-												  repeats:YES];
-	
-	//timer
-}
--(void) Pause
-{
-	m_iControlLife = ALWAYS_SHOW_TIME;
-	[self SetControlVisiable:YES];
-	if (m_pLocalPlayer == NULL)
-	{
-		NSLog(@"buttonPre but m_pLocalPlayer == NULL");
-		return;
-	}
-	if (!m_pLocalPlayer->IsPaused())
-	{
-		m_pLocalPlayer->Pause();
-		[self SetPauseVisiable:NO];
-		[self SetPlayVisiable:YES];
-	}
-}
 
 - (void) SetPauseVisiable:(BOOL) bVisiable
 {
@@ -640,20 +513,40 @@ void ShowAlartMessage(string strMessage)
 #pragma mark interface imp
 - (EnumPlayerStatus) open:(NSString*)strFileName
 {
-//	m_strFileName = [strFileName UTF8String] ;
-//	if (YES != [self Open])
-//	{
-//		[self Exit];
-//		return ePlayerStatusError;
-//	}
-//	
-//	bool bHasVideo = m_pLocalPlayer->HasVideo();
-//	m_iControlLife = bHasVideo ? AUTO_CONTROL_HIDDEN_TIME : ALWAYS_SHOW_TIME;
-//	m_pLocalPlayer->Start();
-//	[self SetPauseVisiable:YES];
-//	[self SetPlayVisiable:NO];
-//    
-//	[self SetControlVisiable:YES];
+	m_strFileName = [strFileName UTF8String] ;
+    // init all controls
+	labelPlayed.text = @"";
+	labelLeft.text = @"";
+	//[[playerView uiLabel] setText:@""];
+	uiSliderProgress.value = 0.0;
+	m_bInSeek = NO;
+    
+    m_pLocalPlayer = new CLocalPlayer;
+    if (m_pLocalPlayer == NULL)
+    {
+        return ePlayerStatusNotEnoughMemory;
+    }
+    m_pLocalPlayer->m_strSubTitleLocal = [self GetSrtFileName];
+    m_pLocalPlayer->m_iCodePage = m_iCodePage;
+    
+    RETURN_STATUS_IF_ERROR(m_pLocalPlayer->Open(m_strFileName, (int)playerView));
+	m_pLocalPlayer->SetVolume(uiSliderSound.value * 100); 
+	
+	[self SetPauseVisiable:NO];
+	[self SetPlayVisiable:YES];
+	
+	[self SetControlVisiable:YES];
+	bool bHasVideo = m_pLocalPlayer->HasVideo();
+    if (!bHasVideo)
+    {
+        [self Exit];
+        return ePlayerStatusError;
+    }
+	m_iControlLife = bHasVideo ? AUTO_CONTROL_HIDDEN_TIME : ALWAYS_SHOW_TIME;
+	m_pLocalPlayer->Start();
+	[self SetPauseVisiable:YES];
+	[self SetPlayVisiable:NO];
+	[self SetControlVisiable:YES];
 	
 	nsTimer = [NSTimer scheduledTimerWithTimeInterval:1.0/25.0 
                                                target:self
@@ -667,12 +560,22 @@ void ShowAlartMessage(string strMessage)
 
 - (EnumPlayerStatus) play
 {
-    [self play];
-    return ePlayerStatusOk;
+    return [self pause];
 }
 - (EnumPlayerStatus) pause
 {
-    [self Pause];
+    m_iControlLife = ALWAYS_SHOW_TIME;
+	[self SetControlVisiable:YES];
+	if (m_pLocalPlayer == NULL)
+	{
+		return ePlayerStatusError;
+	}
+	if (!m_pLocalPlayer->IsPaused())
+	{
+		m_pLocalPlayer->Pause();
+		[self SetPauseVisiable:NO];
+		[self SetPlayVisiable:YES];
+	}
     return ePlayerStatusOk;
 }
 - (EnumPlayerStatus) close
@@ -683,12 +586,20 @@ void ShowAlartMessage(string strMessage)
 
 - (unsigned long) getDuration
 {
-    return 0;
+    if (m_pLocalPlayer == NULL)
+	{
+		return 0;
+	}
+    return m_pLocalPlayer->m_iDuration;
 }
 
 - (unsigned long) getPlayingTime
 {
-    return 0;
+    if (m_pLocalPlayer == NULL)
+	{
+		return 0;
+	}
+    return m_pLocalPlayer->m_iCurrentTime;
 }
 
 - (EnumPlayerStatus) seek:(unsigned long)iSeekPos
@@ -703,7 +614,11 @@ void ShowAlartMessage(string strMessage)
 
 - (EnumPlaySpeed) getPlaySpeed
 {
-    return ePlaySpeedNormal;
+    if (m_pLocalPlayer == NULL)
+	{
+		return ePlaySpeedNormal;
+	}
+    return m_pLocalPlayer->GetPlaySpeed();
 }
 
 - (EnumPlayerStatus) setAspectRatio:(EnumAspectRatio)eAspectRatio
