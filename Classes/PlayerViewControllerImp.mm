@@ -45,6 +45,8 @@
 @synthesize m_strSrtPath;
 @synthesize m_iCodePage;
 @synthesize buttonChangeAspect;
+@synthesize imageViewControlProgress;
+@synthesize imageViewControlSound;
 // 5 seconds
 #define AUTO_CONTROL_HIDDEN_TIME 150
 #define ALWAYS_SHOW_TIME 0x7FFFFFFF
@@ -55,10 +57,17 @@
     self.viewControlProgress = [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
     self.viewControlSound = [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
     
+    self.imageViewControlProgress = [[[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"Control_Up_Background.png"] stretchableImageWithLeftCapWidth:10 topCapHeight:0]] autorelease];
+    self.imageViewControlSound = [[[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"Control_Down_Background.png"] stretchableImageWithLeftCapWidth:10 topCapHeight:0]] autorelease];
+    
     self.buttonPlay = [UIButton buttonWithType:UIButtonTypeCustom];
+    [buttonPlay addTarget:self action:@selector(onTouchUpInsidePlay:) forControlEvents:UIControlEventTouchUpInside];
     self.buttonPause = [UIButton buttonWithType:UIButtonTypeCustom];
+    [buttonPause addTarget:self action:@selector(onTouchUpInsidePause:) forControlEvents:UIControlEventTouchUpInside];
     self.buttonBackward = [UIButton buttonWithType:UIButtonTypeCustom];
+    [buttonBackward addTarget:self action:@selector(onTouchUpInsideBackword:) forControlEvents:UIControlEventTouchUpInside];
     self.buttonForward = [UIButton buttonWithType:UIButtonTypeCustom];
+    [buttonForward addTarget:self action:@selector(onTouchUpInsideForward:) forControlEvents:UIControlEventTouchUpInside];
     self.labelPlayed = [[[UILabel alloc] initWithFrame:CGRectZero] autorelease];
     self.labelLeft = [[[UILabel alloc] initWithFrame:CGRectZero] autorelease];
     self.uiSliderProgress = [[[UISlider alloc] initWithFrame:CGRectZero] autorelease];
@@ -73,10 +82,12 @@
     [playerView addSubview:viewControlProgress];
     [playerView addSubview:viewControlSound];
     
+    [viewControlProgress addSubview:imageViewControlProgress];
     [viewControlProgress addSubview:labelPlayed];
     [viewControlProgress addSubview:labelLeft];
     [viewControlProgress addSubview:uiSliderProgress];
     
+    [viewControlSound addSubview:imageViewControlSound];
     [viewControlSound addSubview:buttonPlay];
     [viewControlSound addSubview:buttonBackward];
     [viewControlSound addSubview:buttonForward];
@@ -84,9 +95,6 @@
     [viewControlSound addSubview:uiSliderSound];
     
     // set control constant property
-    [viewControlProgress setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Control_Up_Background.png"]]];
-    [viewControlSound setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"Control_Down_Background.png"]]];
-    
     [buttonPlay setImage:[UIImage imageNamed:@"Play.png"] forState:UIControlStateNormal];
     [buttonPlay setShowsTouchWhenHighlighted:YES];
     [buttonPause setImage:[UIImage imageNamed:@"Pause.png"] forState:UIControlStateNormal];
@@ -102,15 +110,21 @@
 
 - (void) setSubViewPos
 {
-    CGFloat fWidth = 320.0f;
-    CGFloat fHeight = 400.0f;
+    CRect rectRet(0, 0, 0, 0);
+    bool bPortrait = UIDeviceOrientationIsPortrait([[UIDevice currentDevice] orientation]);
+    const CRect rectScreen(0, 0, bPortrait ? 320 : 480, bPortrait ? 480 : 320);
     
+    CGFloat fWidth = rectScreen.Width();
+    CGFloat fHeight = rectScreen.Height();
+    
+    [playerView setNeedEraseBackground];
     [buttonChangeAspect setFrame:CGRectMake(50, 100, 50, 50)];
     [self refreshChangeAspectButton];
     // top controller
     {
         const CGFloat fHeightOfUpControlelr = 40.0f;
         [viewControlProgress setFrame:CGRectMake(0.0f, 0.0f, fWidth, fHeightOfUpControlelr)];
+        [imageViewControlSound setFrame:[viewControlProgress bounds]];
         const CGFloat fMarginWidth = 5.0f;
         const CGFloat fHeightOfLabel = 18.0f;
         const CGFloat fWidthOfLabel = 40.0f;
@@ -124,12 +138,13 @@
     // bottom controller
     {
         const CGFloat fWidthRate = 0.7f;
-        const CGFloat fMarginBottom = 5.0f;
-        const CGFloat fHeightOfBottomController = 120.0f;
+        const CGFloat fMarginBottom = 30.0f;
+        const CGFloat fHeightOfBottomController = 90.0f;
         [viewControlSound setFrame:CGRectMake((fWidth - fWidth*fWidthRate)/2, fHeight - fMarginBottom - fHeightOfBottomController, fWidth*fWidthRate, fHeightOfBottomController)];
+        [imageViewControlSound setFrame:[viewControlSound bounds]];
         const CGFloat fMarginWidth = 5.0f;
-        const CGFloat fWidthOfButton = 100.0f;
-        const CGFloat fHeightOfButton = 100.0f;
+        const CGFloat fWidthOfButton = 50.0f;
+        const CGFloat fHeightOfButton = 50.0f;
         const CGFloat fMarginTop = 5.0f;
         [buttonPlay setFrame:CGRectMake((fWidth*fWidthRate - fWidthOfButton)/2, fMarginTop, fWidthOfButton, fHeightOfButton)];
         [buttonPause setFrame:CGRectMake((fWidth*fWidthRate - fWidthOfButton)/2, fMarginTop, fWidthOfButton, fHeightOfButton)];
@@ -138,6 +153,7 @@
         const CGFloat fHeightOfProgress = 10.0f;
         [uiSliderSound setFrame:CGRectMake(fMarginWidth, fMarginTop + fMarginTop + fHeightOfButton, fWidth*fWidthRate - 2*fMarginWidth, fHeightOfProgress)];
     }
+    
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
@@ -155,13 +171,16 @@
     [self performSelector:@selector(open:) withObject:@"/Users/xiaoyi/Test.flv" afterDelay:2.0f];
 }
 
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    [self setSubViewPos];
+}
 
 
 // Override to allow orientations other than the default portrait orientation.
 -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
-	if ((toInterfaceOrientation == UIInterfaceOrientationLandscapeRight) 
-		|| (toInterfaceOrientation == UIInterfaceOrientationLandscapeLeft))
+	if (toInterfaceOrientation != UIInterfaceOrientationPortraitUpsideDown) 
 	{
 		return YES;
 	}
@@ -191,6 +210,8 @@
 	self.uiSliderProgress = nil;
 	self.uiSliderSound  = nil;
     self.buttonChangeAspect = nil;
+    self.imageViewControlProgress = nil;
+    self.imageViewControlSound = nil;
 }
 
 
@@ -208,6 +229,8 @@
 	[uiSliderSound release];
     [buttonChangeAspect release];
 	[nsTimer release];
+    [imageViewControlSound release];
+    [imageViewControlProgress release];
     [super dealloc];
 }
 
@@ -586,6 +609,7 @@ void ShowAlartMessage(string strMessage)
     [buttonChangeAspect setTitle:[arrayTitle objectAtIndex:eAspectRatio] forState:UIControlStateNormal];
 }
 
+#pragma mark control events
 - (void) onTouchUpInsideChangeAspect:(id)sender
 {
     EnumAspectRatio eAspectRatio = (EnumAspectRatio)[[UserDefaultHelper getValue:USER_DEFAULT_ASPECT_RATIO] intValue];
@@ -598,7 +622,19 @@ void ShowAlartMessage(string strMessage)
     [UserDefaultHelper setValue:USER_DEFAULT_ASPECT_RATIO iValue:eAspectRatio];
     [playerView setAspectRadio:eAspectRatio];
     [self refreshChangeAspectButton];
+}
 
+- (void) onTouchUpInsidePlay:(id)sender
+{
+}
+- (void) onTouchUpInsidePause:(id)sender
+{
+}
+- (void) onTouchUpInsideBackword:(id)sender
+{
+}
+- (void) onTouchUpInsideForward:(id)sender
+{
 }
 
 #pragma mark interface imp

@@ -72,6 +72,7 @@ typedef struct SRenderParam
 @property (nonatomic, assign) wstring m_wstrSubTitle;
 
 - (void) setAspectRadio:(EnumAspectRatio)eAspectRatio;
+- (void) setNeedEraseBackground;
 
 
 @end

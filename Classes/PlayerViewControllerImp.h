@@ -17,7 +17,9 @@ using namespace std;
 {
     PlayerView* playerView;
     UIView* viewControlProgress;
+    UIImageView* imageViewControlProgress;
     UIView* viewControlSound;
+    UIImageView* imageViewControlSound;
     UIButton* buttonPlay;
     UIButton* buttonPause;
     UIButton* buttonBackward;
@@ -49,7 +51,9 @@ using namespace std;
 
 @property (nonatomic, retain) PlayerView* playerView;
 @property (nonatomic, retain) UIView* viewControlProgress;
+@property (nonatomic, retain) UIImageView* imageViewControlProgress;
 @property (nonatomic, retain) UIView* viewControlSound;
+@property (nonatomic, retain) UIImageView* imageViewControlSound;
 @property (nonatomic, retain) UIButton* buttonPlay;
 @property (nonatomic, retain) UIButton* buttonPause;
 @property (nonatomic, retain) UIButton* buttonBackward;

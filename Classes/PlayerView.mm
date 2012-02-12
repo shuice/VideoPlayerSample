@@ -266,6 +266,11 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
 - (void) setAspectRadio:(EnumAspectRatio)eAspectRatio
 {
     m_sRenderParam.eAspectRatio = eAspectRatio;
+    [self setNeedEraseBackground];
+}
+
+- (void) setNeedEraseBackground
+{
     bNeedClearBackground = true;
 }
 
