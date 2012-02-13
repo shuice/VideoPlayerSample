@@ -253,11 +253,7 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
 - (void)handleTimer
 {    
     //saveBmp("/Users/xiaoyi/1.bmp",m_pDataResized,m_sRenderParam.sizeMovieResized.width,m_sRenderParam.sizeMovieResized.height,32);
-    if (bNeedClearBackground)
-    {
-        [self clearBackground];
-        bNeedClearBackground = false;
-    }
+    [self clearBackground];
     [self updateRenderParam];
 	glColor4f(1.0f, 1.0f, 1.0f, 0.0f);
 
@@ -288,12 +284,6 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
 - (void) setAspectRadio:(EnumAspectRatio)eAspectRatio
 {
     m_sRenderParam.eAspectRatio = eAspectRatio;
-    [self setNeedEraseBackground];
-}
-
-- (void) setNeedEraseBackground
-{
-    bNeedClearBackground = true;
 }
 
 - (void) setMovieSize:(int)iWidth iHeight:(int)iHeight iWidthResized:(int)iWidthResized iHeightResized:(int)iHeightResized

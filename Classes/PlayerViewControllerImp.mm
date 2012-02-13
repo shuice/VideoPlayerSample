@@ -112,7 +112,6 @@
     CGFloat fWidth = rectScreen.Width();
     CGFloat fHeight = rectScreen.Height();
     
-    [playerView setNeedEraseBackground];
     [buttonChangeAspect setFrame:CGRectMake(50, 100, 50, 50)];
     [self refreshChangeAspectButton];
     // top controller
@@ -161,8 +160,8 @@
 //    buttonBackward.alpha = 0;
 //    buttonForward.alpha = 0;
 //	[self SetPauseVisiable:NO];
-    
-    [self performSelector:@selector(open:) withObject:@"/Users/xiaoyi/Test.flv" afterDelay:2.0f];
+    NSString* str = [[NSBundle mainBundle] pathForResource:@"Test" ofType:@"flv"];
+    [self performSelector:@selector(open:) withObject:str afterDelay:2.0f];
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
@@ -548,7 +547,7 @@ void ShowAlartMessage(string strMessage)
 	[self SetPlayVisiable:NO];
 	[self SetControlVisiable:YES];
 	
-	nsTimer = [NSTimer scheduledTimerWithTimeInterval:1.0/25.0 
+	nsTimer = [NSTimer scheduledTimerWithTimeInterval:1.0/15.0f 
                                                target:self
                                              selector:@selector(handleTimer:)
                                              userInfo:nil

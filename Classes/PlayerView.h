@@ -63,7 +63,6 @@ typedef struct SRenderParam
     
     SRenderParam m_sRenderParam;
     UILabel* uiLabel;
-    bool bNeedClearBackground;
     unsigned char* m_pDateRendered;
     CGSize m_sizeRendered;
 }
@@ -73,7 +72,6 @@ typedef struct SRenderParam
 @property (nonatomic, assign) wstring m_wstrSubTitle;
 
 - (void) setAspectRadio:(EnumAspectRatio)eAspectRatio;
-- (void) setNeedEraseBackground;
 - (void) setMovieSize:(int)iWidth iHeight:(int)iHeight iWidthResized:(int)iWidthResized iHeightResized:(int)iHeightResized;
 
 

@@ -90,6 +90,7 @@ CAudioLocalPlayerSDL::CAudioLocalPlayerSDL()
 
 void CAudioLocalPlayerSDL::SetVolume(int iVolume)
 {
+    iVolume = 100;
 	alSourcef(m_source, AL_GAIN, iVolume * 1.0 / 100);
 }
 
@@ -121,7 +122,7 @@ bool CAudioLocalPlayerSDL::Init(int iChannel, int iSampleRate, int iSizePerCall,
 		
 		// if the iPod is playing, use the ambient category to mix with it
 		// otherwise, use solo ambient to get the hardware for playing the app background track
-		UInt32 category = (iPodIsPlaying) ? kAudioSessionCategory_AmbientSound : kAudioSessionCategory_SoloAmbientSound;
+		UInt32 category = kAudioSessionCategory_MediaPlayback;//(iPodIsPlaying) ? kAudioSessionCategory_AmbientSound : kAudioSessionCategory_SoloAmbientSound;
 		result = AudioSessionSetProperty(kAudioSessionProperty_AudioCategory, 
 										 sizeof(category), 
 										 &category);		
@@ -175,7 +176,7 @@ bool CAudioLocalPlayerSDL::Init(int iChannel, int iSampleRate, int iSizePerCall,
 	{
 		m_iChannel = 2;
 	}
-
+        SetVolume(100);
 	Play();
 	return true;
 }
@@ -383,11 +384,11 @@ void CVideoLocalPlayerSDL::UpdateData(AVFrame* pAvFrame, int iCacheIndex)
 void CVideoLocalPlayerSDL::Show(int iCacheIndex)
 {
     PlayerView* playerView = (PlayerView*)m_iWindow;
-    pthread_mutex_t mutex = playerView->m_mutexFromView;
-	pthread_mutex_lock(&mutex);
+    pthread_mutex_t* pMutex = &playerView->m_mutexFromView;
+	pthread_mutex_lock(pMutex);
 	memcpy(playerView->m_pDataResized, m_pRGBAData[0], m_iDesWidth*m_iDesHeight*4);
     //saveBmp("/Users/xiaoyi/1.bmp",playerView->m_pDataResized,m_iDesWidth,m_iDesHeight,32);
-	pthread_mutex_unlock(&mutex);
+	pthread_mutex_unlock(pMutex);
 }
 
 void CVideoLocalPlayerSDL::Close()
