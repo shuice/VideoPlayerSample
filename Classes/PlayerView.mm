@@ -4,11 +4,10 @@
 #import "PlayerViewControllerImp.h"
 
 
-
 @implementation PlayerView
 
 @synthesize m_wstrSubTitle;
-
+@synthesize playerViewControllerImp;
 
 
 // You must implement this method
@@ -53,14 +52,6 @@
     pthread_mutex_init(&m_mutexFromView, NULL);
     if (self = [super initWithFrame:frame]) 
 	{
-        uiLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        uiLabel.layer.shadowRadius = 5.0;
-        uiLabel.layer.shadowOpacity = 0.7;
-        uiLabel.layer.shadowColor = [[UIColor orangeColor] CGColor];
-        uiLabel.layer.shadowOffset = CGSizeMake(2.0, 0.0);
-        uiLabel.lineBreakMode = UILineBreakModeWordWrap; 
-        uiLabel.numberOfLines = 0;
-
         CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
         eaglLayer.opaque = YES;
         eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -135,7 +126,6 @@
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glDeleteTextures(1, &glTexture);
-	[uiLabel release];
     delete[] m_pDataCorped;
     delete[] m_pDataResized;
     [super dealloc];
@@ -294,6 +284,26 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
     m_sRenderParam.sizeMovieResized.height = iHeightResized;
 }
 
-
+- (void) showWithSubTitle:(NSString*)str
+{
+    [playerViewControllerImp showWithSubTitle:str];
+    [self clearBackground];
+    [self updateRenderParam];
+	glColor4f(1.0f, 1.0f, 1.0f, 0.0f);
+    
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+    
+	pthread_mutex_lock(&m_mutexFromView);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_sizeRendered.width, m_sizeRendered.height,
+				 0, GL_RGBA, GL_UNSIGNED_BYTE, m_pDateRendered);
+	pthread_mutex_unlock(&m_mutexFromView);
+	
+	glVertexPointer(2, GL_FLOAT, 0, m_sRenderParam.arraySquareVertices);
+	glTexCoordPointer(2, GL_FLOAT, 0, m_sRenderParam.arraySquareTextureCoords);
+	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+    
+	[context presentRenderbuffer:GL_RENDERBUFFER_OES];
+}
 
 @end

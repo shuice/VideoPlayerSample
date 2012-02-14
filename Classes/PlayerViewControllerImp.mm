@@ -11,6 +11,7 @@
 #include "LocalPlayer.h"
 #import "Common.h"
 #import <sys/time.h>
+#import <QuartzCore/CALayer.h>
 
 @interface PlayerViewControllerImp(method)
     - (void) refreshChangeAspectButton;
@@ -40,6 +41,7 @@
 @synthesize buttonChangeAspect;
 @synthesize imageViewControlProgress;
 @synthesize imageViewControlSound;
+@synthesize uiLabelSubTitle;
 // 5 seconds
 #define AUTO_CONTROL_HIDDEN_TIME 150
 #define ALWAYS_SHOW_TIME 0x7FFFFFFF
@@ -47,6 +49,7 @@
 - (void) insertSubViews
 {
     self.playerView = [[[PlayerView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, PLAYER_FRAME_WIDTH, PLAYER_FRAME_HEIGHT)] autorelease];
+    playerView.playerViewControllerImp = self;
     self.viewControlProgress = [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
     self.viewControlSound = [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
     
@@ -68,8 +71,18 @@
     self.buttonChangeAspect = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [buttonChangeAspect addTarget:self action:@selector(onTouchUpInsideChangeAspect:) forControlEvents:UIControlEventTouchUpInside];
     
+    self.uiLabelSubTitle = [[[UILabel alloc] initWithFrame:CGRectZero] autorelease];
+    CALayer* layer = [uiLabelSubTitle layer];
+    layer.shadowRadius = 5.0;
+    uiLabelSubTitle.layer.shadowOpacity = 0.7;
+    uiLabelSubTitle.layer.shadowColor = [[UIColor orangeColor] CGColor];
+    uiLabelSubTitle.layer.shadowOffset = CGSizeMake(2.0, 0.0);
+    uiLabelSubTitle.lineBreakMode = UILineBreakModeWordWrap; 
+    uiLabelSubTitle.numberOfLines = 0;
+    
     // subviews
     [[self view] addSubview:playerView];
+    [[self view] addSubview:uiLabelSubTitle];
     [[self view] addSubview:buttonChangeAspect];
     
     [playerView addSubview:viewControlProgress];
@@ -113,6 +126,7 @@
     CGFloat fHeight = rectScreen.Height();
     
     [buttonChangeAspect setFrame:CGRectMake(50, 100, 50, 50)];
+    [uiLabelSubTitle setFrame:CGRectMake(10.0f, fHeight - 50.0f, fWidth - 20.0f, 20.0f)];
     [self refreshChangeAspectButton];
     // top controller
     {
@@ -206,6 +220,7 @@
     self.buttonChangeAspect = nil;
     self.imageViewControlProgress = nil;
     self.imageViewControlSound = nil;
+    self.uiLabelSubTitle = nil;
 }
 
 
@@ -225,12 +240,13 @@
 	[nsTimer release];
     [imageViewControlSound release];
     [imageViewControlProgress release];
+    [uiLabelSubTitle release];
     [super dealloc];
 }
 
 -(string) GetSrtFileName
 {
-    return m_strSrtPath;
+    return [[[NSBundle mainBundle] pathForResource:@"1" ofType:@"smi"] UTF8String];
 }
 
 -(void) Close
@@ -286,13 +302,6 @@
 		[self SetPauseVisiable:YES];
 		[self SetPlayVisiable:NO];
 	}
-	
-
-}
--(void) buttonPause:(id)sender
-{
-	[self Pause];
-
 }
 
 -(void) buttonPre:(id)sender
@@ -517,7 +526,7 @@ void ShowAlartMessage(string strMessage)
 	labelPlayed.text = @"";
 	labelLeft.text = @"";
 	//[[playerView uiLabel] setText:@""];
-	uiSliderProgress.value = 0.0;
+	uiSliderProgress.value = 0.0f;
 	m_bInSeek = NO;
     
     m_pLocalPlayer = new CLocalPlayer;
@@ -529,7 +538,8 @@ void ShowAlartMessage(string strMessage)
     m_pLocalPlayer->m_iCodePage = m_iCodePage;
     
     RETURN_STATUS_IF_ERROR(m_pLocalPlayer->Open(m_strFileName, (int)playerView));
-	m_pLocalPlayer->SetVolume(uiSliderSound.value * 100); 
+    uiSliderSound.value = [[UserDefaultHelper getValue:USER_DEFAULT_VOLUME] intValue] / 100.0f;
+	m_pLocalPlayer->SetVolume([[UserDefaultHelper getValue:USER_DEFAULT_VOLUME] intValue]); 
 	
 	[self SetPauseVisiable:NO];
 	[self SetPlayVisiable:YES];
@@ -547,11 +557,11 @@ void ShowAlartMessage(string strMessage)
 	[self SetPlayVisiable:NO];
 	[self SetControlVisiable:YES];
 	
-	nsTimer = [NSTimer scheduledTimerWithTimeInterval:1.0/15.0f 
-                                               target:self
-                                             selector:@selector(handleTimer:)
-                                             userInfo:nil
-                                              repeats:YES];
+//	nsTimer = [NSTimer scheduledTimerWithTimeInterval:1.0/15.0f 
+//                                               target:self
+//                                             selector:@selector(handleTimer:)
+//                                             userInfo:nil
+//                                              repeats:YES];
 	
 
     return ePlayerStatusOk;
@@ -623,6 +633,46 @@ void ShowAlartMessage(string strMessage)
 - (EnumPlayerStatus) setAspectRatio:(EnumAspectRatio)eAspectRatio
 {
     return ePlayerStatusNotImp;
+}
+
+- (void) showWithSubTitle:(NSString*)str
+{
+    [uiLabelSubTitle setText:str];
+    if (m_pLocalPlayer == NULL)
+    {
+        return;
+    }
+    
+	if (m_pLocalPlayer->m_bReadEndOfFile)
+	{
+		[self Close];
+	}
+	// check control visiable
+	if ([self isControlVisiable] == YES)
+	{
+		m_iControlLife --;
+		if (m_iControlLife <= 0)
+		{
+			m_iControlLife = 0;
+			[self SetControlVisiable:NO];
+		}
+	}
+
+	
+	//return;
+	if (m_bInSeek == YES)
+	{
+		m_pLocalPlayer->m_iCurrentTime = uiSliderProgress.value * m_pLocalPlayer->m_iDuration;
+	}
+	else
+	{
+		float fValue = m_pLocalPlayer->m_iCurrentTime * 1.0 / m_pLocalPlayer->m_iDuration;
+		uiSliderProgress.value = fValue;
+	}
+    
+	char szTime[20] = {0};
+    labelPlayed.text =  [NSString stringWithCString:FormatTime(m_pLocalPlayer->m_iCurrentTime, true, szTime, sizeof(szTime)) encoding:NSASCIIStringEncoding];
+    labelLeft.text = [NSString stringWithCString:FormatTime(m_pLocalPlayer->m_iDuration - m_pLocalPlayer->m_iCurrentTime, false, szTime, sizeof(szTime)) encoding:NSASCIIStringEncoding];
 }
 
 

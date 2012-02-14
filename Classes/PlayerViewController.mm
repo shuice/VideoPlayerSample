@@ -1,6 +1,6 @@
 #import "PlayerViewController.h"
 #import "PlayerViewControllerImp.h"
-
+#import "UserDefaultHelper.h"
 @implementation PlayerViewController
 
 +(PlayerViewController*) sharedPlayer
@@ -8,6 +8,7 @@
     static PlayerViewControllerImp* playerViewControllerImp = nil;
     if (playerViewControllerImp == nil)
     {
+        [UserDefaultHelper init];
         playerViewControllerImp = [[PlayerViewControllerImp alloc] init];
         [playerViewControllerImp view];
     }

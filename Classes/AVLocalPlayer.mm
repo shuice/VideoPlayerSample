@@ -366,11 +366,6 @@ bool CVideoLocalPlayerSDL::Init(long iWindow, int iMediaWidth, int iMediaHeight,
 		m_avPicture[iCacheIndex].data[0] = m_avPicture[iCacheIndex].data[0] + m_avPicture[iCacheIndex].linesize[0] * (m_iDesHeight - 1);
 		m_avPicture[iCacheIndex].linesize[0] = - m_avPicture[iCacheIndex].linesize[0];
 	}
-	
-	
-	//m_pRGBADataFromView = playerView->m_pRGBADataFromView;
-	//m_pwstrSubTitle = &(playerView->m_wstrSubTitle);
-	//m_pMutexFromView = &(playerView->m_mutexFromView);
 	return true;
 }
 
@@ -387,8 +382,13 @@ void CVideoLocalPlayerSDL::Show(int iCacheIndex)
     pthread_mutex_t* pMutex = &playerView->m_mutexFromView;
 	pthread_mutex_lock(pMutex);
 	memcpy(playerView->m_pDataResized, m_pRGBAData[0], m_iDesWidth*m_iDesHeight*4);
-    //saveBmp("/Users/xiaoyi/1.bmp",playerView->m_pDataResized,m_iDesWidth,m_iDesHeight,32);
 	pthread_mutex_unlock(pMutex);
+    
+    NSData* nsData = [NSData dataWithBytes:m_wstrSubTitle.c_str()
+                                    length:m_wstrSubTitle.size()*sizeof(wchar_t)];
+    NSString* str = [[[NSString alloc] initWithData:nsData 
+                                          encoding:NSUTF32LittleEndianStringEncoding] autorelease];
+    [playerView performSelector:@selector(showWithSubTitle:) onThread:[NSThread mainThread] withObject:str waitUntilDone:NO];
 }
 
 void CVideoLocalPlayerSDL::Close()

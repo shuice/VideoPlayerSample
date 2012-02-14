@@ -144,6 +144,12 @@ CLocalPlayer::~CLocalPlayer()
 		delete m_pConditionPictQueue;
 		m_pConditionPictQueue = NULL;
 	}
+    if (m_pSubTitleReader != NULL)
+    {
+        delete m_pSubTitleReader;
+        m_pSubTitleReader = NULL;
+    }
+    
 }
 
 // sFileName is filekey
@@ -153,8 +159,10 @@ EnumPlayerStatus CLocalPlayer::Open(const string& strFileName, long iWindow1)
     RETURN_STATUS_IF_ERROR(InitData(strFileName));
     RETURN_STATUS_IF_ERROR(InitUIAndAudioDevice());
     
-	m_srtSubTitleReader.LoadFile(m_strSubTitleLocal);
-	m_srtSubTitleReader.SetCodePage(m_iCodePage);
+    
+    m_pSubTitleReader = new CSmiSubTitleReader;
+	m_pSubTitleReader->LoadFile(m_strSubTitleLocal);
+	m_pSubTitleReader->SetCodePage(936);
 	return ePlayerStatusOk;
 }
 
@@ -525,7 +533,7 @@ int CLocalPlayer::QueuePicture(AVFrame *src_frame, double pts1)
 		// update subtitle
 		SSubTitleFormat sSubTitleFormat;
 		wstring wstrSubTitle;
-		m_srtSubTitleReader.GetString(pts1 * 1000, wstrSubTitle, &sSubTitleFormat);
+		m_pSubTitleReader->GetString(pts1 * 1000, wstrSubTitle, &sSubTitleFormat);
 		m_pVideoLocalPlayer->m_wstrSubTitle = wstrSubTitle;
 	}	
 	m_pVideoLocalPlayer->UpdateData(src_frame, pictq_windex);

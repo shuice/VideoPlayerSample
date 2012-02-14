@@ -29,6 +29,7 @@
 
 #include "SampleFmt.h"
 #include "SrtSubTitleReader.h"
+#include "SmiSubTitleReader.h"
 #include "PlayerViewDefine.h"
 
 #define MAX_QUEUE_SIZE (10 * 1024 * 1024)
@@ -209,7 +210,7 @@ public:
 	int m_iCodePage;
 //	string 
 private:
-	CSrtSubTitleReader m_srtSubTitleReader;
+	CSrtSubTitleReader* m_pSubTitleReader;
 private:
 	// open invoked
 	EnumPlayerStatus InitData(const string& strFileName); // 初始化播放器数据

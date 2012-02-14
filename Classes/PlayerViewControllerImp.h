@@ -13,7 +13,9 @@
 using namespace std;
 #import "PlayerViewController.h"
 #import "PlayerView.h"
-@interface PlayerViewControllerImp : PlayerViewController 
+
+@class PlayerView;
+@interface PlayerViewControllerImp : PlayerViewController
 {
     PlayerView* playerView;
     UIView* viewControlProgress;
@@ -29,7 +31,8 @@ using namespace std;
     UISlider* uiSliderProgress;
     UISlider* uiSliderSound;
     UIButton* buttonChangeAspect;
-
+    UILabel* uiLabelSubTitle;
+    
 	NSTimer* nsTimer;
 	CLocalPlayer* m_pLocalPlayer;
 	string m_strFileName;
@@ -56,7 +59,7 @@ using namespace std;
 @property (nonatomic, retain) UILabel* labelPlayed;
 @property (nonatomic, retain) UILabel* labelLeft;
 @property (nonatomic, retain) UIButton* buttonChangeAspect;
-
+@property (nonatomic, retain) UILabel* uiLabelSubTitle;
 
 @property (nonatomic, assign) string m_strSrtPath;
 @property (nonatomic, assign) int m_iCodePage;
@@ -69,7 +72,6 @@ using namespace std;
 @property (nonatomic, assign) string m_strFileName;
 @property (nonatomic, assign) int m_iControlLife;
 
--(void) Pause;
 -(void) Close;
 -(void) onTouchPlayerView:(id)sender;
 
@@ -87,6 +89,5 @@ using namespace std;
 - (void) SetPlayVisiable:(BOOL) bVisiable;
 -(void) OnTouchInPos:(id)sender;
 -(void) OnTouchOutPos:(id)sender;
-
-
+- (void) showWithSubTitle:(NSString*)str;
 @end

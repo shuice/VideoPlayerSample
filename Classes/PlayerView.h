@@ -35,6 +35,7 @@
 #import "Common.h"
 #import "PlayerViewController.h"
 
+
 #define PLAYER_DEG_TO_RAD				0.017453f
 #define PLAYER_FRAME_WIDTH 480.0f
 #define PLAYER_FRAME_HEIGHT 480.0f
@@ -49,6 +50,7 @@ typedef struct SRenderParam
     GLfloat arraySquareTextureCoords[8];
 }SRenderParam;
 
+@class PlayerViewControllerImp;
 @interface PlayerView : UIView {
 @public   
 	pthread_mutex_t m_mutexFromView;
@@ -62,14 +64,16 @@ typedef struct SRenderParam
 	GLuint glTexture;
     
     SRenderParam m_sRenderParam;
-    UILabel* uiLabel;
     unsigned char* m_pDateRendered;
     CGSize m_sizeRendered;
+    
+    PlayerViewControllerImp* playerViewControllerImp;
 }
 
 - (void)handleTimer;
 
 @property (nonatomic, assign) wstring m_wstrSubTitle;
+@property (nonatomic, assign) PlayerViewControllerImp* playerViewControllerImp;
 
 - (void) setAspectRadio:(EnumAspectRatio)eAspectRatio;
 - (void) setMovieSize:(int)iWidth iHeight:(int)iHeight iWidthResized:(int)iWidthResized iHeightResized:(int)iHeightResized;
