@@ -69,16 +69,19 @@ typedef struct SRenderParam
     
     PlayerViewControllerImp* playerViewControllerImp;
     bool m_bRoating;
+    CGRect m_rectOnScreen;
 }
 
 - (void)handleTimer;
 
 @property (nonatomic, assign) wstring m_wstrSubTitle;
 @property (nonatomic, assign) PlayerViewControllerImp* playerViewControllerImp;
+@property (nonatomic, readonly) CGRect m_rectOnScreen;
 
 - (void) setAspectRadio:(EnumAspectRatio)eAspectRatio;
 - (void) setMovieSize:(int)iWidth iHeight:(int)iHeight iWidthResized:(int)iWidthResized iHeightResized:(int)iHeightResized;
 - (void) startRotate;
 - (void) stopRotate;
+- (void) calcOnScreenRect;
 
 @end

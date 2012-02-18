@@ -17,6 +17,10 @@
     - (void) refreshChangeAspectButton;
     -(EnumPlayerStatus) Open;
     -(BOOL) isControlVisiable;
+- (void) SetPlayVisiable:(BOOL) bVisiable;
+- (void) SetPauseVisiable:(BOOL) bVisiable;
+-(void) SetControlVisiable:(BOOL)bVisiable;
+- (void)setSubTitlePos;
 @end
 
 
@@ -93,6 +97,10 @@
     uiLabelSubTitle.layer.shadowOffset = CGSizeMake(2.0, 0.0);
     uiLabelSubTitle.lineBreakMode = UILineBreakModeWordWrap; 
     uiLabelSubTitle.numberOfLines = 0;
+    uiLabelSubTitle.backgroundColor = [UIColor clearColor];
+    uiLabelSubTitle.textAlignment = UITextAlignmentCenter;
+    uiLabelSubTitle.textColor = [UIColor whiteColor];
+    uiLabelSubTitle.shadowColor = [UIColor blackColor];
     
     // subviews
     [[self view] addSubview:playerView];
@@ -176,6 +184,8 @@
         const CGFloat fHeightOfProgress = 10.0f;
         [uiSliderSound setFrame:CGRectMake(fMarginWidth, fMarginTop + fMarginTop + fHeightOfButton, fWidth*fWidthRate - 2*fMarginWidth, fHeightOfProgress)];
     }
+    [playerView calcOnScreenRect];
+    [self setSubTitlePos];
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
@@ -229,6 +239,7 @@
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
     self.playerView = nil;
+    self.controlControls = nil;
 	self.viewControlProgress = nil;
 	self.viewControlSound = nil;
 	self.buttonPlay = nil;
@@ -248,6 +259,7 @@
 
 - (void)dealloc {
 	[playerView release];
+    [controlControls release];
 	[viewControlProgress release];
 	[viewControlSound release];
 	[buttonPlay release];
@@ -484,6 +496,8 @@ void ShowAlartMessage(string strMessage)
     [UserDefaultHelper setValue:USER_DEFAULT_ASPECT_RATIO iValue:eAspectRatio];
     [playerView setAspectRadio:eAspectRatio];
     [self refreshChangeAspectButton];
+    [playerView calcOnScreenRect];
+    [self setSubTitlePos];
 }
 
 - (void) onTouchUpInsidePlay:(id)sender
@@ -701,6 +715,25 @@ void ShowAlartMessage(string strMessage)
 	char szTime[20] = {0};
     labelPlayed.text =  [NSString stringWithCString:FormatTime(m_pLocalPlayer->m_iCurrentTime, true, szTime, sizeof(szTime)) encoding:NSASCIIStringEncoding];
     labelLeft.text = [NSString stringWithCString:FormatTime(m_pLocalPlayer->m_iDuration - m_pLocalPlayer->m_iCurrentTime, false, szTime, sizeof(szTime)) encoding:NSASCIIStringEncoding];
+}
+
+- (void)setSubTitlePos
+{
+    bool bPortrait = UIDeviceOrientationIsPortrait([[UIDevice currentDevice] orientation]);
+    const CRect rectScreen(0, 0, bPortrait ? 320 : 480, bPortrait ? 450 : 290);
+    CGRect rectOnScreen = playerView.m_rectOnScreen;
+    if ((int(rectOnScreen.size.width) == 0) || (int(rectOnScreen.size.height) == 0))
+    {
+        rectOnScreen = CGRectMake(0.0f, 0.0f, rectScreen.Width(), rectScreen.Height());
+    }
+    CGFloat fTop = rectOnScreen.origin.y + rectOnScreen.size.height;
+    CGFloat fBottom = rectScreen.top + rectScreen.Height();
+    const CGFloat fHeihgt = 50.0f;
+    if (fBottom - fTop < fHeihgt)
+    {
+        fTop = fBottom - fHeihgt;
+    }
+    [uiLabelSubTitle setFrame:CGRectMake(0.0f, fTop, rectScreen.Width(), fHeihgt)];
 }
 
 

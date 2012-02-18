@@ -8,7 +8,7 @@
 
 @synthesize m_wstrSubTitle;
 @synthesize playerViewControllerImp;
-
+@synthesize m_rectOnScreen;
 
 // You must implement this method
 + (Class)layerClass {
@@ -145,7 +145,7 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
         memcpy(pDataTo, pDataFrom, iLineByteCroped);
     }
 }
-- (CGRect) calcOnScreenRect
+- (void) calcOnScreenRect
 {
     CRect rectRet(0, 0, 0, 0);
     bool bPortrait = UIDeviceOrientationIsPortrait([[UIDevice currentDevice] orientation]);
@@ -194,13 +194,13 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
             m_pDateRendered = m_pDataResized;
             break;
     }
-    return CGRectMake(rectRet.left, rectRet.top, rectRet.Width(), rectRet.Height());   
+    m_rectOnScreen = CGRectMake(rectRet.left, rectRet.top, rectRet.Width(), rectRet.Height());   
 }
 
 - (void) updateRenderParam
 {
-    CGRect rectOnScreen = [self calcOnScreenRect];
-    
+    [self calcOnScreenRect];
+    CGRect rectOnScreen = m_rectOnScreen;
     m_sRenderParam.arraySquareVertices[0] = rectOnScreen.origin.x;
     m_sRenderParam.arraySquareVertices[1] = PLAYER_FRAME_HEIGHT - rectOnScreen.origin.y;
     m_sRenderParam.arraySquareVertices[2] = rectOnScreen.origin.x;

@@ -75,22 +75,6 @@ using namespace std;
 @property (nonatomic, assign) string m_strFileName;
 @property (nonatomic, assign) int m_iControlLife;
 
--(void) Close;
--(void) onTouchPlayerView:(id)sender;
 
--(void) buttonExit:(id)sender;
-
--(void) buttonPlay:(id)sender;
--(void) buttonPause:(id)sender;
--(void) buttonPre:(id)sender;
--(void) buttonNext:(id)sender;
-
--(void) sliderPosChangeProgress:(id)sender;
--(void) sliderPosChangeSound:(id)sender;
--(void) SetControlVisiable:(BOOL)bVisiable;
-- (void) SetPauseVisiable:(BOOL) bVisiable;
-- (void) SetPlayVisiable:(BOOL) bVisiable;
--(void) OnTouchInPos:(id)sender;
--(void) OnTouchOutPos:(id)sender;
 - (void) showWithSubTitle:(NSString*)str;
 @end
