@@ -540,7 +540,7 @@ void ShowAlartMessage(string strMessage)
     RETURN_STATUS_IF_ERROR(m_pLocalPlayer->Open(m_strFileName, (int)playerView));
     uiSliderSound.value = [[UserDefaultHelper getValue:USER_DEFAULT_VOLUME] intValue] / 100.0f;
 	m_pLocalPlayer->SetVolume([[UserDefaultHelper getValue:USER_DEFAULT_VOLUME] intValue]); 
-	
+	m_pLocalPlayer->SetPlaySpeed(ePlaySpeedHalf);
 	[self SetPauseVisiable:NO];
 	[self SetPlayVisiable:YES];
 	

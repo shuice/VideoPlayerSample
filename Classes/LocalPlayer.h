@@ -122,8 +122,8 @@ typedef struct VideoState
 	CPacketQueue audioq;
 	int64_t audio_callback_time;
     int audio_hw_buf_size;
- 	uint8_t __attribute__ ((aligned (16))) audio_buf1[(AVCODEC_MAX_AUDIO_FRAME_SIZE * 3) / 2];
-	uint8_t __attribute__ ((aligned (16))) audio_buf2[(AVCODEC_MAX_AUDIO_FRAME_SIZE * 3) / 2];
+ 	uint8_t __attribute__ ((aligned (16))) audio_buf1[(AVCODEC_MAX_AUDIO_FRAME_SIZE * 6) / 2];
+	uint8_t __attribute__ ((aligned (16))) audio_buf2[(AVCODEC_MAX_AUDIO_FRAME_SIZE * 6) / 2];
 
 
     uint8_t *audio_buf;
@@ -239,7 +239,7 @@ private:
 	void* ThreadReadRoute();
 	int AudioWriteGetBufSize();
 	double ComputeTargetTime(double frame_current_pts);
-	
+	void DealWithUnNormalSpeed(unsigned int& iAudioBufSize, int8_t * pData);
 	static inline int ComputeMod(int a, int b);
 	static bool m_bDecodeAbortRequest;
 };

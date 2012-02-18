@@ -1291,6 +1291,29 @@ void CLocalPlayer::Step()
 	step = 1;
 }
 
+void CLocalPlayer::DealWithUnNormalSpeed(unsigned int& iAudioBufSize, int8_t * pData)
+{
+    if (m_ePlaySpeed == ePlaySpeedNormal)
+    {
+        return;
+    }
+    
+    if (m_ePlaySpeed == ePlaySpeedHalf)
+    {
+        iAudioBufSize *= 2;
+    }
+    else if (m_ePlaySpeed == ePlaySpeedDouble)
+    {
+        iAudioBufSize /= 2;
+    }
+    else if (m_ePlaySpeed == ePlaySpeedForth)
+    {
+        iAudioBufSize /= 4;
+    }
+    memset(pData+audio_buf_index, 0, iAudioBufSize);
+    return;
+}
+
 void CLocalPlayer::AudioCallBack(unsigned char *stream, int len)
 {
     audio_callback_time = av_gettime();
@@ -1317,6 +1340,9 @@ void CLocalPlayer::AudioCallBack(unsigned char *stream, int len)
 			}
 			audio_buf_index = 0;
         }
+        
+        DealWithUnNormalSpeed(audio_buf_size, (int8_t *)audio_buf);
+        
         int len1 = audio_buf_size - audio_buf_index;
         if (len1 > len)
 		{
