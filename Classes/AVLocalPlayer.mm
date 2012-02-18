@@ -90,7 +90,6 @@ CAudioLocalPlayerSDL::CAudioLocalPlayerSDL()
 
 void CAudioLocalPlayerSDL::SetVolume(int iVolume)
 {
-    iVolume = 100;
 	alSourcef(m_source, AL_GAIN, iVolume * 1.0 / 100);
 }
 

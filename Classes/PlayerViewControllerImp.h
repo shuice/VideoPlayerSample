@@ -18,6 +18,7 @@ using namespace std;
 @interface PlayerViewControllerImp : PlayerViewController
 {
     PlayerView* playerView;
+    UIControl* controlControls;
     UIView* viewControlProgress;
     UIImageView* imageViewControlProgress;
     UIView* viewControlSound;
@@ -32,6 +33,7 @@ using namespace std;
     UISlider* uiSliderSound;
     UIButton* buttonChangeAspect;
     UILabel* uiLabelSubTitle;
+    
     
 	NSTimer* nsTimer;
 	CLocalPlayer* m_pLocalPlayer;
@@ -48,6 +50,7 @@ using namespace std;
 }
 
 @property (nonatomic, retain) PlayerView* playerView;
+@property (nonatomic, retain) UIControl* controlControls;
 @property (nonatomic, retain) UIView* viewControlProgress;
 @property (nonatomic, retain) UIImageView* imageViewControlProgress;
 @property (nonatomic, retain) UIView* viewControlSound;

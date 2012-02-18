@@ -16,6 +16,7 @@
 @interface PlayerViewControllerImp(method)
     - (void) refreshChangeAspectButton;
     -(EnumPlayerStatus) Open;
+    -(BOOL) isControlVisiable;
 @end
 
 
@@ -24,6 +25,7 @@
 @synthesize viewControlProgress;
 @synthesize viewControlSound;
 @synthesize playerView;
+@synthesize controlControls;
 @synthesize m_strFileName;
 @synthesize buttonPlay;
 @synthesize buttonPause;
@@ -49,6 +51,9 @@
 - (void) insertSubViews
 {
     self.playerView = [[[PlayerView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, PLAYER_FRAME_WIDTH, PLAYER_FRAME_HEIGHT)] autorelease];
+    self.controlControls = [[[UIControl alloc] initWithFrame:[playerView bounds]] autorelease];
+    [controlControls addTarget:self action:@selector(onTouchUpInsideControlControls:) forControlEvents:UIControlEventTouchUpInside];
+    
     playerView.playerViewControllerImp = self;
     self.viewControlProgress = [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
     self.viewControlSound = [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
@@ -65,9 +70,18 @@
     self.buttonForward = [UIButton buttonWithType:UIButtonTypeCustom];
     [buttonForward addTarget:self action:@selector(onTouchUpInsideForward:) forControlEvents:UIControlEventTouchUpInside];
     self.labelPlayed = [[[UILabel alloc] initWithFrame:CGRectZero] autorelease];
+    [labelPlayed setFont:[UIFont systemFontOfSize:12.0f]];
+    [labelPlayed setTextColor:[UIColor whiteColor]];
     self.labelLeft = [[[UILabel alloc] initWithFrame:CGRectZero] autorelease];
+    [labelLeft setFont:[UIFont systemFontOfSize:12.0f]];
+    [labelLeft setTextColor:[UIColor whiteColor]];
     self.uiSliderProgress = [[[UISlider alloc] initWithFrame:CGRectZero] autorelease];
+    [uiSliderProgress addTarget:self action:@selector(sliderPosChangeProgress:) forControlEvents:UIControlEventValueChanged];
+    [uiSliderProgress addTarget:self action:@selector(OnTouchInPos:) forControlEvents:UIControlEventTouchDown];
+    [uiSliderProgress addTarget:self action:@selector(OnTouchOutPos:) forControlEvents:UIControlEventTouchUpInside];
+    [uiSliderProgress addTarget:self action:@selector(OnTouchOutPos:) forControlEvents:UIControlEventTouchUpOutside];
     self.uiSliderSound = [[[UISlider alloc] initWithFrame:CGRectZero] autorelease];
+    [uiSliderSound addTarget:self action:@selector(sliderPosChangeSound:) forControlEvents:UIControlEventValueChanged];
     self.buttonChangeAspect = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [buttonChangeAspect addTarget:self action:@selector(onTouchUpInsideChangeAspect:) forControlEvents:UIControlEventTouchUpInside];
     
@@ -85,6 +99,7 @@
     [[self view] addSubview:uiLabelSubTitle];
     [[self view] addSubview:buttonChangeAspect];
     
+    [playerView addSubview:controlControls];
     [playerView addSubview:viewControlProgress];
     [playerView addSubview:viewControlSound];
     
@@ -178,9 +193,16 @@
     [self performSelector:@selector(open:) withObject:str afterDelay:2.0f];
 }
 
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+{
+    [playerView startRotate];
+}
+
+
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
     [self setSubViewPos];
+    [playerView stopRotate];
 }
 
 
@@ -288,45 +310,6 @@
 	[self Exit];
 }
 
--(void) buttonPlay:(id)sender
-{
-	if (m_pLocalPlayer == NULL)
-	{
-		NSLog(@"buttonPre but m_pLocalPlayer == NULL");
-		return;
-	}
-	m_iControlLife = m_pLocalPlayer->HasVideo() ? AUTO_CONTROL_HIDDEN_TIME : ALWAYS_SHOW_TIME;
-	if (m_pLocalPlayer->IsPaused())
-	{
-		m_pLocalPlayer->Play();
-		[self SetPauseVisiable:YES];
-		[self SetPlayVisiable:NO];
-	}
-}
-
--(void) buttonPre:(id)sender
-{
-	m_iControlLife = AUTO_CONTROL_HIDDEN_TIME;
-	if (m_pLocalPlayer == NULL)
-	{
-		NSLog(@"buttonPre but m_pLocalPlayer == NULL");
-		return;
-	}
-	m_pLocalPlayer->SeekBySecond(m_pLocalPlayer->m_iCurrentTime - 30);
-}
-
--(void) buttonNext:(id)sender
-{
-	if (m_pLocalPlayer == NULL)
-	{
-		NSLog(@"buttonPre but m_pLocalPlayer == NULL");
-		return;
-	}
-	m_iControlLife = m_pLocalPlayer->HasVideo() ? AUTO_CONTROL_HIDDEN_TIME : ALWAYS_SHOW_TIME;
-	m_pLocalPlayer->SeekBySecond(m_pLocalPlayer->m_iCurrentTime + 30);
-}
-
-
 
 -(void) OnTouchInPos:(id)sender
 {
@@ -346,6 +329,18 @@
 	m_bInSeek = NO;
 }
 
+- (void) onTouchUpInsideControlControls:(id)sender
+{
+    if (([self isControlVisiable] == YES) && m_pLocalPlayer->HasVideo())
+	{
+		[self SetControlVisiable:NO];
+	}
+	else 
+	{
+		[self SetControlVisiable:YES];
+		m_iControlLife = m_pLocalPlayer->HasVideo() ? AUTO_CONTROL_HIDDEN_TIME : ALWAYS_SHOW_TIME;
+	}
+}
 
 
 -(void) sliderPosChangeProgress:(id)sender
@@ -453,20 +448,6 @@ void ShowAlartMessage(string strMessage)
 	[[UIApplication sharedApplication] setStatusBarHidden:!bVisiable];
 }
 
--(void) onTouchPlayerView:(id)sender
-{
-	if (([self isControlVisiable] == YES) && m_pLocalPlayer->HasVideo())
-	{
-		[self SetControlVisiable:NO];
-	}
-	else 
-	{
-		[self SetControlVisiable:YES];
-		m_iControlLife = m_pLocalPlayer->HasVideo() ? AUTO_CONTROL_HIDDEN_TIME : ALWAYS_SHOW_TIME;
-	}
-
-}
-
 
 - (void) SetPauseVisiable:(BOOL) bVisiable
 {
@@ -507,15 +488,62 @@ void ShowAlartMessage(string strMessage)
 
 - (void) onTouchUpInsidePlay:(id)sender
 {
+    if (m_pLocalPlayer == NULL)
+	{
+		NSLog(@"buttonPre but m_pLocalPlayer == NULL");
+		return;
+	}
+	m_iControlLife = m_pLocalPlayer->HasVideo() ? AUTO_CONTROL_HIDDEN_TIME : ALWAYS_SHOW_TIME;
+	if (m_pLocalPlayer->IsPaused())
+	{
+        m_pLocalPlayer->SetPlaySpeed(ePlaySpeedNormal);
+		m_pLocalPlayer->Play();
+		[self SetPauseVisiable:YES];
+		[self SetPlayVisiable:NO];
+	}
 }
 - (void) onTouchUpInsidePause:(id)sender
 {
+    if (m_pLocalPlayer == NULL)
+	{
+		NSLog(@"buttonPre but m_pLocalPlayer == NULL");
+		return;
+	}
+	m_iControlLife = m_pLocalPlayer->HasVideo() ? AUTO_CONTROL_HIDDEN_TIME : ALWAYS_SHOW_TIME;
+	if (!m_pLocalPlayer->IsPaused())
+	{
+		m_pLocalPlayer->Pause();
+		[self SetPauseVisiable:NO];
+		[self SetPlayVisiable:YES];
+	}
 }
 - (void) onTouchUpInsideBackword:(id)sender
 {
+    if (m_pLocalPlayer == NULL)
+    {
+        return;
+    }
+    EnumPlaySpeed ePlaySpeed = m_pLocalPlayer->GetPlaySpeed();
+    ePlaySpeed --;
+    if (ePlaySpeed < ePlaySpeedHalf)
+    {
+        ePlaySpeed = ePlaySpeedHalf;
+    }
+    m_pLocalPlayer->SetPlaySpeed(ePlaySpeed);
 }
 - (void) onTouchUpInsideForward:(id)sender
 {
+    if (m_pLocalPlayer == NULL)
+    {
+        return;
+    }
+    EnumPlaySpeed ePlaySpeed = m_pLocalPlayer->GetPlaySpeed();
+    ePlaySpeed ++;
+    if (ePlaySpeed > ePlaySpeedForth)
+    {
+        ePlaySpeed = ePlaySpeedForth;
+    }
+    m_pLocalPlayer->SetPlaySpeed(ePlaySpeed);
 }
 
 #pragma mark interface imp
@@ -540,7 +568,7 @@ void ShowAlartMessage(string strMessage)
     RETURN_STATUS_IF_ERROR(m_pLocalPlayer->Open(m_strFileName, (int)playerView));
     uiSliderSound.value = [[UserDefaultHelper getValue:USER_DEFAULT_VOLUME] intValue] / 100.0f;
 	m_pLocalPlayer->SetVolume([[UserDefaultHelper getValue:USER_DEFAULT_VOLUME] intValue]); 
-	m_pLocalPlayer->SetPlaySpeed(ePlaySpeedHalf);
+	m_pLocalPlayer->SetPlaySpeed(ePlaySpeedNormal);
 	[self SetPauseVisiable:NO];
 	[self SetPlayVisiable:YES];
 	

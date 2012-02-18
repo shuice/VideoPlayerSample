@@ -277,6 +277,12 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
 
 - (void) showWithSubTitle:(NSString*)str
 {
+    if (m_bRoating)
+    {
+        [self clearBackground];
+        [context presentRenderbuffer:GL_RENDERBUFFER_OES];
+        return;
+    }
     [playerViewControllerImp showWithSubTitle:str];
     [self clearBackground];
     [self updateRenderParam];
@@ -295,6 +301,15 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
 	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
     
 	[context presentRenderbuffer:GL_RENDERBUFFER_OES];
+}
+
+- (void) startRotate
+{
+    m_bRoating = true;
+}
+- (void) stopRotate
+{
+    m_bRoating = false;
 }
 
 @end

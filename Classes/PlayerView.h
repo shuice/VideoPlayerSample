@@ -68,6 +68,7 @@ typedef struct SRenderParam
     CGSize m_sizeRendered;
     
     PlayerViewControllerImp* playerViewControllerImp;
+    bool m_bRoating;
 }
 
 - (void)handleTimer;
@@ -77,6 +78,7 @@ typedef struct SRenderParam
 
 - (void) setAspectRadio:(EnumAspectRatio)eAspectRatio;
 - (void) setMovieSize:(int)iWidth iHeight:(int)iHeight iWidthResized:(int)iWidthResized iHeightResized:(int)iHeightResized;
-
+- (void) startRotate;
+- (void) stopRotate;
 
 @end
