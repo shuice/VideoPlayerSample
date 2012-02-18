@@ -253,15 +253,6 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
 	pthread_mutex_lock(&m_mutexFromView);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_sizeRendered.width, m_sizeRendered.height,
 				 0, GL_RGBA, GL_UNSIGNED_BYTE, m_pDateRendered);
-//	{
-//		// subtitle;
-//		NSData* nsData = [NSData dataWithBytes:m_wstrSubTitle.c_str()
-//										length:m_wstrSubTitle.size()*sizeof(wchar_t)];
-//		NSString* nsText = [[NSString alloc] initWithData:nsData 
-//												 encoding:NSUTF32LittleEndianStringEncoding];
-//		//uiLabel.text = nsText;
-//		[nsText release];
-//	}	
 	pthread_mutex_unlock(&m_mutexFromView);
 	
 	glVertexPointer(2, GL_FLOAT, 0, m_sRenderParam.arraySquareVertices);
