@@ -319,14 +319,14 @@ void CVideoLocalPlayerSDL::CalcDesSize()
     if (m_iDesWidth > PLAYER_FRAME_WIDTH)
     {
         m_iDesHeight /= (m_iDesWidth * 1.0 / PLAYER_FRAME_WIDTH);
-        m_iDesHeight &= 1;
+        m_iDesHeight -=  (m_iDesHeight&1);
         m_iDesWidth = PLAYER_FRAME_WIDTH;
     }
     
     if (m_iDesHeight > PLAYER_FRAME_HEIGHT)
     {
         m_iDesWidth /= (m_iDesHeight * 1.0 / PLAYER_FRAME_HEIGHT);
-        m_iDesWidth &= 1;
+        m_iDesWidth -=  (m_iDesWidth&1);
         m_iDesHeight = PLAYER_FRAME_HEIGHT;
     }
 }
