@@ -21,6 +21,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		8022A8CF14F0FC8D00E30D98 /* Test.mpg in Resources */ = {isa = PBXBuildFile; fileRef = 8022A8CE14F0FC8D00E30D98 /* Test.mpg */; };
 		8078AA7A14BF339C005D6F52 /* AVLocalPlayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = C3A9D3D514A5983400FBBB38 /* AVLocalPlayer.mm */; };
 		8078AA7B14BF339C005D6F52 /* LocalPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3A9D3DC14A5983400FBBB38 /* LocalPlayer.cpp */; };
 		8078AA7C14BF339C005D6F52 /* PacketQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3A9D3E114A5983500FBBB38 /* PacketQueue.cpp */; };
@@ -133,6 +134,7 @@
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		288765FC0DF74451002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		8022A8CE14F0FC8D00E30D98 /* Test.mpg */ = {isa = PBXFileReference; lastKnownFileType = video.mpeg; path = Test.mpg; sourceTree = "<group>"; };
 		8078AA8314BF33B8005D6F52 /* libavcodec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavcodec.a; path = ffmpeg/lib/libavcodec.a; sourceTree = "<group>"; };
 		8078AA8414BF33B8005D6F52 /* libavdevice.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavdevice.a; path = ffmpeg/lib/libavdevice.a; sourceTree = "<group>"; };
 		8078AA8514BF33B8005D6F52 /* libavformat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavformat.a; path = ffmpeg/lib/libavformat.a; sourceTree = "<group>"; };
@@ -352,6 +354,7 @@
 		80A1133314BDE100006E7D1A /* UnitTest */ = {
 			isa = PBXGroup;
 			children = (
+				8022A8CE14F0FC8D00E30D98 /* Test.mpg */,
 				80A7D3D614EAB8BC001DF2B6 /* 1.smi */,
 				80A7D3D714EAB8BC001DF2B6 /* 1.srt */,
 				80A04B5B14E955E10041B567 /* Test.flv */,
@@ -485,6 +488,7 @@
 				80A04B5C14E955E10041B567 /* Test.flv in Resources */,
 				80A7D3D914EAB8BC001DF2B6 /* 1.smi in Resources */,
 				80A7D3DB14EAB8BC001DF2B6 /* 1.srt in Resources */,
+				8022A8CF14F0FC8D00E30D98 /* Test.mpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
