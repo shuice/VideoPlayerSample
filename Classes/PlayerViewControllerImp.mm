@@ -677,9 +677,16 @@ void ShowAlartMessage(string strMessage)
     return ePlayerStatusNotImp;
 }
 
+- (NSString*) dealWithEscapeChars:(NSString*)str;
+{
+    str = [str stringByReplacingOccurrencesOfString:@"&nbsp;" withString:@" "];
+    str = [str stringByReplacingOccurrencesOfString:@"<br>" withString:@"\n"];
+    
+    return str;
+}
 - (void) showWithSubTitle:(NSString*)str
 {
-    [uiLabelSubTitle setText:str];
+    [uiLabelSubTitle setText:[self dealWithEscapeChars:str]];
     if (m_pLocalPlayer == NULL)
     {
         return;

@@ -10,13 +10,11 @@
 #import "PlayerViewDefine.h"
 
 @protocol PlayerViewControllerDelegate
-
 @end
 
 @interface PlayerViewController : UIViewController 
 
 +(PlayerViewController*) sharedPlayer;
-
 
 - (EnumPlayerStatus) open:(NSString*)strFileName; 
 - (EnumPlayerStatus) play;
