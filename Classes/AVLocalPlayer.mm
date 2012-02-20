@@ -382,12 +382,13 @@ void CVideoLocalPlayerSDL::Show(int iCacheIndex)
 	pthread_mutex_lock(pMutex);
 	memcpy(playerView->m_pDataResized, m_pRGBAData[0], m_iDesWidth*m_iDesHeight*4);
 	pthread_mutex_unlock(pMutex);
-    
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
     NSData* nsData = [NSData dataWithBytes:m_wstrSubTitle.c_str()
                                     length:m_wstrSubTitle.size()*sizeof(wchar_t)];
     NSString* str = [[[NSString alloc] initWithData:nsData 
                                           encoding:NSUTF32LittleEndianStringEncoding] autorelease];
     [playerView performSelector:@selector(showWithSubTitle:) onThread:[NSThread mainThread] withObject:str waitUntilDone:NO];
+    [pool release];
 }
 
 void CVideoLocalPlayerSDL::Close()

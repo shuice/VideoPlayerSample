@@ -199,7 +199,7 @@
 //    buttonBackward.alpha = 0;
 //    buttonForward.alpha = 0;
 //	[self SetPauseVisiable:NO];
-    NSString* str = [[NSBundle mainBundle] pathForResource:@"Test" ofType:@"rmvb"];
+    NSString* str = [[NSBundle mainBundle] pathForResource:@"Test" ofType:@"mpg"];
     [self performSelector:@selector(open:) withObject:str afterDelay:2.0f];
 }
 
