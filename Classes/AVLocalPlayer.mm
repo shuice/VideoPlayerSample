@@ -291,6 +291,7 @@ CVideoLocalPlayerSDL::CVideoLocalPlayerSDL()
 	m_iDesHeight = 0;
     m_iWindow = 0;
 	m_pSwsContext = NULL;
+    m_pixelFormat = PIX_FMT_RGB565;
 	memset(m_pRGBAData, 0, sizeof(m_pRGBAData));
 }
 
@@ -313,6 +314,9 @@ CVideoLocalPlayerSDL::~CVideoLocalPlayerSDL()
 
 void CVideoLocalPlayerSDL::CalcDesSize()
 {
+    m_iDesHeight = 240;
+    m_iDesWidth = 240;
+    return;
     m_iDesWidth = m_iSrcWidth;
     m_iDesHeight = m_iSrcHeight;
     
@@ -347,7 +351,7 @@ bool CVideoLocalPlayerSDL::Init(long iWindow, int iMediaWidth, int iMediaHeight,
     [playerView setMovieSize:m_iSrcWidth iHeight:m_iSrcHeight iWidthResized:m_iDesWidth iHeightResized:m_iDesHeight];
 
     m_pSwsContext = sws_getContext(m_iSrcWidth, m_iSrcHeight, ePixelFormat, 
-								   m_iDesWidth, m_iDesHeight, PIX_FMT_RGBA,
+								   m_iDesWidth, m_iDesHeight, m_pixelFormat,
 								   SWS_FAST_BILINEAR, NULL, NULL, NULL);
 	if (m_pSwsContext == NULL) 
 	{
@@ -359,18 +363,20 @@ bool CVideoLocalPlayerSDL::Init(long iWindow, int iMediaWidth, int iMediaHeight,
 	for (int iCacheIndex = 0; iCacheIndex < iCacheCount; iCacheIndex ++)
 	{
 		pthread_mutex_init(&m_mutex[iCacheIndex], NULL);
-		
-		avpicture_alloc(&m_avPicture[iCacheIndex], PIX_FMT_RGBA, m_iDesWidth, m_iDesHeight);
+		avpicture_alloc(&m_avPicture[iCacheIndex], m_pixelFormat, m_iDesWidth, m_iDesHeight);
 		m_pRGBAData[iCacheIndex] = (unsigned char*)m_avPicture[iCacheIndex].data[0];
 		m_avPicture[iCacheIndex].data[0] = m_avPicture[iCacheIndex].data[0] + m_avPicture[iCacheIndex].linesize[0] * (m_iDesHeight - 1);
 		m_avPicture[iCacheIndex].linesize[0] = - m_avPicture[iCacheIndex].linesize[0];
 	}
+    avpicture_alloc(&pic, PIX_FMT_YUV420P, m_iSrcWidth, m_iSrcHeight);
 	return true;
 }
 
 bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int height,int biBitCount);
 void CVideoLocalPlayerSDL::UpdateData(AVFrame* pAvFrame, int iCacheIndex)
 {	
+    av_picture_crop(&pic, (AVPicture*)pAvFrame, PIX_FMT_YUV420P,  480-240, 640-240);
+    return;
 	sws_scale(m_pSwsContext, pAvFrame->data, pAvFrame->linesize,
  			  0, m_iSrcHeight, m_avPicture[iCacheIndex].data, m_avPicture[iCacheIndex].linesize);   
 }
@@ -379,15 +385,18 @@ void CVideoLocalPlayerSDL::Show(int iCacheIndex)
 {
     PlayerView* playerView = (PlayerView*)m_iWindow;
     pthread_mutex_t* pMutex = &playerView->m_mutexFromView;
+    int iSize = avpicture_get_size(m_pixelFormat, m_iDesWidth, m_iDesHeight);
 	pthread_mutex_lock(pMutex);
-	memcpy(playerView->m_pDataResized, m_pRGBAData[0], m_iDesWidth*m_iDesHeight*4);
+	//memcpy(playerView->m_pDataResized, m_pRGBAData[0], iSize);
+    playerView->m_pDataResized = pic.data[0];
 	pthread_mutex_unlock(pMutex);
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
     NSData* nsData = [NSData dataWithBytes:m_wstrSubTitle.c_str()
                                     length:m_wstrSubTitle.size()*sizeof(wchar_t)];
     NSString* str = [[[NSString alloc] initWithData:nsData 
                                           encoding:NSUTF32LittleEndianStringEncoding] autorelease];
-    [playerView performSelector:@selector(showWithSubTitle:) onThread:[NSThread mainThread] withObject:str waitUntilDone:NO];
+    [playerView performSelectorOnMainThread:@selector(showWithSubTitle:) withObject:str waitUntilDone:NO];
+//    [playerView performSelector:@selector(showWithSubTitle:) onThread:[NSThread mainThread] withObject:str waitUntilDone:NO];
     [pool release];
 }
 

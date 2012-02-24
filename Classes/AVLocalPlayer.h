@@ -83,7 +83,9 @@ private:
 	int m_iSrcHeight;
 	int m_iDesWidth;
 	int m_iDesHeight;
+    PixelFormat m_pixelFormat;
 
 	SwsContext* m_pSwsContext;
     int m_iWindow;
+    AVPicture pic;
 };

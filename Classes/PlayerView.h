@@ -37,7 +37,7 @@
 
 
 #define PLAYER_DEG_TO_RAD				0.017453f
-#define PLAYER_FRAME_WIDTH 480.0f
+#define PLAYER_FRAME_WIDTH 640.0f
 #define PLAYER_FRAME_HEIGHT 480.0f
 
 typedef struct SRenderParam
@@ -62,6 +62,7 @@ typedef struct SRenderParam
     GLuint glRenderbuffer;
     GLuint glFramebuffer;
 	GLuint glTexture;
+    GLuint glTexture2;
     
     SRenderParam m_sRenderParam;
     unsigned char* m_pDateRendered;
@@ -72,7 +73,6 @@ typedef struct SRenderParam
     CGRect m_rectOnScreen;
 }
 
-- (void)handleTimer;
 
 @property (nonatomic, assign) wstring m_wstrSubTitle;
 @property (nonatomic, assign) PlayerViewControllerImp* playerViewControllerImp;

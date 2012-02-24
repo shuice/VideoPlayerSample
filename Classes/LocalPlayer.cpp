@@ -391,15 +391,16 @@ int CLocalPlayer::OpenStream(int stream_index)
 		pAvCodecContext->debug = 0;
 		pAvCodecContext->workaround_bugs = 1;
 		pAvCodecContext->lowres = 0;
+        pAvCodecContext->flags2 = CODEC_FLAG2_FAST;
 		pAvCodecContext->idct_algo= FF_IDCT_AUTO;
-		pAvCodecContext->skip_frame= AVDISCARD_DEFAULT;
-		pAvCodecContext->skip_idct= AVDISCARD_DEFAULT;
-		pAvCodecContext->skip_loop_filter= AVDISCARD_DEFAULT;
+		pAvCodecContext->skip_frame= AVDISCARD_NONREF;
+		pAvCodecContext->skip_idct= AVDISCARD_NONREF;
+		pAvCodecContext->skip_loop_filter= AVDISCARD_ALL;
 		pAvCodecContext->error_recognition= FF_ER_CAREFUL;
 		pAvCodecContext->error_concealment= 3;
 		pAvCodecContext->thread_count= 1;
-	
-	//	set_context_opts(pAvCodecContext, avcodec_opts[pAvCodecContext->codec_type], 0, pAvCodec);
+        
+        //	set_context_opts(pAvCodecContext, avcodec_opts[pAvCodecContext->codec_type], 0, pAvCodec);
 	    if ((pAvCodec == NULL) || (avcodec_open(pAvCodecContext, pAvCodec) < 0))
 		{
 			throw new CPlayerException("avcodec_open failed");
@@ -535,8 +536,9 @@ int CLocalPlayer::QueuePicture(AVFrame *src_frame, double pts1)
 		wstring wstrSubTitle;
 		m_pSubTitleReader->GetString(pts1 * 1000, wstrSubTitle, &sSubTitleFormat);
 		m_pVideoLocalPlayer->m_wstrSubTitle = wstrSubTitle;
-	}	
-	m_pVideoLocalPlayer->UpdateData(src_frame, pictq_windex);
+	}
+    m_pVideoLocalPlayer->UpdateData(src_frame, pictq_windex);
+	//m_pVideoLocalPlayer->UpdateData(src_frame, pictq_windex);
 
 	pts[pictq_windex] = pts1;
 	targetTime[pictq_windex] = ComputeTargetTime(pts1);
@@ -676,7 +678,6 @@ void* CLocalPlayer::ThreadVideoRoute()
 
         /* NOTE: ipts is the PTS of the _first_ picture beginning in
 		 this packet, if any */
-
         video_st->codec->reordered_opaque= pkt1.pts;
         len1 = avcodec_decode_video2(video_st->codec,
                                  frame, &got_picture,

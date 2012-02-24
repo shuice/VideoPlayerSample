@@ -14,39 +14,7 @@
 + (Class)layerClass {
     return [CAEAGLLayer class];
 }
-- (void) test
-{
-    CGImageRef inImage = [[UIImage imageNamed:@"1.png"] CGImage];
-    
-        CGContextRef    context1 = NULL;
-        CGColorSpaceRef colorSpace;
-        int             bitmapByteCount;
-        int             bitmapBytesPerRow;
-        
-        size_t width = CGImageGetWidth(inImage);
-        size_t height = CGImageGetHeight(inImage);
-        bitmapBytesPerRow   = (width * 4);
-        bitmapByteCount     = bitmapBytesPerRow * height;
-        
-        colorSpace = CGColorSpaceCreateDeviceRGB();
-        size_t bitsPerComponent = 8;
-        context1 = CGBitmapContextCreate (NULL, 
-                                         width, 
-                                         height,	
-                                         bitsPerComponent,
-                                         bitmapBytesPerRow, 
-                                         colorSpace, 
-                                         kCGImageAlphaNoneSkipFirst);
-        
-        
-    
-    CGRect rect = {{0,0},{PLAYER_FRAME_WIDTH, PLAYER_FRAME_HEIGHT}}; 
-    CGContextDrawImage(context1, rect, inImage); 
-	void *data = CGBitmapContextGetData (context1);
-    memcpy(m_pDataResized, data, PLAYER_FRAME_WIDTH*PLAYER_FRAME_HEIGHT*4);
 
-    CGColorSpaceRelease( colorSpace );
-}
 
 - (id)initWithFrame:(CGRect)frame {
     pthread_mutex_init(&m_mutexFromView, NULL);
@@ -78,7 +46,8 @@
         // create texture
         glGenTextures(1, &glTexture);
         glBindTexture( GL_TEXTURE_2D, glTexture);
-        
+//        glGenTextures(1, &glTexture2);
+//        glBindTexture( GL_TEXTURE_2D, glTexture2);
         // Filters
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
@@ -89,10 +58,19 @@
         glEnable(GL_TEXTURE_2D);
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
         glEnableClientState(GL_VERTEX_ARRAY);	
+        glDisable(GL_DITHER);
+        glDisable(GL_CULL_FACE);
+        glDisable(GL_ALPHA_TEST);  
+        glDisable(GL_BLEND);  
+        glDisable(GL_DEPTH_TEST);  
+        glDisable(GL_DITHER);  
+        glDisable(GL_FOG);  
+        glDisable(GL_LIGHTING);  
+        glDisable( GL_SCISSOR_TEST );
+        glDisable(GL_STENCIL_TEST); 
         
         m_pDataResized = new unsigned char[(int)(PLAYER_FRAME_WIDTH * PLAYER_FRAME_HEIGHT * 4)];
         m_pDataCorped = new unsigned char[(int)(PLAYER_FRAME_WIDTH * PLAYER_FRAME_HEIGHT * 4)];
-        [self test];
     }
     return self;
 }
@@ -105,7 +83,6 @@
 }
 
 - (void)layoutSubviews {
-    [self test];
 }
 
 
@@ -240,27 +217,7 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
     glTexCoordPointer(2, GL_FLOAT, 0, arraySquareTextureCoords);
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 }
-- (void)handleTimer
-{    
-    //saveBmp("/Users/xiaoyi/1.bmp",m_pDataResized,m_sRenderParam.sizeMovieResized.width,m_sRenderParam.sizeMovieResized.height,32);
-    [self clearBackground];
-    [self updateRenderParam];
-	glColor4f(1.0f, 1.0f, 1.0f, 0.0f);
 
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-
-	pthread_mutex_lock(&m_mutexFromView);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_sizeRendered.width, m_sizeRendered.height,
-				 0, GL_RGBA, GL_UNSIGNED_BYTE, m_pDateRendered);
-	pthread_mutex_unlock(&m_mutexFromView);
-	
-	glVertexPointer(2, GL_FLOAT, 0, m_sRenderParam.arraySquareVertices);
-	glTexCoordPointer(2, GL_FLOAT, 0, m_sRenderParam.arraySquareTextureCoords);
-	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-
-	[context presentRenderbuffer:GL_RENDERBUFFER_OES];
-}
 
 - (void) setAspectRadio:(EnumAspectRatio)eAspectRatio
 {
@@ -284,18 +241,21 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
         return;
     }
     [playerViewControllerImp showWithSubTitle:str];
-    [self clearBackground];
+    //[self clearBackground];
     [self updateRenderParam];
 	glColor4f(1.0f, 1.0f, 1.0f, 0.0f);
     
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-    
-	pthread_mutex_lock(&m_mutexFromView);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_sizeRendered.width, m_sizeRendered.height,
-				 0, GL_RGBA, GL_UNSIGNED_BYTE, m_pDateRendered);
-	pthread_mutex_unlock(&m_mutexFromView);
-	
+
+        pthread_mutex_lock(&m_mutexFromView);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, 640, 480,
+                     0, GL_LUMINANCE, GL_UNSIGNED_BYTE, m_pDateRendered);
+        //	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_sizeRendered.width, m_sizeRendered.height,
+        //				 0, GL_RGBA, GL_UNSIGNED_BYTE, m_pDateRendered);
+        pthread_mutex_unlock(&m_mutexFromView);
+
+
 	glVertexPointer(2, GL_FLOAT, 0, m_sRenderParam.arraySquareVertices);
 	glTexCoordPointer(2, GL_FLOAT, 0, m_sRenderParam.arraySquareTextureCoords);
 	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);

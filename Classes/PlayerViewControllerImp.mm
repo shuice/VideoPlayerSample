@@ -199,7 +199,7 @@
 //    buttonBackward.alpha = 0;
 //    buttonForward.alpha = 0;
 //	[self SetPauseVisiable:NO];
-    NSString* str = [[NSBundle mainBundle] pathForResource:@"Test" ofType:@"mpg"];
+    NSString* str = [[NSBundle mainBundle] pathForResource:@"Test" ofType:@"rmvb"];
     [self performSelector:@selector(open:) withObject:str afterDelay:2.0f];
 }
 
@@ -419,7 +419,7 @@
 	// refresh media
 	if (m_pLocalPlayer->HasVideo() && !m_pLocalPlayer->IsPaused()) 
 	{
-        [playerView handleTimer];
+        //[playerView handleTimer];
 	}
 	
 	//return;
