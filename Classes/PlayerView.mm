@@ -249,10 +249,10 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
 	glLoadIdentity();
 
         pthread_mutex_lock(&m_mutexFromView);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, 640, 480,
-                     0, GL_LUMINANCE, GL_UNSIGNED_BYTE, m_pDateRendered);
-        //	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_sizeRendered.width, m_sizeRendered.height,
-        //				 0, GL_RGBA, GL_UNSIGNED_BYTE, m_pDateRendered);
+//        glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, 640, 480,
+//                     0, GL_LUMINANCE, GL_UNSIGNED_BYTE, m_pDateRendered);
+        	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_sizeRendered.width, m_sizeRendered.height,
+        				 0, GL_RGBA, GL_UNSIGNED_BYTE, m_pDateRendered);
         pthread_mutex_unlock(&m_mutexFromView);
 
 

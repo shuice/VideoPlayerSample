@@ -291,7 +291,7 @@ CVideoLocalPlayerSDL::CVideoLocalPlayerSDL()
 	m_iDesHeight = 0;
     m_iWindow = 0;
 	m_pSwsContext = NULL;
-    m_pixelFormat = PIX_FMT_RGB565;
+    m_pixelFormat = PIX_FMT_RGBA;
 	memset(m_pRGBAData, 0, sizeof(m_pRGBAData));
 }
 
@@ -314,9 +314,6 @@ CVideoLocalPlayerSDL::~CVideoLocalPlayerSDL()
 
 void CVideoLocalPlayerSDL::CalcDesSize()
 {
-    m_iDesHeight = 240;
-    m_iDesWidth = 240;
-    return;
     m_iDesWidth = m_iSrcWidth;
     m_iDesHeight = m_iSrcHeight;
     
@@ -375,8 +372,8 @@ bool CVideoLocalPlayerSDL::Init(long iWindow, int iMediaWidth, int iMediaHeight,
 bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int height,int biBitCount);
 void CVideoLocalPlayerSDL::UpdateData(AVFrame* pAvFrame, int iCacheIndex)
 {	
-    av_picture_crop(&pic, (AVPicture*)pAvFrame, PIX_FMT_YUV420P,  480-240, 640-240);
-    return;
+//    av_picture_crop(&pic, (AVPicture*)pAvFrame, PIX_FMT_YUV420P,  480-240, 640-240);
+//    return;
 	sws_scale(m_pSwsContext, pAvFrame->data, pAvFrame->linesize,
  			  0, m_iSrcHeight, m_avPicture[iCacheIndex].data, m_avPicture[iCacheIndex].linesize);   
 }
@@ -387,8 +384,7 @@ void CVideoLocalPlayerSDL::Show(int iCacheIndex)
     pthread_mutex_t* pMutex = &playerView->m_mutexFromView;
     int iSize = avpicture_get_size(m_pixelFormat, m_iDesWidth, m_iDesHeight);
 	pthread_mutex_lock(pMutex);
-	//memcpy(playerView->m_pDataResized, m_pRGBAData[0], iSize);
-    playerView->m_pDataResized = pic.data[0];
+	memcpy(playerView->m_pDataResized, m_pRGBAData[0], iSize);
 	pthread_mutex_unlock(pMutex);
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
     NSData* nsData = [NSData dataWithBytes:m_wstrSubTitle.c_str()

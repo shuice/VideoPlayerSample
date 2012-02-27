@@ -103,6 +103,13 @@
 		80D9A8C114C47B5100102863 /* Forward@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8ECD243A135334000067D02E /* Forward@2x.png */; };
 		80D9A8C214C47B5100102863 /* Pause@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8ECD2443135334000067D02E /* Pause@2x.png */; };
 		80D9A8C314C47B5100102863 /* Play@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8ECD2447135334000067D02E /* Play@2x.png */; };
+		80F08A6114FBD62C0022183D /* Shader.fsh in Sources */ = {isa = PBXBuildFile; fileRef = 80F08A5F14FBD62C0022183D /* Shader.fsh */; };
+		80F08A6214FBD62C0022183D /* Shader.fsh in Sources */ = {isa = PBXBuildFile; fileRef = 80F08A5F14FBD62C0022183D /* Shader.fsh */; };
+		80F08A6314FBD62C0022183D /* Shader.vsh in Sources */ = {isa = PBXBuildFile; fileRef = 80F08A6014FBD62C0022183D /* Shader.vsh */; };
+		80F08A6414FBD62C0022183D /* Shader.vsh in Sources */ = {isa = PBXBuildFile; fileRef = 80F08A6014FBD62C0022183D /* Shader.vsh */; };
+		80F08A6814FBDAA60022183D /* GLSLShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 80F08A6614FBDAA60022183D /* GLSLShader.cpp */; };
+		80F08A6914FBDAA60022183D /* GLSLShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 80F08A6614FBDAA60022183D /* GLSLShader.cpp */; };
+		80F08A6A14FBDAA60022183D /* GLSLShader.h in Headers */ = {isa = PBXBuildFile; fileRef = 80F08A6714FBDAA60022183D /* GLSLShader.h */; };
 		C338D75314A72E7500A8978B /* IConvWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C338D75114A72E7500A8978B /* IConvWrapper.cpp */; };
 		C338D75414A72E7500A8978B /* IConvWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = C338D75214A72E7500A8978B /* IConvWrapper.h */; };
 		C3E47AB714A6EA7400BD4223 /* Backward@2x.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8ECD2433135334000067D02E /* Backward@2x.png */; };
@@ -171,6 +178,10 @@
 		80B287EA14E430490046304C /* Pause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Pause.png; path = Picture/Pause.png; sourceTree = "<group>"; };
 		80B287EB14E430490046304C /* Play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Play.png; path = Picture/Play.png; sourceTree = "<group>"; };
 		80B81D6014E7BD8900EDFAF6 /* PlayerViewDefine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerViewDefine.h; sourceTree = "<group>"; };
+		80F08A5F14FBD62C0022183D /* Shader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Shader.fsh; sourceTree = "<group>"; };
+		80F08A6014FBD62C0022183D /* Shader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Shader.vsh; sourceTree = "<group>"; };
+		80F08A6614FBDAA60022183D /* GLSLShader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GLSLShader.cpp; sourceTree = "<group>"; };
+		80F08A6714FBDAA60022183D /* GLSLShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLSLShader.h; sourceTree = "<group>"; };
 		8EB7EFA51353F94B0042C754 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		8EB7EFB11353F9730042C754 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		8EB7EFB61353F9800042C754 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -282,6 +293,10 @@
 				809E30E314E6C3EF00426E33 /* PlayerView.mm */,
 				8ECD2422135332250067D02E /* PlayerViewControllerImp.h */,
 				8ECD2423135332250067D02E /* PlayerViewControllerImp.mm */,
+				80F08A5F14FBD62C0022183D /* Shader.fsh */,
+				80F08A6014FBD62C0022183D /* Shader.vsh */,
+				80F08A6614FBDAA60022183D /* GLSLShader.cpp */,
+				80F08A6714FBDAA60022183D /* GLSLShader.h */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -395,6 +410,7 @@
 				809E30E514E6C3EF00426E33 /* PlayerView.mm in Headers */,
 				8097337214E7A0AF005CB264 /* UserDefaultHelper.h in Headers */,
 				80B81D6114E7BD8900EDFAF6 /* PlayerViewDefine.h in Headers */,
+				80F08A6A14FBDAA60022183D /* GLSLShader.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -552,6 +568,9 @@
 				80A1134114BDE100006E7D1A /* ViewController.mm in Sources */,
 				8078AA9714BF3470005D6F52 /* PlayerViewController.mm in Sources */,
 				8097337614E7A3C0005CB264 /* UserDefaultHelper.m in Sources */,
+				80F08A6214FBD62C0022183D /* Shader.fsh in Sources */,
+				80F08A6414FBD62C0022183D /* Shader.vsh in Sources */,
+				80F08A6914FBDAA60022183D /* GLSLShader.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -575,6 +594,9 @@
 				80A1132814BDCC8A006E7D1A /* SmiSubTitleReader.cpp in Sources */,
 				8078AA9614BF3470005D6F52 /* PlayerViewController.mm in Sources */,
 				8097337514E7A3C0005CB264 /* UserDefaultHelper.m in Sources */,
+				80F08A6114FBD62C0022183D /* Shader.fsh in Sources */,
+				80F08A6314FBD62C0022183D /* Shader.vsh in Sources */,
+				80F08A6814FBDAA60022183D /* GLSLShader.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
