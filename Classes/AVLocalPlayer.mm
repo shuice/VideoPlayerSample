@@ -291,7 +291,7 @@ CVideoLocalPlayerSDL::CVideoLocalPlayerSDL()
 	m_iDesHeight = 0;
     m_iWindow = 0;
 	m_pSwsContext = NULL;
-    m_pixelFormat = PIX_FMT_RGBA;
+    m_pixelFormat = PIX_FMT_YUV420P;
 	memset(m_pRGBAData, 0, sizeof(m_pRGBAData));
 }
 
@@ -381,11 +381,9 @@ void CVideoLocalPlayerSDL::UpdateData(AVFrame* pAvFrame, int iCacheIndex)
 void CVideoLocalPlayerSDL::Show(int iCacheIndex)
 {
     PlayerView* playerView = (PlayerView*)m_iWindow;
-    pthread_mutex_t* pMutex = &playerView->m_mutexFromView;
-    int iSize = avpicture_get_size(m_pixelFormat, m_iDesWidth, m_iDesHeight);
-	pthread_mutex_lock(pMutex);
-	memcpy(playerView->m_pDataResized, m_pRGBAData[0], iSize);
-	pthread_mutex_unlock(pMutex);
+    playerView->m_pData[0] = m_avPicture[iCacheIndex].data[0];
+    playerView->m_pData[1] = m_avPicture[iCacheIndex].data[1];
+    playerView->m_pData[2] = m_avPicture[iCacheIndex].data[2];
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
     NSData* nsData = [NSData dataWithBytes:m_wstrSubTitle.c_str()
                                     length:m_wstrSubTitle.size()*sizeof(wchar_t)];

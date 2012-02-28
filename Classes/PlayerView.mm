@@ -2,6 +2,10 @@
 #import <QuartzCore/QuartzCore.h>
 #import <OpenGLES/EAGLDrawable.h>
 #import "PlayerViewControllerImp.h"
+#import "GLSLShader.h"
+
+
+static GLSLShader *_mainShader;
 
 
 @implementation PlayerView
@@ -27,50 +31,89 @@
                                         kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat,
                                         nil];
         
-        context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES1];        
+        context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];        
         [EAGLContext setCurrentContext:context];
         
-        glGenFramebuffersOES(1, &glFramebuffer);
-        glGenRenderbuffersOES(1, &glRenderbuffer);
-        glBindFramebufferOES(GL_FRAMEBUFFER_OES, glFramebuffer);
-        glBindRenderbufferOES(GL_RENDERBUFFER_OES, glRenderbuffer);
-        glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_RENDERBUFFER_OES, glRenderbuffer); 
+        glGenFramebuffers(1, &glFramebuffer);
+        glGenRenderbuffers(1, &glRenderbuffer);
+        glBindFramebuffer(GL_FRAMEBUFFER, glFramebuffer);
+        glBindRenderbuffer(GL_RENDERBUFFER, glRenderbuffer);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_RENDERBUFFER_OES, glRenderbuffer); 
         
-        [context renderbufferStorage:GL_RENDERBUFFER_OES fromDrawable:(CAEAGLLayer*)self.layer];
         
-        glViewport(0, 0, PLAYER_FRAME_WIDTH,  PLAYER_FRAME_HEIGHT);
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity(); 
-        glOrthof(0.0f, PLAYER_FRAME_WIDTH, 0.0f, PLAYER_FRAME_HEIGHT, 0.0f, 1.0f); 
-        
-        // create texture
-        glGenTextures(1, &glTexture);
-        glBindTexture( GL_TEXTURE_2D, glTexture);
-//        glGenTextures(1, &glTexture2);
-//        glBindTexture( GL_TEXTURE_2D, glTexture2);
-        // Filters
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-        
-        // Wrap
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+       
         glEnable(GL_TEXTURE_2D);
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-        glEnableClientState(GL_VERTEX_ARRAY);	
-        glDisable(GL_DITHER);
-        glDisable(GL_CULL_FACE);
-        glDisable(GL_ALPHA_TEST);  
-        glDisable(GL_BLEND);  
-        glDisable(GL_DEPTH_TEST);  
-        glDisable(GL_DITHER);  
-        glDisable(GL_FOG);  
-        glDisable(GL_LIGHTING);  
-        glDisable( GL_SCISSOR_TEST );
-        glDisable(GL_STENCIL_TEST); 
+        
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glGenTextures(4, _textures);
+		glBindTexture(GL_TEXTURE_2D, _textures[0]);
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);		
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 256, 256, 0, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4, 0);		
+		glBindTexture(GL_TEXTURE_2D, _textures[1]);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 512, 256, 0, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4, 0);		
+		glBindTexture(GL_TEXTURE_2D, _textures[2]);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 512, 512, 0, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4, 0);		
+		glBindTexture(GL_TEXTURE_2D, _textures[3]);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1024, 512, 0, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4, 0);
+        
+        _texture = _textures[2];
+        glBindTexture(GL_TEXTURE_2D, _texture);
+        
+        GLfloat squareVertices[] = {
+			-1, -1, 
+			1, -1, 
+			-1, 1, 
+			1, 1, 
+		};
+		GLfloat squareTexCoords[] = {
+			0, 0, 
+			0, 1, 
+			1, 0, 
+			1, 1, 
+		};
+        glGenBuffers(2, _bufferObject);
+		glBindBuffer(GL_ARRAY_BUFFER, _bufferObject[0]);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 8, squareVertices, GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, _bufferObject[1]);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 8, squareTexCoords, GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        
         
         m_pDataResized = new unsigned char[(int)(PLAYER_FRAME_WIDTH * PLAYER_FRAME_HEIGHT * 4)];
         m_pDataCorped = new unsigned char[(int)(PLAYER_FRAME_WIDTH * PLAYER_FRAME_HEIGHT * 4)];
+        
+        // glGenBuffers(2, _bufferObject);
+        
+        NSString *vShader = [[NSBundle mainBundle] pathForResource:@"Shader" ofType:@"vsh"];
+		NSString *fShader = [[NSBundle mainBundle] pathForResource:@"Shader" ofType:@"fsh"];
+        _mainShader = new GLSLShader([vShader fileSystemRepresentation], [fShader fileSystemRepresentation], kShaderDataTypeSourceFile);
+        _mainShader->compile();
+		_mainShader->beginShader();
+		glBindBuffer(GL_ARRAY_BUFFER, _bufferObject[0]);
+		_mainShader->setVertexPointer("position", reinterpret_cast<float *> (0), 2);
+		glBindBuffer(GL_ARRAY_BUFFER, _bufferObject[1]);
+		_mainShader->setVertexPointer("texCoords", reinterpret_cast<float *> (0), 2);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		_mainShader->setTexture("texture", 0);
+		_param[0] = _mainShader->parameterAttribute("wp");
+		_param[1] = _mainShader->parameterAttribute("wsize");
+		_param[2] = _mainShader->vectorAttribute("position");
+		_param[3] = _mainShader->vectorAttribute("texCoords");
+		_param[4] = _mainShader->parameterAttribute("transformMatrix");
+		
+		_mainShader->endShader();
+        
+        glClearColor(0.0, 0.0, 0.0, 1.0);
+        
+        glBindRenderbuffer(GL_RENDERBUFFER, glRenderbuffer);        
+        [context renderbufferStorage:GL_RENDERBUFFER_OES fromDrawable:(CAEAGLLayer*)self.layer];
+        glBindFramebuffer(GL_FRAMEBUFFER, glFramebuffer);
+        glViewport(0, 0, PLAYER_FRAME_WIDTH,  PLAYER_FRAME_HEIGHT);
+      
     }
     return self;
 }
@@ -199,6 +242,7 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
 
 - (void) clearBackground
 {
+    return;
     unsigned long c = 0;
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1,
                  0, GL_RGBA, GL_UNSIGNED_BYTE, &c);
@@ -240,26 +284,48 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
         [context presentRenderbuffer:GL_RENDERBUFFER_OES];
         return;
     }
-    [playerViewControllerImp showWithSubTitle:str];
+    //[playerViewControllerImp showWithSubTitle:str];
     //[self clearBackground];
-    [self updateRenderParam];
-	glColor4f(1.0f, 1.0f, 1.0f, 0.0f);
+    //[self updateRenderParam];
+    _mainShader->beginShader();
+	glBindTexture(GL_TEXTURE_2D, _texture);
+	_mainShader->setTexture("texture", 0);
+	
+	_mainShader->endShader();
+	[EAGLContext setCurrentContext:context];
     
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-
-        pthread_mutex_lock(&m_mutexFromView);
-//        glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, 640, 480,
-//                     0, GL_LUMINANCE, GL_UNSIGNED_BYTE, m_pDateRendered);
-        	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_sizeRendered.width, m_sizeRendered.height,
-        				 0, GL_RGBA, GL_UNSIGNED_BYTE, m_pDateRendered);
-        pthread_mutex_unlock(&m_mutexFromView);
-
-
-	glVertexPointer(2, GL_FLOAT, 0, m_sRenderParam.arraySquareVertices);
-	glTexCoordPointer(2, GL_FLOAT, 0, m_sRenderParam.arraySquareTextureCoords);
-	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, _texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     
+    
+    int w = m_sRenderParam.sizeMovieResized.width;
+    int h = m_sRenderParam.sizeMovieResized.height;
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w/2, h, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4, m_pData[0]);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, w / 2, 0, w / 4, h / 2, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4, m_pData[1]);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, w / 2 + w / 4, 0, w / 4, h / 2, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4, m_pData[2]);
+    
+    glBindFramebuffer(GL_FRAMEBUFFER, glFramebuffer);
+    glClear(GL_COLOR_BUFFER_BIT);
+//	glVertexPointer(2, GL_FLOAT, 0, m_sRenderParam.arraySquareVertices);
+//	glTexCoordPointer(2, GL_FLOAT, 0, m_sRenderParam.arraySquareTextureCoords);
+	_mainShader->beginShader();
+	_mainShader->setParameter(_param[0], (float)1.0);
+	_mainShader->setParameter(_param[1], (float)100);
+	glBindBuffer(GL_ARRAY_BUFFER, _bufferObject[0]);
+	_mainShader->setVertexPointer(_param[2], reinterpret_cast<float *> (0), 2);
+	glBindBuffer(GL_ARRAY_BUFFER, _bufferObject[1]);
+	_mainShader->setVertexPointer(_param[3], reinterpret_cast<float *> (0), 2);
+    memset(_matrix, 0, sizeof(_matrix));
+    _matrix[0] = _matrix[5] = _matrix[10] = _matrix[15] = 1.f;
+	_mainShader->setParameterMatrix44(_param[4], _matrix);
+    // Draw
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	_mainShader->endShader();
+    glBindRenderbuffer(GL_RENDERBUFFER, glRenderbuffer);
 	[context presentRenderbuffer:GL_RENDERBUFFER_OES];
 }
 

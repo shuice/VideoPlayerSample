@@ -57,6 +57,7 @@ typedef struct SRenderParam
 	wstring m_wstrSubTitle;
     unsigned char* m_pDataResized;
     unsigned char* m_pDataCorped;
+    unsigned char* m_pData[3];
 @private
     EAGLContext *context;
     GLuint glRenderbuffer;
@@ -71,6 +72,11 @@ typedef struct SRenderParam
     PlayerViewControllerImp* playerViewControllerImp;
     bool m_bRoating;
     CGRect m_rectOnScreen;
+    GLuint _bufferObject[2];
+    GLuint _textures[4];
+    GLuint _texture;
+    GLuint _param[5];
+    float _matrix[16];
 }
 
 
