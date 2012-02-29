@@ -336,8 +336,8 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				80F08A5F14FBD62C0022183D /* Shader.fsh */,
 				80F08A6014FBD62C0022183D /* Shader.vsh */,
+				80F08A5F14FBD62C0022183D /* Shader.fsh */,
 				809E30DE14E6ADC200426E33 /* 1.png */,
 				80B287E814E430490046304C /* Control_Up_Background.png */,
 				8ECD2435135334000067D02E /* Control_Up_Background@2x.png */,

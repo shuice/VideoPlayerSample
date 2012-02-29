@@ -314,6 +314,9 @@ CVideoLocalPlayerSDL::~CVideoLocalPlayerSDL()
 
 void CVideoLocalPlayerSDL::CalcDesSize()
 {
+    m_iDesWidth = PLAYER_FRAME_WIDTH;
+    m_iDesHeight = PLAYER_FRAME_HEIGHT;
+    return;
     m_iDesWidth = m_iSrcWidth;
     m_iDesHeight = m_iSrcHeight;
     

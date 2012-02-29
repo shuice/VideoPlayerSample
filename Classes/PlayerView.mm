@@ -51,28 +51,23 @@ static GLSLShader *_mainShader;
         glGenTextures(4, _textures);
 		glBindTexture(GL_TEXTURE_2D, _textures[0]);
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);		
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 256, 256, 0, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4, 0);		
-		glBindTexture(GL_TEXTURE_2D, _textures[1]);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 512, 256, 0, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4, 0);		
-		glBindTexture(GL_TEXTURE_2D, _textures[2]);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 512, 512, 0, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4, 0);		
-		glBindTexture(GL_TEXTURE_2D, _textures[3]);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1024, 512, 0, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4, 0);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 512, 512, 0, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4, 0);	
         
-        _texture = _textures[2];
+        _texture = _textures[0];
         glBindTexture(GL_TEXTURE_2D, _texture);
-        
+        const float fMax = 1;
+        const float fMin = -1;
         GLfloat squareVertices[] = {
-			-1, -1, 
-			1, -1, 
-			-1, 1, 
-			1, 1, 
+			fMin, fMin, 
+			fMax, fMin, 
+			fMax, fMin, 
+			fMax, fMax, 
 		};
-		GLfloat squareTexCoords[] = {
-			0, 0, 
-			0, 1, 
-			1, 0, 
-			1, 1, 
+		GLfloat squareTexCoords[] = 
+        {0.0f, 1.0f,
+            0.0f, 0.0f,
+            1.0f, 0.0f,
+            1.0f, 1.0f
 		};
         glGenBuffers(2, _bufferObject);
 		glBindBuffer(GL_ARRAY_BUFFER, _bufferObject[0]);
@@ -86,7 +81,6 @@ static GLSLShader *_mainShader;
         m_pDataResized = new unsigned char[(int)(PLAYER_FRAME_WIDTH * PLAYER_FRAME_HEIGHT * 4)];
         m_pDataCorped = new unsigned char[(int)(PLAYER_FRAME_WIDTH * PLAYER_FRAME_HEIGHT * 4)];
         
-        // glGenBuffers(2, _bufferObject);
         
         NSString *vShader = [[NSBundle mainBundle] pathForResource:@"Shader" ofType:@"vsh"];
 		NSString *fShader = [[NSBundle mainBundle] pathForResource:@"Shader" ofType:@"fsh"];
@@ -113,7 +107,6 @@ static GLSLShader *_mainShader;
         [context renderbufferStorage:GL_RENDERBUFFER_OES fromDrawable:(CAEAGLLayer*)self.layer];
         glBindFramebuffer(GL_FRAMEBUFFER, glFramebuffer);
         glViewport(0, 0, PLAYER_FRAME_WIDTH,  PLAYER_FRAME_HEIGHT);
-      
     }
     return self;
 }
@@ -238,6 +231,32 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
     m_sRenderParam.arraySquareTextureCoords[5] = 0.0f;
     m_sRenderParam.arraySquareTextureCoords[6] = 1.0f;
     m_sRenderParam.arraySquareTextureCoords[7] = 1.0f;
+    
+    
+    
+    m_sRenderParam.arraySquareVertices[0] /= PLAYER_FRAME_WIDTH;
+    m_sRenderParam.arraySquareVertices[1] /= PLAYER_FRAME_HEIGHT;
+    m_sRenderParam.arraySquareVertices[2] /= PLAYER_FRAME_WIDTH;
+    m_sRenderParam.arraySquareVertices[3] /= PLAYER_FRAME_HEIGHT;
+    m_sRenderParam.arraySquareVertices[4] /= PLAYER_FRAME_WIDTH;
+    m_sRenderParam.arraySquareVertices[5] /= PLAYER_FRAME_HEIGHT;
+    m_sRenderParam.arraySquareVertices[6] /= PLAYER_FRAME_WIDTH;
+    m_sRenderParam.arraySquareVertices[7] /= PLAYER_FRAME_HEIGHT;
+    
+    for (int i = 0; i < 8; i++)
+    {
+        m_sRenderParam.arraySquareVertices[i] =  (m_sRenderParam.arraySquareVertices[i] - 0.5) * 2;
+    } 
+    
+    GLfloat squareVertices[] = {
+        m_sRenderParam.arraySquareVertices[1], m_sRenderParam.arraySquareVertices[0],
+        m_sRenderParam.arraySquareVertices[3], m_sRenderParam.arraySquareVertices[0],
+        m_sRenderParam.arraySquareVertices[1], m_sRenderParam.arraySquareVertices[4],
+        m_sRenderParam.arraySquareVertices[3], m_sRenderParam.arraySquareVertices[4],
+	};
+    glBindBuffer(GL_ARRAY_BUFFER, _bufferObject[0]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 8, m_sRenderParam.arraySquareVertices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 - (void) clearBackground
@@ -286,7 +305,7 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
     }
     //[playerViewControllerImp showWithSubTitle:str];
     //[self clearBackground];
-    //[self updateRenderParam];
+    [self updateRenderParam];
     _mainShader->beginShader();
 	glBindTexture(GL_TEXTURE_2D, _texture);
 	_mainShader->setTexture("texture", 0);
@@ -310,11 +329,9 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
     
     glBindFramebuffer(GL_FRAMEBUFFER, glFramebuffer);
     glClear(GL_COLOR_BUFFER_BIT);
-//	glVertexPointer(2, GL_FLOAT, 0, m_sRenderParam.arraySquareVertices);
-//	glTexCoordPointer(2, GL_FLOAT, 0, m_sRenderParam.arraySquareTextureCoords);
 	_mainShader->beginShader();
 	_mainShader->setParameter(_param[0], (float)1.0);
-	_mainShader->setParameter(_param[1], (float)100);
+	_mainShader->setParameter(_param[1], (float)w/2);
 	glBindBuffer(GL_ARRAY_BUFFER, _bufferObject[0]);
 	_mainShader->setVertexPointer(_param[2], reinterpret_cast<float *> (0), 2);
 	glBindBuffer(GL_ARRAY_BUFFER, _bufferObject[1]);
@@ -322,7 +339,6 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
     memset(_matrix, 0, sizeof(_matrix));
     _matrix[0] = _matrix[5] = _matrix[10] = _matrix[15] = 1.f;
 	_mainShader->setParameterMatrix44(_param[4], _matrix);
-    // Draw
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	_mainShader->endShader();
     glBindRenderbuffer(GL_RENDERBUFFER, glRenderbuffer);
