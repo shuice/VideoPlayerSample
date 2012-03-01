@@ -21,10 +21,11 @@ void main()
 	float nowPer = now/wp;
 	float per = nowPer*wp/2.0;
 	texCoordShare2.x = wp + per;
-	vec4 uv = texture2D(texture, texCoordShare2);
+//	vec4 uv = vec4(0.0,0.0,0.0,0.0);//texture2D(texture, texCoordShare2);
+    vec4 uv = texture2D(texture, texCoordShare2);
 	texCoordShare2.x = wp+wp/2.0 + per;
-	vec4 vv = texture2D(texture, texCoordShare2);
-    
+//	vec4 vv  = vec4(0.0,0.0,0.0,0.0);
+    vec4 vv  = texture2D(texture, texCoordShare2);
 	float flg = floor(mod(nowPer*wsize, 2.0));
 	float invFlg = 1.0-flg;
 	float y = (yv.r*240.0+yv.g*15.0)/255.0*flg + invFlg*(yv.b*240.0+yv.a*15.0)/255.0;

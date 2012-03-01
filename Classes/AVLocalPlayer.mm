@@ -365,8 +365,8 @@ bool CVideoLocalPlayerSDL::Init(long iWindow, int iMediaWidth, int iMediaHeight,
 		pthread_mutex_init(&m_mutex[iCacheIndex], NULL);
 		avpicture_alloc(&m_avPicture[iCacheIndex], m_pixelFormat, m_iDesWidth, m_iDesHeight);
 		m_pRGBAData[iCacheIndex] = (unsigned char*)m_avPicture[iCacheIndex].data[0];
-		m_avPicture[iCacheIndex].data[0] = m_avPicture[iCacheIndex].data[0] + m_avPicture[iCacheIndex].linesize[0] * (m_iDesHeight - 1);
-		m_avPicture[iCacheIndex].linesize[0] = - m_avPicture[iCacheIndex].linesize[0];
+//		m_avPicture[iCacheIndex].data[0] = m_avPicture[iCacheIndex].data[0] + m_avPicture[iCacheIndex].linesize[0] * (m_iDesHeight - 1);
+//		m_avPicture[iCacheIndex].linesize[0] = - m_avPicture[iCacheIndex].linesize[0];
 	}
     avpicture_alloc(&pic, PIX_FMT_YUV420P, m_iSrcWidth, m_iSrcHeight);
 	return true;
@@ -375,8 +375,6 @@ bool CVideoLocalPlayerSDL::Init(long iWindow, int iMediaWidth, int iMediaHeight,
 bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int height,int biBitCount);
 void CVideoLocalPlayerSDL::UpdateData(AVFrame* pAvFrame, int iCacheIndex)
 {	
-//    av_picture_crop(&pic, (AVPicture*)pAvFrame, PIX_FMT_YUV420P,  480-240, 640-240);
-//    return;
 	sws_scale(m_pSwsContext, pAvFrame->data, pAvFrame->linesize,
  			  0, m_iSrcHeight, m_avPicture[iCacheIndex].data, m_avPicture[iCacheIndex].linesize);   
 }

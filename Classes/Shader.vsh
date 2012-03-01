@@ -14,6 +14,6 @@ varying vec2 texCoordShare;
 
 void main()
 {
-	gl_Position = position*transformMatrix;
+	gl_Position = position;//*transformMatrix;
 	texCoordShare = texCoords;
 }
