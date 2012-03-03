@@ -43,15 +43,17 @@ static GLSLShader *_mainShader;
         
        
         glEnable(GL_TEXTURE_2D);
-        
+        glShadeModel(GL_FLAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glGenTextures(4, _textures);
+        glGenTextures(1, _textures);
 		glBindTexture(GL_TEXTURE_2D, _textures[0]);
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);		
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 512, 512, 0, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4, 0);	
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);	
+        _widthTexture = 512.0f;
+        _heightTexture = 512.0f;
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _widthTexture, _heightTexture, 0, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4, 0);	
         
         _texture = _textures[0];
         glBindTexture(GL_TEXTURE_2D, _texture);
@@ -233,12 +235,14 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 8, m_sRenderParam.arraySquareVertices, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);  
     
-    
-    GLfloat squareTexCoords[] = {
-        0, 1.0,
-        0, .0,
-        0.5, 1.0,
-        0.5, 0.0,
+    _widthp = (float)m_sizeRendered.width / (float)_widthTexture / 2;
+	_heightp = (float)m_sizeRendered.height / (float)_heightTexture;
+	GLfloat squareTexCoords[] = {
+		0, _heightp, 
+        0, 0, 
+		_widthp, _heightp,
+		_widthp, 0, 
+		
 	};
     glBindBuffer(GL_ARRAY_BUFFER, _bufferObject[1]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 8, squareTexCoords, GL_STATIC_DRAW);
@@ -318,7 +322,7 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
     glBindFramebuffer(GL_FRAMEBUFFER, glFramebuffer);
     glClear(GL_COLOR_BUFFER_BIT);
 	_mainShader->beginShader();
-	_mainShader->setParameter(_param[0], (float)0.3125);
+	_mainShader->setParameter(_param[0], (float)_widthp);
 	_mainShader->setParameter(_param[1], (float)w);
 	glBindBuffer(GL_ARRAY_BUFFER, _bufferObject[0]);
 //	_mainShader->setVertexPointer(_param[2], reinterpret_cast<float *> (0), 2);

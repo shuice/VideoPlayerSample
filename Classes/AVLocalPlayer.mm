@@ -314,9 +314,9 @@ CVideoLocalPlayerSDL::~CVideoLocalPlayerSDL()
 
 void CVideoLocalPlayerSDL::CalcDesSize()
 {
-    m_iDesWidth = PLAYER_FRAME_WIDTH;
-    m_iDesHeight = PLAYER_FRAME_HEIGHT;
-    return;
+//    m_iDesWidth = PLAYER_FRAME_WIDTH;
+//    m_iDesHeight = PLAYER_FRAME_HEIGHT;
+//    return;
     m_iDesWidth = m_iSrcWidth;
     m_iDesHeight = m_iSrcHeight;
     
@@ -352,7 +352,7 @@ bool CVideoLocalPlayerSDL::Init(long iWindow, int iMediaWidth, int iMediaHeight,
 
     m_pSwsContext = sws_getContext(m_iSrcWidth, m_iSrcHeight, ePixelFormat, 
 								   m_iDesWidth, m_iDesHeight, m_pixelFormat,
-								   SWS_FAST_BILINEAR, NULL, NULL, NULL);
+								   SWS_POINT, NULL, NULL, NULL);
 	if (m_pSwsContext == NULL) 
 	{
 		throw new CPlayerException("sws_getContext return NULL");
@@ -377,6 +377,18 @@ void CVideoLocalPlayerSDL::UpdateData(AVFrame* pAvFrame, int iCacheIndex)
 {	
 	sws_scale(m_pSwsContext, pAvFrame->data, pAvFrame->linesize,
  			  0, m_iSrcHeight, m_avPicture[iCacheIndex].data, m_avPicture[iCacheIndex].linesize);   
+    {
+        SwsContext* swsContext = sws_getContext(m_iDesWidth, m_iDesHeight, m_pixelFormat, 
+                                       m_iDesWidth, m_iDesHeight, PIX_FMT_RGB32,
+                                       SWS_POINT, NULL, NULL, NULL);
+        AVPicture avPicture;
+        avpicture_alloc(&avPicture, PIX_FMT_RGB32, m_iDesWidth, m_iDesHeight);
+        sws_scale(swsContext, m_avPicture[iCacheIndex].data, m_avPicture[iCacheIndex].linesize,
+                  0, m_iDesHeight, avPicture.data, avPicture.linesize);
+        saveBmp("/Users/xiaoyi/1.bmp", avPicture.data[0], m_iDesWidth, m_iDesHeight, 32);
+        avpicture_free(&avPicture);
+        sws_freeContext(swsContext);
+    }
 }
 
 void CVideoLocalPlayerSDL::Show(int iCacheIndex)
@@ -422,7 +434,7 @@ bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int height,int 
     if(biBitCount == 8)
         colorTablesize =1024;
     int lineByte = (width * biBitCount/8+3)/4*4;
-    FILE *fp = fopen(bmpName,"wb+");
+    FILE *fp = fopen(bmpName,"w");
     if(fp == 0) return 0;
     BITMAPFILEHEADER fileHead;
     fileHead.bfType= 0x4d42;

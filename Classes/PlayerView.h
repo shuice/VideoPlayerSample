@@ -77,6 +77,12 @@ typedef struct SRenderParam
     GLuint _texture;
     GLuint _param[5];
     float _matrix[16];
+    
+    float _widthp;
+    float _heightp;
+    float _widthTexture;
+    float _heightTexture;
+    
 }
 
 
