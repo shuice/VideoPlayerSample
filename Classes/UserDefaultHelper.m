@@ -20,7 +20,7 @@
 + (void) init
 {
     NSMutableDictionary* dic = [NSMutableDictionary dictionary];
-    [dic setValue:[NSNumber numberWithInt:eAspectRadioOriginal] forKey:USER_DEFAULT_ASPECT_RATIO];
+    [dic setValue:[NSNumber numberWithInt:eAspectRatioOriginal] forKey:USER_DEFAULT_ASPECT_RATIO];
     [dic setValue:[NSNumber numberWithInt:75] forKey:USER_DEFAULT_VOLUME];
     [[NSUserDefaults standardUserDefaults] registerDefaults:dic];
 }

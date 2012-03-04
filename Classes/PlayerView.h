@@ -50,11 +50,7 @@ typedef struct SRenderParam
 @public   
 	pthread_mutex_t m_mutexFromView;
 	wstring m_wstrSubTitle;
-    unsigned char* m_pDataResized;
-    unsigned char* m_pDataCorped;
-    unsigned char* m_pData[3];
-    unsigned int m_iScreenWidth; // 定义长边为寛
-    unsigned int m_iScreenHeight;
+    unsigned char* m_pData[3]; // y, u, v
 @private
     EAGLContext *context;
     GLuint glRenderbuffer;

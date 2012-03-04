@@ -56,7 +56,7 @@ bool GLSLShader::compile(){
 #if defined(DEBUG) | defined(_DEBUG)
 	glGetShaderiv(vertShader, GL_COMPILE_STATUS, &compiled);
 	glGetShaderInfoLog(vertShader, logLen, &logGetLen, log);
-	printf(log);
+	printf(log, NULL);
 	if(compiled == GL_FALSE){
 		
 		fprintf(stderr, "Compile error in VertexShader %s\n", this->vshData().c_str());
@@ -68,7 +68,7 @@ bool GLSLShader::compile(){
 #if defined(DEBUG) | defined(_DEBUG)
 	glGetShaderiv(fragShader, GL_COMPILE_STATUS, &compiled);
 	glGetShaderInfoLog(fragShader, logLen, &logGetLen, log);
-	printf(log);
+	printf(log, NULL);
 	if(compiled == GL_FALSE){
 		fprintf(stderr, "Compile error in FragmentShader %s\n", this->fshData().c_str());
 		return false;

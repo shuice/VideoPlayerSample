@@ -19,10 +19,11 @@ typedef enum EnumPlayerStatus
 
 typedef enum EnumAspectRatio
 {
-    eAspectRadioOriginal = 0, // 1:1
-    eAspectRadio4_3,
-    eAspectRadio16_9,
-    eAspectRadioFullScreen,
+    eAspectRatioOriginal = 0, // 1:1
+    eAspectRatio4_3,
+    eAspectRatio16_9,
+    eAspectRatioFullScreen,
+    eAspectRatioEnd
 }EnumAspectRatio;
 
 typedef enum EnumPlaySpeed

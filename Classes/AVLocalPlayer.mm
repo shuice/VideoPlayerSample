@@ -314,9 +314,9 @@ CVideoLocalPlayerSDL::~CVideoLocalPlayerSDL()
 
 void CVideoLocalPlayerSDL::CalcDesSize()
 {
-    PlayerView* playerView = (PlayerView*)m_iWindow;
-    unsigned int iScreenWidth = playerView->m_iScreenWidth;
-    unsigned int iScreenHeight = playerView->m_iScreenHeight; 
+    CGRect rectBounds = [[UIScreen mainScreen] bounds];
+    int iScreenWidth = max(rectBounds.size.width, rectBounds.size.height);
+    int iScreenHeight = min(rectBounds.size.width, rectBounds.size.height);
     m_iDesWidth = m_iSrcWidth;
     m_iDesHeight = m_iSrcHeight;
     

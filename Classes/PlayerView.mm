@@ -7,6 +7,7 @@
 
 static GLSLShader *_mainShader;
 
+#define TEXTURE_SIZE 512.0f
 
 @implementation PlayerView
 
@@ -24,9 +25,6 @@ static GLSLShader *_mainShader;
     pthread_mutex_init(&m_mutexFromView, NULL);
     if (self = [super initWithFrame:frame]) 
 	{
-        m_iScreenWidth = max(frame.size.width, frame.size.height);
-        m_iScreenHeight = min(frame.size.width, frame.size.height);
-        
         CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
         eaglLayer.opaque = YES;
         eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -53,8 +51,8 @@ static GLSLShader *_mainShader;
         glGenTextures(1, _textures);
 		glBindTexture(GL_TEXTURE_2D, _textures[0]);
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);	
-        _widthTexture = 512;
-        _heightTexture = 512;
+        _widthTexture = TEXTURE_SIZE;
+        _heightTexture = TEXTURE_SIZE;
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _widthTexture, _heightTexture, 0, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4, 0);	
         
         _texture = _textures[0];
@@ -88,9 +86,7 @@ static GLSLShader *_mainShader;
         glBindRenderbuffer(GL_RENDERBUFFER, glRenderbuffer);        
         [context renderbufferStorage:GL_RENDERBUFFER_OES fromDrawable:(CAEAGLLayer*)self.layer];
         glBindFramebuffer(GL_FRAMEBUFFER, glFramebuffer);
-        glViewport(0, 0, m_iScreenWidth,  m_iScreenHeight);
-        m_pDataResized = new unsigned char[(int)(m_iScreenWidth * m_iScreenHeight * 4)];
-        m_pDataCorped = new unsigned char[(int)(m_iScreenWidth * m_iScreenHeight * 4)];
+        glViewport(0, 0, max([self frame].size.width, [self frame].size.height),  min([self frame].size.width, [self frame].size.height));
     }
     return self;
 }
@@ -123,72 +119,53 @@ static GLSLShader *_mainShader;
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glDeleteTextures(1, &glTexture);
-    delete[] m_pDataCorped;
-    delete[] m_pDataResized;
     [super dealloc];
 }
 extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int height,int biBitCount);
 
-- (void) crop
-{
-    int iLineByteFrom = m_sRenderParam.sizeMovie.width * 4;
-    int iLineByteOffsetFrom = m_sRenderParam.rectMovieCroped.left * 4;
-    int iCropedHeight = m_sRenderParam.rectMovieCroped.Height();
-    int iLineByteCroped = m_sRenderParam.rectMovieCroped.Width() * 4;
-    for (int iHeight = 0; iHeight < iCropedHeight; iHeight ++)
-    {
-        unsigned char* pDataFrom = m_pDataResized + (iLineByteFrom * iHeight + iLineByteOffsetFrom);
-        unsigned char* pDataTo = m_pDataCorped + (iLineByteCroped * iHeight);
-        memcpy(pDataTo, pDataFrom, iLineByteCroped);
-    }
-}
 - (void) calcOnScreenRect
 {
+    CGRect rectFrame = [self frame];
     CRect rectRet(0, 0, 0, 0);
     bool bPortrait = UIDeviceOrientationIsPortrait([[UIDevice currentDevice] orientation]);
-    const CRect rectScreen(0, 0, bPortrait ? m_iScreenHeight : m_iScreenWidth, bPortrait ? m_iScreenWidth : m_iScreenHeight);
-    const CRect rectScreenMin(0, 0, bPortrait ? 10 : m_iScreenWidth*10/m_iScreenHeight, bPortrait ? m_iScreenWidth*10/m_iScreenHeight : 10);
+    const CRect rectScreen(0, 0, rectFrame.size.width, rectFrame.size.height);
+    const CRect rectScreenMin(0, 0, rectFrame.size.width*10/rectFrame.size.height, 10);
     const CRect rect4_3(0, 0, 4, 3);
     const CRect rect16_9(0, 0, 16, 9);
     const CRect rectMovie(0, 0, m_sRenderParam.sizeMovie.width, m_sRenderParam.sizeMovie.height);
     CRect rectTmp(0, 0, 0, 0);
+    m_sRenderParam.rectMovieCroped = CRect(0, 0, 0, 0);
     
     switch (m_sRenderParam.eAspectRatio) 
     {
-        case eAspectRadio4_3:
+        case eAspectRatio4_3:
             RectStretchAdapt(&rect4_3, &rectScreen, &rectRet);
             m_sizeRendered = m_sRenderParam.sizeMovieResized;
-            m_pDateRendered = m_pDataResized;
             break;
             
-        case eAspectRadio16_9:
+        case eAspectRatio16_9:
             RectStretchAdapt(&rect16_9, &rectScreen, &rectRet);
             m_sizeRendered = m_sRenderParam.sizeMovieResized;
-            m_pDateRendered = m_pDataResized;
             break; 
             
-        case eAspectRadioFullScreen:
-            AssignRect(rectScreen, rectRet);
-            RectStretchAdapt(&rectScreenMin, &rectMovie, &m_sRenderParam.rectMovieCroped);
-            if ((m_sRenderParam.rectMovieCroped.Width() != rectMovie.Width()) 
-                || (m_sRenderParam.rectMovieCroped.Height() != rectMovie.Height()))
-            {
-                m_sizeRendered = CGSizeMake(m_sRenderParam.rectMovieCroped.Width(), m_sRenderParam.rectMovieCroped.Height());
-                m_pDateRendered = m_pDataCorped;
-                [self crop];
-            }
-            else
-            {
-                m_sizeRendered = m_sRenderParam.sizeMovieResized;
-                m_pDateRendered = m_pDataResized;
-            }
-            break; 
+//        case eAspectRatioFullScreen:
+//            AssignRect(rectScreen, rectRet);
+//            RectStretchAdapt(&rectScreenMin, &rectMovie, &m_sRenderParam.rectMovieCroped);
+//            if ((m_sRenderParam.rectMovieCroped.Width() != rectMovie.Width()) 
+//                || (m_sRenderParam.rectMovieCroped.Height() != rectMovie.Height()))
+//            {
+//                m_sizeRendered = CGSizeMake(m_sRenderParam.rectMovieCroped.Width(), m_sRenderParam.rectMovieCroped.Height());
+//            }
+//            else
+//            {
+//                m_sizeRendered = m_sRenderParam.sizeMovieResized;
+//            }
+//            break; 
             
-        case eAspectRadioOriginal:
+        case eAspectRatioOriginal:
         default:
             RectStretchAdapt(&rectMovie, &rectScreen, &rectRet);
             m_sizeRendered = m_sRenderParam.sizeMovieResized;
-            m_pDateRendered = m_pDataResized;
             break;
     }
     m_rectOnScreen = CGRectMake(rectRet.left, rectRet.top, rectRet.Width(), rectRet.Height());   
@@ -199,15 +176,17 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
     [self calcOnScreenRect];
     CGRect rectOnScreen = m_rectOnScreen;
     
+    CGRect rectFrame = [self frame]; 
     //uikit 坐标
     m_sRenderParam.arraySquareVertices[0] = rectOnScreen.origin.x;
-    m_sRenderParam.arraySquareVertices[3] = m_iScreenHeight - rectOnScreen.origin.y;
+    m_sRenderParam.arraySquareVertices[3] = rectFrame.size.height - rectOnScreen.origin.y;
     m_sRenderParam.arraySquareVertices[2] = rectOnScreen.origin.x;
-    m_sRenderParam.arraySquareVertices[1] = m_iScreenHeight - rectOnScreen.origin.y - rectOnScreen.size.height;
+    m_sRenderParam.arraySquareVertices[1] = rectFrame.size.height - rectOnScreen.origin.y - rectOnScreen.size.height;
     m_sRenderParam.arraySquareVertices[4] = rectOnScreen.origin.x + rectOnScreen.size.width;
-    m_sRenderParam.arraySquareVertices[5] = m_iScreenHeight - rectOnScreen.origin.y - rectOnScreen.size.height;
+    m_sRenderParam.arraySquareVertices[5] = rectFrame.size.height - rectOnScreen.origin.y - rectOnScreen.size.height;
     m_sRenderParam.arraySquareVertices[6] = rectOnScreen.origin.x + rectOnScreen.size.width;
-    m_sRenderParam.arraySquareVertices[7] = m_iScreenHeight - rectOnScreen.origin.y;
+    m_sRenderParam.arraySquareVertices[7] = rectFrame.size.height - rectOnScreen.origin.y;
+    
     
     m_sRenderParam.arraySquareTextureCoords[0] = 0.0f;
     m_sRenderParam.arraySquareTextureCoords[1] = 1.0f;
@@ -219,14 +198,14 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
     m_sRenderParam.arraySquareTextureCoords[7] = 1.0f;
     
     // opengles 坐标
-    m_sRenderParam.arraySquareVertices[0] /= m_iScreenWidth;
-    m_sRenderParam.arraySquareVertices[1] /= m_iScreenHeight;
-    m_sRenderParam.arraySquareVertices[2] /= m_iScreenWidth;
-    m_sRenderParam.arraySquareVertices[3] /= m_iScreenHeight;
-    m_sRenderParam.arraySquareVertices[4] /= m_iScreenWidth;
-    m_sRenderParam.arraySquareVertices[5] /= m_iScreenHeight;
-    m_sRenderParam.arraySquareVertices[6] /= m_iScreenWidth;
-    m_sRenderParam.arraySquareVertices[7] /= m_iScreenHeight;
+    m_sRenderParam.arraySquareVertices[0] /= rectFrame.size.width;
+    m_sRenderParam.arraySquareVertices[1] /= rectFrame.size.height;
+    m_sRenderParam.arraySquareVertices[2] /= rectFrame.size.width;
+    m_sRenderParam.arraySquareVertices[3] /= rectFrame.size.height;
+    m_sRenderParam.arraySquareVertices[4] /= rectFrame.size.width;
+    m_sRenderParam.arraySquareVertices[5] /= rectFrame.size.height;
+    m_sRenderParam.arraySquareVertices[6] /= rectFrame.size.width;
+    m_sRenderParam.arraySquareVertices[7] /= rectFrame.size.height;
     
     for (int i = 0; i < 8; i++)
     {
@@ -239,11 +218,13 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
     
     _widthp = (float)m_sizeRendered.width / (float)_widthTexture;
 	_heightp = (float)m_sizeRendered.height / (float)_heightTexture;
+    float fLeft = m_sRenderParam.rectMovieCroped.left / (float)_widthTexture;
+    float fTop = m_sRenderParam.rectMovieCroped.top / (float)_widthTexture;
 	GLfloat squareTexCoords[] = {
-		0, _heightp, 
-        0, 0, 
-		_widthp, _heightp,
-		_widthp, 0, 
+		fLeft, fTop+_heightp, 
+        fLeft, fTop, 
+		fLeft+_widthp, fTop+_heightp,
+		fLeft+_widthp, fTop, 
 		
 	};
     glBindBuffer(GL_ARRAY_BUFFER, _bufferObject[1]);

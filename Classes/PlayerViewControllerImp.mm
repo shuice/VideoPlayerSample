@@ -55,12 +55,10 @@
 - (void) insertSubViews
 {
     CGRect rectBounds = [[UIScreen mainScreen] bounds];
-    self.playerView = [[[PlayerView alloc] initWithFrame:
-                        CGRectMake(0.0f, 
-                                   0.0f, 
-                                   max(rectBounds.size.width,rectBounds.size.height), 
-                                   min(rectBounds.size.width,rectBounds.size.height))]
-                       autorelease];
+    CGFloat fMax = max(rectBounds.size.width, rectBounds.size.height);
+    rectBounds.size.width = rectBounds.size.height = fMax;
+    self.playerView = [[[PlayerView alloc] initWithFrame:rectBounds] autorelease];
+    [playerView setContentMode:UIViewContentModeScaleToFill];
     self.controlControls = [[[UIControl alloc] initWithFrame:[playerView bounds]] autorelease];
     [controlControls addTarget:self action:@selector(onTouchUpInsideControlControls:) forControlEvents:UIControlEventTouchUpInside];
     
@@ -145,6 +143,7 @@
 
 - (void) setSubViewPos
 {
+    [playerView setFrame:[[self view] bounds]];
     [viewControlProgress setAlpha:0.0f];
     [viewControlSound setAlpha:0.0f];
     CRect rectRet(0, 0, 0, 0);
@@ -197,6 +196,8 @@
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [[UIApplication sharedApplication] setStatusBarHidden:YES];
+    [[self view] setFrame:[[UIScreen mainScreen] bounds]];
     [self insertSubViews];
     [self setSubViewPos];
 //    [self layoutSubviews];
@@ -225,7 +226,10 @@
 // Override to allow orientations other than the default portrait orientation.
 -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
-	if (toInterfaceOrientation != UIInterfaceOrientationPortraitUpsideDown) 
+	if ((toInterfaceOrientation == UIInterfaceOrientationPortrait)
+        || (toInterfaceOrientation == UIInterfaceOrientationPortraitUpsideDown)
+        || (toInterfaceOrientation == UIInterfaceOrientationLandscapeLeft) 
+        || (toInterfaceOrientation == UIInterfaceOrientationLandscapeRight)) 
 	{
 		return YES;
 	}
@@ -480,9 +484,9 @@ void ShowAlartMessage(string strMessage)
 {
     EnumAspectRatio eAspectRatio = (EnumAspectRatio)[[UserDefaultHelper getValue:USER_DEFAULT_ASPECT_RATIO] intValue];
     eAspectRatio ++;
-    if (eAspectRatio > eAspectRadioFullScreen)
+    if (eAspectRatio == eAspectRatioEnd)
     {
-        eAspectRatio = eAspectRadioOriginal;
+        eAspectRatio = eAspectRatioOriginal;
     }
     NSArray* arrayTitle = [NSArray arrayWithObjects:@"1:1", @"4:3", @"16:9", @"FS", nil];
     [buttonChangeAspect setTitle:[arrayTitle objectAtIndex:eAspectRatio] forState:UIControlStateNormal];
@@ -493,9 +497,9 @@ void ShowAlartMessage(string strMessage)
 {
     EnumAspectRatio eAspectRatio = (EnumAspectRatio)[[UserDefaultHelper getValue:USER_DEFAULT_ASPECT_RATIO] intValue];
     eAspectRatio ++;
-    if (eAspectRatio > eAspectRadioFullScreen)
+    if (eAspectRatio == eAspectRatioEnd)
     {
-        eAspectRatio = eAspectRadioOriginal;
+        eAspectRatio = eAspectRatioOriginal;
     }
     [NSString stringWithFormat:@"%d", eAspectRatio];
     [UserDefaultHelper setValue:USER_DEFAULT_ASPECT_RATIO iValue:eAspectRatio];
