@@ -235,7 +235,7 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 8, m_sRenderParam.arraySquareVertices, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);  
     
-    _widthp = (float)m_sizeRendered.width / (float)_widthTexture / 2;
+    _widthp = (float)m_sizeRendered.width / (float)_widthTexture;
 	_heightp = (float)m_sizeRendered.height / (float)_heightTexture;
 	GLfloat squareTexCoords[] = {
 		0, _heightp, 
