@@ -35,11 +35,6 @@
 #import "Common.h"
 #import "PlayerViewController.h"
 
-
-#define PLAYER_DEG_TO_RAD				0.017453f
-#define PLAYER_FRAME_WIDTH 480.0f
-#define PLAYER_FRAME_HEIGHT 480.0f
-
 typedef struct SRenderParam
 {
     CGSize sizeMovie;
@@ -58,6 +53,8 @@ typedef struct SRenderParam
     unsigned char* m_pDataResized;
     unsigned char* m_pDataCorped;
     unsigned char* m_pData[3];
+    unsigned int m_iScreenWidth; // 定义长边为寛
+    unsigned int m_iScreenHeight;
 @private
     EAGLContext *context;
     GLuint glRenderbuffer;

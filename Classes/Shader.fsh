@@ -23,9 +23,10 @@ void main()
 	float nowPer = now/wp;
 	float per = nowPer*wp/4.0;
 	texCoordShare2.x = wp/2.0 + per;
+    texCoordShare2.x = (wp * 2.0 + texCoordShare.x)/4.0;
     vec4 uv = texture2D(texture, texCoordShare2);
     
-    texCoordShare2.x = wp/2.0+wp/4.0 + per;
+    texCoordShare2.x = (wp * 3.0 + texCoordShare.x)/4.0;
     vec4 vv  = texture2D(texture, texCoordShare2);
 
     // for y

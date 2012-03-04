@@ -314,24 +314,24 @@ CVideoLocalPlayerSDL::~CVideoLocalPlayerSDL()
 
 void CVideoLocalPlayerSDL::CalcDesSize()
 {
-//    m_iDesWidth = PLAYER_FRAME_WIDTH;
-//    m_iDesHeight = PLAYER_FRAME_HEIGHT;
-//    return;
+    PlayerView* playerView = (PlayerView*)m_iWindow;
+    unsigned int iScreenWidth = playerView->m_iScreenWidth;
+    unsigned int iScreenHeight = playerView->m_iScreenHeight; 
     m_iDesWidth = m_iSrcWidth;
     m_iDesHeight = m_iSrcHeight;
     
-    if (m_iDesWidth > PLAYER_FRAME_WIDTH)
+    if (m_iDesWidth > iScreenWidth)
     {
-        m_iDesHeight /= (m_iDesWidth * 1.0 / PLAYER_FRAME_WIDTH);
-        m_iDesHeight -=  (m_iDesHeight&1);
-        m_iDesWidth = PLAYER_FRAME_WIDTH;
+        m_iDesHeight /= (m_iDesWidth * 1.0 / iScreenWidth);
+        m_iDesHeight -=  (m_iDesHeight&7);
+        m_iDesWidth = iScreenWidth;
     }
     
-    if (m_iDesHeight > PLAYER_FRAME_HEIGHT)
+    if (m_iDesHeight > iScreenHeight)
     {
-        m_iDesWidth /= (m_iDesHeight * 1.0 / PLAYER_FRAME_HEIGHT);
-        m_iDesWidth -=  (m_iDesWidth&1);
-        m_iDesHeight = PLAYER_FRAME_HEIGHT;
+        m_iDesWidth /= (m_iDesHeight * 1.0 / iScreenHeight);
+        m_iDesWidth -=  (m_iDesWidth&7);
+        m_iDesHeight = iScreenHeight;
     }
 }
 

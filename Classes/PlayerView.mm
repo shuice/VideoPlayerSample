@@ -24,6 +24,9 @@ static GLSLShader *_mainShader;
     pthread_mutex_init(&m_mutexFromView, NULL);
     if (self = [super initWithFrame:frame]) 
 	{
+        m_iScreenWidth = max(frame.size.width, frame.size.height);
+        m_iScreenHeight = min(frame.size.width, frame.size.height);
+        
         CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
         eaglLayer.opaque = YES;
         eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -50,8 +53,8 @@ static GLSLShader *_mainShader;
         glGenTextures(1, _textures);
 		glBindTexture(GL_TEXTURE_2D, _textures[0]);
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);	
-        _widthTexture = 512.0f;
-        _heightTexture = 512.0f;
+        _widthTexture = 512;
+        _heightTexture = 512;
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _widthTexture, _heightTexture, 0, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4, 0);	
         
         _texture = _textures[0];
@@ -85,9 +88,9 @@ static GLSLShader *_mainShader;
         glBindRenderbuffer(GL_RENDERBUFFER, glRenderbuffer);        
         [context renderbufferStorage:GL_RENDERBUFFER_OES fromDrawable:(CAEAGLLayer*)self.layer];
         glBindFramebuffer(GL_FRAMEBUFFER, glFramebuffer);
-        glViewport(0, 0, PLAYER_FRAME_WIDTH,  PLAYER_FRAME_HEIGHT);
-        m_pDataResized = new unsigned char[(int)(PLAYER_FRAME_WIDTH * PLAYER_FRAME_HEIGHT * 4)];
-        m_pDataCorped = new unsigned char[(int)(PLAYER_FRAME_WIDTH * PLAYER_FRAME_HEIGHT * 4)];
+        glViewport(0, 0, m_iScreenWidth,  m_iScreenHeight);
+        m_pDataResized = new unsigned char[(int)(m_iScreenWidth * m_iScreenHeight * 4)];
+        m_pDataCorped = new unsigned char[(int)(m_iScreenWidth * m_iScreenHeight * 4)];
     }
     return self;
 }
@@ -143,8 +146,8 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
 {
     CRect rectRet(0, 0, 0, 0);
     bool bPortrait = UIDeviceOrientationIsPortrait([[UIDevice currentDevice] orientation]);
-    const CRect rectScreen(0, 0, bPortrait ? 320 : 480, bPortrait ? 480 : 320);
-    const CRect rectScreenMin(0, 0, bPortrait ? 2 : 3, bPortrait ? 3 : 2);
+    const CRect rectScreen(0, 0, bPortrait ? m_iScreenHeight : m_iScreenWidth, bPortrait ? m_iScreenWidth : m_iScreenHeight);
+    const CRect rectScreenMin(0, 0, bPortrait ? 10 : m_iScreenWidth*10/m_iScreenHeight, bPortrait ? m_iScreenWidth*10/m_iScreenHeight : 10);
     const CRect rect4_3(0, 0, 4, 3);
     const CRect rect16_9(0, 0, 16, 9);
     const CRect rectMovie(0, 0, m_sRenderParam.sizeMovie.width, m_sRenderParam.sizeMovie.height);
@@ -198,13 +201,13 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
     
     //uikit 坐标
     m_sRenderParam.arraySquareVertices[0] = rectOnScreen.origin.x;
-    m_sRenderParam.arraySquareVertices[3] = PLAYER_FRAME_HEIGHT - rectOnScreen.origin.y;
+    m_sRenderParam.arraySquareVertices[3] = m_iScreenHeight - rectOnScreen.origin.y;
     m_sRenderParam.arraySquareVertices[2] = rectOnScreen.origin.x;
-    m_sRenderParam.arraySquareVertices[1] = PLAYER_FRAME_HEIGHT - rectOnScreen.origin.y - rectOnScreen.size.height;
+    m_sRenderParam.arraySquareVertices[1] = m_iScreenHeight - rectOnScreen.origin.y - rectOnScreen.size.height;
     m_sRenderParam.arraySquareVertices[4] = rectOnScreen.origin.x + rectOnScreen.size.width;
-    m_sRenderParam.arraySquareVertices[5] = PLAYER_FRAME_HEIGHT - rectOnScreen.origin.y - rectOnScreen.size.height;
+    m_sRenderParam.arraySquareVertices[5] = m_iScreenHeight - rectOnScreen.origin.y - rectOnScreen.size.height;
     m_sRenderParam.arraySquareVertices[6] = rectOnScreen.origin.x + rectOnScreen.size.width;
-    m_sRenderParam.arraySquareVertices[7] = PLAYER_FRAME_HEIGHT - rectOnScreen.origin.y;
+    m_sRenderParam.arraySquareVertices[7] = m_iScreenHeight - rectOnScreen.origin.y;
     
     m_sRenderParam.arraySquareTextureCoords[0] = 0.0f;
     m_sRenderParam.arraySquareTextureCoords[1] = 1.0f;
@@ -216,14 +219,14 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
     m_sRenderParam.arraySquareTextureCoords[7] = 1.0f;
     
     // opengles 坐标
-    m_sRenderParam.arraySquareVertices[0] /= PLAYER_FRAME_WIDTH;
-    m_sRenderParam.arraySquareVertices[1] /= PLAYER_FRAME_HEIGHT;
-    m_sRenderParam.arraySquareVertices[2] /= PLAYER_FRAME_WIDTH;
-    m_sRenderParam.arraySquareVertices[3] /= PLAYER_FRAME_HEIGHT;
-    m_sRenderParam.arraySquareVertices[4] /= PLAYER_FRAME_WIDTH;
-    m_sRenderParam.arraySquareVertices[5] /= PLAYER_FRAME_HEIGHT;
-    m_sRenderParam.arraySquareVertices[6] /= PLAYER_FRAME_WIDTH;
-    m_sRenderParam.arraySquareVertices[7] /= PLAYER_FRAME_HEIGHT;
+    m_sRenderParam.arraySquareVertices[0] /= m_iScreenWidth;
+    m_sRenderParam.arraySquareVertices[1] /= m_iScreenHeight;
+    m_sRenderParam.arraySquareVertices[2] /= m_iScreenWidth;
+    m_sRenderParam.arraySquareVertices[3] /= m_iScreenHeight;
+    m_sRenderParam.arraySquareVertices[4] /= m_iScreenWidth;
+    m_sRenderParam.arraySquareVertices[5] /= m_iScreenHeight;
+    m_sRenderParam.arraySquareVertices[6] /= m_iScreenWidth;
+    m_sRenderParam.arraySquareVertices[7] /= m_iScreenHeight;
     
     for (int i = 0; i < 8; i++)
     {

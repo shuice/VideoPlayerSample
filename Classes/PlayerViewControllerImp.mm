@@ -54,7 +54,13 @@
 
 - (void) insertSubViews
 {
-    self.playerView = [[[PlayerView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, PLAYER_FRAME_WIDTH, PLAYER_FRAME_HEIGHT)] autorelease];
+    CGRect rectBounds = [[UIScreen mainScreen] bounds];
+    self.playerView = [[[PlayerView alloc] initWithFrame:
+                        CGRectMake(0.0f, 
+                                   0.0f, 
+                                   max(rectBounds.size.width,rectBounds.size.height), 
+                                   min(rectBounds.size.width,rectBounds.size.height))]
+                       autorelease];
     self.controlControls = [[[UIControl alloc] initWithFrame:[playerView bounds]] autorelease];
     [controlControls addTarget:self action:@selector(onTouchUpInsideControlControls:) forControlEvents:UIControlEventTouchUpInside];
     
@@ -219,7 +225,6 @@
 // Override to allow orientations other than the default portrait orientation.
 -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
-    return YES;
 	if (toInterfaceOrientation != UIInterfaceOrientationPortraitUpsideDown) 
 	{
 		return YES;
