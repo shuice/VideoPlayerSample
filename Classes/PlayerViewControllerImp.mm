@@ -159,7 +159,7 @@
     // top controller
     {
         const CGFloat fHeightOfUpControlelr = 40.0f;
-        [viewControlProgress setFrame:CGRectMake(0.0f, 0.0f, fWidth, fHeightOfUpControlelr)];
+        [viewControlProgress setFrame:CGRectMake(0.0f, 20.0f, fWidth, fHeightOfUpControlelr)];
         [imageViewControlSound setFrame:[viewControlProgress bounds]];
         const CGFloat fMarginWidth = 5.0f;
         const CGFloat fHeightOfLabel = 18.0f;

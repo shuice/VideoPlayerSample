@@ -7,7 +7,7 @@
 
 static GLSLShader *_mainShader;
 
-#define TEXTURE_SIZE 512.0f
+#define TEXTURE_SIZE 1024.0f
 
 @implementation PlayerView
 
@@ -127,7 +127,6 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
 {
     CGRect rectFrame = [self frame];
     CRect rectRet(0, 0, 0, 0);
-    bool bPortrait = UIDeviceOrientationIsPortrait([[UIDevice currentDevice] orientation]);
     const CRect rectScreen(0, 0, rectFrame.size.width, rectFrame.size.height);
     const CRect rectScreenMin(0, 0, rectFrame.size.width*10/rectFrame.size.height, 10);
     const CRect rect4_3(0, 0, 4, 3);
@@ -278,7 +277,7 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
         [context presentRenderbuffer:GL_RENDERBUFFER_OES];
         return;
     }
-    //[playerViewControllerImp showWithSubTitle:str];
+    [playerViewControllerImp showWithSubTitle:str];
     //[self clearBackground];
     [self updateRenderParam];
     _mainShader->beginShader();
