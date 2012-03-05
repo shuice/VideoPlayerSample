@@ -291,7 +291,7 @@ CVideoLocalPlayerSDL::CVideoLocalPlayerSDL()
 	m_iDesHeight = 0;
     m_iWindow = 0;
 	m_pSwsContext = NULL;
-    m_pixelFormat = PIX_FMT_YUV420P;
+    m_pixelFormat = PIX_FMT_RGBA;
 	memset(m_pRGBAData, 0, sizeof(m_pRGBAData));
 }
 
@@ -319,7 +319,7 @@ void CVideoLocalPlayerSDL::CalcDesSize()
     int iScreenHeight = min(rectBounds.size.width, rectBounds.size.height);
     m_iDesWidth = m_iSrcWidth;
     m_iDesHeight = m_iSrcHeight;
-    
+    return;
     if (m_iDesWidth > iScreenWidth)
     {
         m_iDesHeight /= (m_iDesWidth * 1.0 / iScreenWidth);

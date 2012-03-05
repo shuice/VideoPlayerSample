@@ -200,12 +200,6 @@
     [[self view] setFrame:[[UIScreen mainScreen] bounds]];
     [self insertSubViews];
     [self setSubViewPos];
-//    [self layoutSubviews];
-//    buttonPlay.alpha = 0;
-//    buttonPause.alpha = 0;
-//    buttonBackward.alpha = 0;
-//    buttonForward.alpha = 0;
-//	[self SetPauseVisiable:NO];
     NSString* str = [[NSBundle mainBundle] pathForResource:@"Test" ofType:@"rmvb"];
     [self performSelector:@selector(open:) withObject:str afterDelay:2.0f];
 }

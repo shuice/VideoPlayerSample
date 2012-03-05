@@ -53,7 +53,7 @@ static GLSLShader *_mainShader;
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);	
         _widthTexture = TEXTURE_SIZE;
         _heightTexture = TEXTURE_SIZE;
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _widthTexture, _heightTexture, 0, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4, 0);	
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _widthTexture, _heightTexture, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);	
         
         _texture = _textures[0];
         glBindTexture(GL_TEXTURE_2D, _texture);
@@ -297,9 +297,12 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
     
     int w = m_sRenderParam.sizeMovieResized.width;
     int h = m_sRenderParam.sizeMovieResized.height;
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w/2, h, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4, m_pData[0]);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, w / 2, 0, w / 4, h / 2, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4, m_pData[1]);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, w / 2 + w / 4, 0, w / 4, h / 2, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4, m_pData[2]);
+    
+
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, m_pData[0]);
+//    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w/2, h, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4, m_pData[0]);
+//    glTexSubImage2D(GL_TEXTURE_2D, 0, w / 2, 0, w / 4, h / 2, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4, m_pData[1]);
+//    glTexSubImage2D(GL_TEXTURE_2D, 0, w / 2 + w / 4, 0, w / 4, h / 2, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4, m_pData[2]);
     
     glBindFramebuffer(GL_FRAMEBUFFER, glFramebuffer);
     glClear(GL_COLOR_BUFFER_BIT);
