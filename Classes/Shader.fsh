@@ -14,9 +14,6 @@ uniform float wp;
 uniform float wsize;
 void main()
 {
-    gl_FragColor = texture2D(texture, texCoordShare);
-    return;
-    
 	vec2 texCoordShare2 = texCoordShare;
     texCoordShare2.x /= 2.0;
 	vec4 yv = texture2D(texture, texCoordShare2);

@@ -51,6 +51,8 @@ typedef struct SRenderParam
 	pthread_mutex_t m_mutexFromView;
 	wstring m_wstrSubTitle;
     unsigned char* m_pData[3]; // y, u, v
+    int _backingWidth;
+    int _backingHeight;
 @private
     EAGLContext *context;
     GLuint glRenderbuffer;

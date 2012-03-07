@@ -291,7 +291,7 @@ CVideoLocalPlayerSDL::CVideoLocalPlayerSDL()
 	m_iDesHeight = 0;
     m_iWindow = 0;
 	m_pSwsContext = NULL;
-    m_pixelFormat = PIX_FMT_RGBA;
+    m_pixelFormat = PIX_FMT_YUV420P;
 	memset(m_pRGBAData, 0, sizeof(m_pRGBAData));
 }
 
@@ -314,12 +314,12 @@ CVideoLocalPlayerSDL::~CVideoLocalPlayerSDL()
 
 void CVideoLocalPlayerSDL::CalcDesSize()
 {
+    PlayerView* playerView = (PlayerView*)m_iWindow;
     CGRect rectBounds = [[UIScreen mainScreen] bounds];
-    int iScreenWidth = max(rectBounds.size.width, rectBounds.size.height);
-    int iScreenHeight = min(rectBounds.size.width, rectBounds.size.height);
+    int iScreenWidth = max(playerView->_backingWidth, playerView->_backingHeight);
+    int iScreenHeight = min(playerView->_backingWidth, playerView->_backingHeight);
     m_iDesWidth = m_iSrcWidth;
     m_iDesHeight = m_iSrcHeight;
-    return;
     if (m_iDesWidth > iScreenWidth)
     {
         m_iDesHeight /= (m_iDesWidth * 1.0 / iScreenWidth);
@@ -352,7 +352,7 @@ bool CVideoLocalPlayerSDL::Init(long iWindow, int iMediaWidth, int iMediaHeight,
 
     m_pSwsContext = sws_getContext(m_iSrcWidth, m_iSrcHeight, ePixelFormat, 
 								   m_iDesWidth, m_iDesHeight, m_pixelFormat,
-								   SWS_POINT, NULL, NULL, NULL);
+								   SWS_BICUBIC, NULL, NULL, NULL);
 	if (m_pSwsContext == NULL) 
 	{
 		throw new CPlayerException("sws_getContext return NULL");
@@ -365,10 +365,7 @@ bool CVideoLocalPlayerSDL::Init(long iWindow, int iMediaWidth, int iMediaHeight,
 		pthread_mutex_init(&m_mutex[iCacheIndex], NULL);
 		avpicture_alloc(&m_avPicture[iCacheIndex], m_pixelFormat, m_iDesWidth, m_iDesHeight);
 		m_pRGBAData[iCacheIndex] = (unsigned char*)m_avPicture[iCacheIndex].data[0];
-//		m_avPicture[iCacheIndex].data[0] = m_avPicture[iCacheIndex].data[0] + m_avPicture[iCacheIndex].linesize[0] * (m_iDesHeight - 1);
-//		m_avPicture[iCacheIndex].linesize[0] = - m_avPicture[iCacheIndex].linesize[0];
 	}
-    avpicture_alloc(&pic, PIX_FMT_YUV420P, m_iSrcWidth, m_iSrcHeight);
 	return true;
 }
 
@@ -377,18 +374,6 @@ void CVideoLocalPlayerSDL::UpdateData(AVFrame* pAvFrame, int iCacheIndex)
 {	
 	sws_scale(m_pSwsContext, pAvFrame->data, pAvFrame->linesize,
  			  0, m_iSrcHeight, m_avPicture[iCacheIndex].data, m_avPicture[iCacheIndex].linesize);   
-    {
-        SwsContext* swsContext = sws_getContext(m_iDesWidth, m_iDesHeight, m_pixelFormat, 
-                                       m_iDesWidth, m_iDesHeight, PIX_FMT_RGB32,
-                                       SWS_POINT, NULL, NULL, NULL);
-        AVPicture avPicture;
-        avpicture_alloc(&avPicture, PIX_FMT_RGB32, m_iDesWidth, m_iDesHeight);
-        sws_scale(swsContext, m_avPicture[iCacheIndex].data, m_avPicture[iCacheIndex].linesize,
-                  0, m_iDesHeight, avPicture.data, avPicture.linesize);
-        saveBmp("/Users/xiaoyi/1.bmp", avPicture.data[0], m_iDesWidth, m_iDesHeight, 32);
-        avpicture_free(&avPicture);
-        sws_freeContext(swsContext);
-    }
 }
 
 void CVideoLocalPlayerSDL::Show(int iCacheIndex)
