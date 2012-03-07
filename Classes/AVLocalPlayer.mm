@@ -350,7 +350,7 @@ bool CVideoLocalPlayerSDL::Init(long iWindow, int iMediaWidth, int iMediaHeight,
 
     m_pSwsContext = sws_getContext(m_iSrcWidth, m_iSrcHeight, ePixelFormat, 
 								   m_iDesWidth, m_iDesHeight, m_pixelFormat,
-								   SWS_BICUBIC, NULL, NULL, NULL);
+								   SWS_FAST_BILINEAR, NULL, NULL, NULL);
 	if (m_pSwsContext == NULL) 
 	{
 		throw new CPlayerException("sws_getContext return NULL");

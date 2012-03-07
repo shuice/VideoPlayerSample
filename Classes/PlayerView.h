@@ -36,8 +36,8 @@
 #import "PlayerViewController.h"
 #import "GLSLShader.h"
 
-#define TEXTURE_WIDTH 512.0f
-#define TEXTURE_HEIGHT 512.0f
+#define TEXTURE_WIDTH 1024.0f
+#define TEXTURE_HEIGHT 1024.0f
 
 typedef struct SRenderParam
 {
