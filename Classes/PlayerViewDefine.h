@@ -22,8 +22,9 @@ typedef enum EnumAspectRatio
     eAspectRatioOriginal = 0, // 1:1
     eAspectRatio4_3,
     eAspectRatio16_9,
-    eAspectRatioFullScreen,
-    eAspectRatioEnd
+
+    eAspectRatioEnd,
+    eAspectRatioFullScreen = eAspectRatioEnd,
 }EnumAspectRatio;
 
 typedef enum EnumPlaySpeed

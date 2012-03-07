@@ -59,7 +59,7 @@
     rectBounds.size.width = rectBounds.size.height = fMax;
     self.playerView = [[[PlayerView alloc] initWithFrame:rectBounds] autorelease];
     [playerView setContentMode:UIViewContentModeScaleToFill];
-    self.controlControls = [[[UIControl alloc] initWithFrame:[playerView bounds]] autorelease];
+    self.controlControls = [[[UIControl alloc] initWithFrame:[[self view] frame]] autorelease];
     [controlControls addTarget:self action:@selector(onTouchUpInsideControlControls:) forControlEvents:UIControlEventTouchUpInside];
     
     playerView.playerViewControllerImp = self;
@@ -109,11 +109,12 @@
     // subviews
     [[self view] addSubview:playerView];
     [[self view] addSubview:uiLabelSubTitle];
-    [[self view] addSubview:buttonChangeAspect];
     
-    [playerView addSubview:controlControls];
-    [playerView addSubview:viewControlProgress];
-    [playerView addSubview:viewControlSound];
+    
+    [[self view] addSubview:controlControls];
+    [[self view] addSubview:viewControlProgress];
+    [[self view] addSubview:viewControlSound];
+    [[self view] addSubview:buttonChangeAspect];
     
     [viewControlProgress addSubview:imageViewControlProgress];
     [viewControlProgress addSubview:labelPlayed];
@@ -147,8 +148,7 @@
     [viewControlProgress setAlpha:0.0f];
     [viewControlSound setAlpha:0.0f];
     CRect rectRet(0, 0, 0, 0);
-    bool bPortrait = UIDeviceOrientationIsPortrait([[UIDevice currentDevice] orientation]);
-    const CRect rectScreen(0, 0, bPortrait ? 320 : 480, bPortrait ? 480 : 320);
+    const CRect rectScreen(0, 0, [[self view] frame].size.width, [[self view] frame].size.height);
     
     CGFloat fWidth = rectScreen.Width();
     CGFloat fHeight = rectScreen.Height();
@@ -196,8 +196,6 @@
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [[UIApplication sharedApplication] setStatusBarHidden:YES];
-    [[self view] setFrame:[[UIScreen mainScreen] bounds]];
     [self insertSubViews];
     [self setSubViewPos];
     NSString* str = [[NSBundle mainBundle] pathForResource:@"Test" ofType:@"rmvb"];
@@ -206,6 +204,7 @@
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
+    [self SetControlVisiable:NO];
     [playerView startRotate];
 }
 
@@ -601,14 +600,6 @@ void ShowAlartMessage(string strMessage)
 	[self SetPauseVisiable:YES];
 	[self SetPlayVisiable:NO];
 	[self SetControlVisiable:YES];
-	
-//	nsTimer = [NSTimer scheduledTimerWithTimeInterval:1.0/15.0f 
-//                                               target:self
-//                                             selector:@selector(handleTimer:)
-//                                             userInfo:nil
-//                                              repeats:YES];
-	
-
     return ePlayerStatusOk;
 }
 
@@ -677,7 +668,7 @@ void ShowAlartMessage(string strMessage)
 
 - (EnumPlayerStatus) setAspectRatio:(EnumAspectRatio)eAspectRatio
 {
-    return ePlayerStatusNotImp;
+    return [playerView setAspectRadio:eAspectRatio];
 }
 
 - (NSString*) dealWithEscapeChars:(NSString*)str;
@@ -729,8 +720,7 @@ void ShowAlartMessage(string strMessage)
 
 - (void)setSubTitlePos
 {
-    bool bPortrait = UIDeviceOrientationIsPortrait([[UIDevice currentDevice] orientation]);
-    const CRect rectScreen(0, 0, bPortrait ? 320 : 480, bPortrait ? 450 : 290);
+    const CRect rectScreen(0, 0, [[self view] frame].size.width, [[self view] frame].size.height - 30.0f);
     CGRect rectOnScreen = playerView.m_rectOnScreen;
     if ((int(rectOnScreen.size.width) == 0) || (int(rectOnScreen.size.height) == 0))
     {

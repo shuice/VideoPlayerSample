@@ -5,10 +5,6 @@
 #import "GLSLShader.h"
 
 
-static GLSLShader *_mainShader;
-
-#define TEXTURE_SIZE 512.0f
-
 @implementation PlayerView
 
 @synthesize m_wstrSubTitle;
@@ -33,6 +29,10 @@ static GLSLShader *_mainShader;
                                         nil];
         
         context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];        
+        if (context == nil)
+        {
+            context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES1];
+        }
         [EAGLContext setCurrentContext:context];
         
         glGenFramebuffers(1, &glFramebuffer);
@@ -40,26 +40,22 @@ static GLSLShader *_mainShader;
         glBindFramebuffer(GL_FRAMEBUFFER, glFramebuffer);
         glBindRenderbuffer(GL_RENDERBUFFER, glRenderbuffer);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_RENDERBUFFER_OES, glRenderbuffer); 
-        
-        
        
         glEnable(GL_TEXTURE_2D);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		
+        glGenTextures(1, &_texture);
+		glBindTexture(GL_TEXTURE_2D, _texture);
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);	
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4, 0);	
+        
+        glBindTexture(GL_TEXTURE_2D, _texture);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glGenTextures(1, _textures);
-		glBindTexture(GL_TEXTURE_2D, _textures[0]);
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);	
-        _widthTexture = TEXTURE_SIZE;
-        _heightTexture = TEXTURE_SIZE;
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _widthTexture, _heightTexture, 0, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4, 0);	
         
-        _texture = _textures[0];
-        glBindTexture(GL_TEXTURE_2D, _texture);
         glGenBuffers(2, _bufferObject);
 
-        
         
         
         NSString *vShader = [[NSBundle mainBundle] pathForResource:@"Shader" ofType:@"vsh"];
@@ -90,8 +86,6 @@ static GLSLShader *_mainShader;
         glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &_backingWidth);
         glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &_backingHeight);
         glViewport(0, 0, _backingWidth,  _backingHeight);
-
-//        glViewport(0, 0, max([self frame].size.width, [self frame].size.height),  min([self frame].size.width, [self frame].size.height));
     }
     return self;
 }
@@ -123,14 +117,25 @@ static GLSLShader *_mainShader;
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glBindTexture(GL_TEXTURE_2D, 0);
-	glDeleteTextures(1, &glTexture);
+    glDeleteTextures(1, &glTexture);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glDeleteBuffers(2, _bufferObject);
+    if (_mainShader != NULL)
+    {
+        delete _mainShader;
+        _mainShader = NULL;
+    }
     [super dealloc];
 }
-extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int height,int biBitCount);
 
 - (void) calcOnScreenRect
 {
-    CGRect rectFrame = [self frame];
+    if (eAspectRatioFullScreen != m_sRenderParam.eAspectRatio)
+    {
+        [self setFrame:[[self superview] frame]];
+    }
+    CGRect rectFrame = [[self superview] frame];
     CRect rectRet(0, 0, 0, 0);
     const CRect rectScreen(0, 0, rectFrame.size.width, rectFrame.size.height);
     const CRect rectScreenMin(0, 0, rectFrame.size.width*10/rectFrame.size.height, 10);
@@ -152,19 +157,19 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
             m_sizeRendered = m_sRenderParam.sizeMovieResized;
             break; 
             
-//        case eAspectRatioFullScreen:
-//            AssignRect(rectScreen, rectRet);
-//            RectStretchAdapt(&rectScreenMin, &rectMovie, &m_sRenderParam.rectMovieCroped);
-//            if ((m_sRenderParam.rectMovieCroped.Width() != rectMovie.Width()) 
-//                || (m_sRenderParam.rectMovieCroped.Height() != rectMovie.Height()))
-//            {
-//                m_sizeRendered = CGSizeMake(m_sRenderParam.rectMovieCroped.Width(), m_sRenderParam.rectMovieCroped.Height());
-//            }
-//            else
-//            {
-//                m_sizeRendered = m_sRenderParam.sizeMovieResized;
-//            }
-//            break; 
+        case eAspectRatioFullScreen:
+            {
+                RectStretchAdapt(&rectMovie, &rectScreen, &rectRet);
+                m_sizeRendered = m_sRenderParam.sizeMovieResized;
+                float fScale = 1.5f;                
+                float fWidthNewFrame = rectScreen.Width() * fScale;
+                float fHeightNewFrame = rectScreen.Height() * fScale;
+                [self setFrame:CGRectMake(-(fWidthNewFrame - rectScreen.Width()) /2.0f, 
+                                          -(fHeightNewFrame - rectScreen.Height()) /2.0f, 
+                                          fWidthNewFrame, 
+                                          fHeightNewFrame)];
+            }
+            break; 
             
         case eAspectRatioOriginal:
         default:
@@ -220,10 +225,10 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 8, m_sRenderParam.arraySquareVertices, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);  
     
-    _widthp = (float)m_sizeRendered.width / (float)_widthTexture;
-	_heightp = (float)m_sizeRendered.height / (float)_heightTexture;
-    float fLeft = m_sRenderParam.rectMovieCroped.left / (float)_widthTexture;
-    float fTop = m_sRenderParam.rectMovieCroped.top / (float)_widthTexture;
+    _widthp = (float)m_sizeRendered.width / (float)TEXTURE_WIDTH;
+	_heightp = (float)m_sizeRendered.height / (float)TEXTURE_HEIGHT;
+    float fLeft = m_sRenderParam.rectMovieCroped.left / (float)TEXTURE_WIDTH;
+    float fTop = m_sRenderParam.rectMovieCroped.top / (float)TEXTURE_WIDTH;
 	GLfloat squareTexCoords[] = {
 		fLeft, fTop+_heightp, 
         fLeft, fTop, 
@@ -238,32 +243,12 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
 
 }
 
-- (void) clearBackground
-{
-    return;
-    unsigned long c = 0;
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1,
-                 0, GL_RGBA, GL_UNSIGNED_BYTE, &c);
-    
-    GLfloat arraySquareVertices[] = {0, 480,
-        0,  0,
-        480, 0,
-        480, 480};
-    
-    GLfloat arraySquareTextureCoords[] = {0.0f, 1.0f,
-        0.0f, 0.0f,
-        1.0f, 0.0f,
-        1.0f, 1.0f};
-    
-    glVertexPointer(2, GL_FLOAT, 0, arraySquareVertices);
-    glTexCoordPointer(2, GL_FLOAT, 0, arraySquareTextureCoords);
-    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-}
 
 
-- (void) setAspectRadio:(EnumAspectRatio)eAspectRatio
+- (EnumPlayerStatus) setAspectRadio:(EnumAspectRatio)eAspectRatio
 {
     m_sRenderParam.eAspectRatio = eAspectRatio;
+    return ePlayerStatusOk;
 }
 
 - (void) setMovieSize:(int)iWidth iHeight:(int)iHeight iWidthResized:(int)iWidthResized iHeightResized:(int)iHeightResized
@@ -276,35 +261,15 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
 
 - (void) showWithSubTitle:(NSString*)str
 {
-    if (m_bRoating)
-    {
-        [self clearBackground];
-        [context presentRenderbuffer:GL_RENDERBUFFER_OES];
-        return;
-    }
     [playerViewControllerImp showWithSubTitle:str];
-    //[self clearBackground];
     [self updateRenderParam];
-    _mainShader->beginShader();
-	glBindTexture(GL_TEXTURE_2D, _texture);
-	_mainShader->setTexture("texture", 0);
-	
-	_mainShader->endShader();
+
 	[EAGLContext setCurrentContext:context];
-    
-	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, _texture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    
     
     int w = m_sRenderParam.sizeMovieResized.width;
     int h = m_sRenderParam.sizeMovieResized.height;
     
-
-//    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, m_pData[0]);
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w/2, h, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4, m_pData[0]);
     glTexSubImage2D(GL_TEXTURE_2D, 0, w / 2, 0, w / 4, h / 2, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4, m_pData[1]);
     glTexSubImage2D(GL_TEXTURE_2D, 0, w / 2 + w / 4, 0, w / 4, h / 2, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4, m_pData[2]);
@@ -312,12 +277,11 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
     glBindFramebuffer(GL_FRAMEBUFFER, glFramebuffer);
     glClear(GL_COLOR_BUFFER_BIT);
 	_mainShader->beginShader();
+    _mainShader->setTexture("texture", 0);
 	_mainShader->setParameter(_param[0], (float)_widthp);
 	_mainShader->setParameter(_param[1], (float)w);
 	glBindBuffer(GL_ARRAY_BUFFER, _bufferObject[0]);
-//	_mainShader->setVertexPointer(_param[2], reinterpret_cast<float *> (0), 2);
 	glBindBuffer(GL_ARRAY_BUFFER, _bufferObject[1]);
-//	_mainShader->setVertexPointer(_param[3], reinterpret_cast<float *> (0), 2);
     memset(_matrix, 0, sizeof(_matrix));
     _matrix[0] = _matrix[5] = _matrix[10] = _matrix[15] = 1.f;
 	_mainShader->setParameterMatrix44(_param[4], _matrix);
@@ -335,5 +299,6 @@ extern bool saveBmp(const char* bmpName,unsigned char *imgBuf,int width,int heig
 {
     m_bRoating = false;
 }
+
 
 @end

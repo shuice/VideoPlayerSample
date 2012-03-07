@@ -56,7 +56,7 @@ void FileAccess::_open(const char *path, bool mode){
 	name = reinterpret_cast<TCHAR *>(wcstring);
 #endif
 	
-	switch (mode) {
+	switch ((int)mode) {
 		case FILE_READ:
 			_file = CreateFile(name,  GENERIC_READ, FILE_SHARE_READ, NULL,
 							   OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, NULL);

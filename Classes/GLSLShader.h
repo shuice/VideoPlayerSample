@@ -59,7 +59,7 @@ public:
 		if(pshader)	fshData_ = pshader;
 	};
 	virtual ~GLSLShader();
-	bool isValid(){	return (sh_ != NULL);	};
+	bool isValid(){	return (sh_ != 0);	};
 	bool compile();
 	void beginShader();
 	bool endShader();

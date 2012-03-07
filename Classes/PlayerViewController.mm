@@ -10,6 +10,7 @@
     {
         [UserDefaultHelper init];
         playerViewControllerImp = [[PlayerViewControllerImp alloc] init];
+        [[UIApplication sharedApplication] setStatusBarHidden:YES];
         [playerViewControllerImp view];
     }
     return playerViewControllerImp;

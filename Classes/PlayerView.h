@@ -34,6 +34,10 @@
 #import <OpenGLES/ES1/glext.h>
 #import "Common.h"
 #import "PlayerViewController.h"
+#import "GLSLShader.h"
+
+#define TEXTURE_WIDTH 512.0f
+#define TEXTURE_HEIGHT 512.0f
 
 typedef struct SRenderParam
 {
@@ -68,16 +72,13 @@ typedef struct SRenderParam
     bool m_bRoating;
     CGRect m_rectOnScreen;
     GLuint _bufferObject[2];
-    GLuint _textures[4];
     GLuint _texture;
     GLuint _param[5];
     float _matrix[16];
     
     float _widthp;
     float _heightp;
-    float _widthTexture;
-    float _heightTexture;
-    
+    GLSLShader* _mainShader;
 }
 
 
@@ -85,7 +86,7 @@ typedef struct SRenderParam
 @property (nonatomic, assign) PlayerViewControllerImp* playerViewControllerImp;
 @property (nonatomic, readonly) CGRect m_rectOnScreen;
 
-- (void) setAspectRadio:(EnumAspectRatio)eAspectRatio;
+- (EnumPlayerStatus) setAspectRadio:(EnumAspectRatio)eAspectRatio;
 - (void) setMovieSize:(int)iWidth iHeight:(int)iHeight iWidthResized:(int)iWidthResized iHeightResized:(int)iHeightResized;
 - (void) startRotate;
 - (void) stopRotate;

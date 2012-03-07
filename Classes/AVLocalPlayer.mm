@@ -314,24 +314,22 @@ CVideoLocalPlayerSDL::~CVideoLocalPlayerSDL()
 
 void CVideoLocalPlayerSDL::CalcDesSize()
 {
-    PlayerView* playerView = (PlayerView*)m_iWindow;
-    CGRect rectBounds = [[UIScreen mainScreen] bounds];
-    int iScreenWidth = max(playerView->_backingWidth, playerView->_backingHeight);
-    int iScreenHeight = min(playerView->_backingWidth, playerView->_backingHeight);
+    int iTextureWidth = TEXTURE_WIDTH;
+    int iTextureHeight = TEXTURE_HEIGHT;
     m_iDesWidth = m_iSrcWidth;
     m_iDesHeight = m_iSrcHeight;
-    if (m_iDesWidth > iScreenWidth)
+    if (m_iDesWidth > iTextureWidth)
     {
-        m_iDesHeight /= (m_iDesWidth * 1.0 / iScreenWidth);
+        m_iDesHeight /= (m_iDesWidth * 1.0 / iTextureWidth);
         m_iDesHeight -=  (m_iDesHeight&7);
-        m_iDesWidth = iScreenWidth;
+        m_iDesWidth = iTextureWidth;
     }
     
-    if (m_iDesHeight > iScreenHeight)
+    if (m_iDesHeight > iTextureHeight)
     {
-        m_iDesWidth /= (m_iDesHeight * 1.0 / iScreenHeight);
+        m_iDesWidth /= (m_iDesHeight * 1.0 / iTextureHeight);
         m_iDesWidth -=  (m_iDesWidth&7);
-        m_iDesHeight = iScreenHeight;
+        m_iDesHeight = iTextureHeight;
     }
 }
 
