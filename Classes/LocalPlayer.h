@@ -170,6 +170,7 @@ typedef struct VideoState
 	AVCodecContext* m_pCodecContextAudio;
 	AVCodecContext* m_pCodecContextVideo;
     EnumPlaySpeed m_ePlaySpeed;
+    bool m_bStarted;
 } VideoState;
 typedef VideoState SVideoState;
 
@@ -184,6 +185,7 @@ public:
 	CLocalPlayer();
 	~CLocalPlayer();
 	EnumPlayerStatus Open(const string& strFileName, long iWindow);
+    bool IsStarted();
 	bool Start();
 	bool Play();
 	bool Pause();

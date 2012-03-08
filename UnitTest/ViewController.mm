@@ -60,22 +60,30 @@
 	[super viewDidDisappear:animated];
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+-(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
-    // Return YES for supported orientations
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
-    } else {
-        return YES;
-    }
+	if ((toInterfaceOrientation == UIInterfaceOrientationPortrait)
+        || (toInterfaceOrientation == UIInterfaceOrientationPortraitUpsideDown)
+        || (toInterfaceOrientation == UIInterfaceOrientationLandscapeLeft) 
+        || (toInterfaceOrientation == UIInterfaceOrientationLandscapeRight)) 
+	{
+		return YES;
+	}
+	return NO;	
 }
+
 
 - (void) unitTest:(id)sender
 {
-//    CSmiSubTitleReader smiSubTitleReader;
-//    smiSubTitleReader.LoadFile("/Users/xiaoyi/Downloads/1s/101.big5.smi");
-    PlayerViewController* viewController = [PlayerViewController sharedPlayer];
-    [[self navigationController] pushViewController:viewController animated:YES];
+    PlayerViewController* player = [PlayerViewController sharedPlayer];
+    
+    NSString* strFilePath = [[NSBundle mainBundle] pathForResource:@"Test" ofType:@"rmvb"];
+    EnumPlayerStatus ePlayerStatus = [player open:strFilePath];
+    if (ePlayerStatus == ePlayerStatusOk)
+    {
+        [[self navigationController] pushViewController:player animated:YES];
+        [player play];
+    }
 }
 
 @end

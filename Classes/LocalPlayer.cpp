@@ -108,7 +108,7 @@ CLocalPlayer::CLocalPlayer()
 	m_bRefreshed = true;
 	step = 0;
 	iWindow = 0;
-    
+    m_bStarted = false;
     av_register_all();
     avdevice_register_all();
     avcodec_register_all();
@@ -155,6 +155,7 @@ bool CLocalPlayer::Start()
 	refresh_tid = StartThread(ThreadRefresh, this);
     video_tid = StartThread(ThreadVideo, this);
 	read_tid = StartThread(ThreadRead, this);
+    m_bStarted = true;
 	return true;
 }
 
@@ -1495,4 +1496,9 @@ void CLocalPlayer::SetPlaySpeed(EnumPlaySpeed ePlaySpeed)
 EnumPlaySpeed CLocalPlayer::GetPlaySpeed()
 {
     return m_ePlaySpeed;
+}
+
+bool CLocalPlayer::IsStarted()
+{
+    return m_bStarted;
 }

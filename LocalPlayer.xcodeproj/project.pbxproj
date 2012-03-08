@@ -30,7 +30,6 @@
 		8078AA7A14BF339C005D6F52 /* AVLocalPlayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = C3A9D3D514A5983400FBBB38 /* AVLocalPlayer.mm */; };
 		8078AA7B14BF339C005D6F52 /* LocalPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3A9D3DC14A5983400FBBB38 /* LocalPlayer.cpp */; };
 		8078AA7C14BF339C005D6F52 /* PacketQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3A9D3E114A5983500FBBB38 /* PacketQueue.cpp */; };
-		8078AA7D14BF339C005D6F52 /* PlayerException.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3A9D3E314A5983500FBBB38 /* PlayerException.cpp */; };
 		8078AA7E14BF339C005D6F52 /* SampleFmt.c in Sources */ = {isa = PBXBuildFile; fileRef = C3A9D3E514A5983500FBBB38 /* SampleFmt.c */; };
 		8078AA7F14BF339C005D6F52 /* Common1.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8EF38C54138AAEE400854811 /* Common1.mm */; };
 		8078AA8214BF339C005D6F52 /* PlayerViewControllerImp.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8ECD2423135332250067D02E /* PlayerViewControllerImp.mm */; };
@@ -57,6 +56,18 @@
 		809E30E514E6C3EF00426E33 /* PlayerView.mm in Headers */ = {isa = PBXBuildFile; fileRef = 809E30E314E6C3EF00426E33 /* PlayerView.mm */; };
 		809E30E614E6C54A00426E33 /* PlayerView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 809E30E314E6C3EF00426E33 /* PlayerView.mm */; };
 		809E30E714E6C54F00426E33 /* PlayerView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 809E30E314E6C3EF00426E33 /* PlayerView.mm */; };
+		809EF96B150903E500CEA29E /* Shader_RGB.fsh in Sources */ = {isa = PBXBuildFile; fileRef = 809EF969150903E500CEA29E /* Shader_RGB.fsh */; };
+		809EF96C150903E500CEA29E /* Shader_RGB.fsh in Sources */ = {isa = PBXBuildFile; fileRef = 809EF969150903E500CEA29E /* Shader_RGB.fsh */; };
+		809EF9701509055C00CEA29E /* Shader_RGB.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 809EF969150903E500CEA29E /* Shader_RGB.fsh */; };
+		809EF9721509058600CEA29E /* Shader_RGB.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 809EF969150903E500CEA29E /* Shader_RGB.fsh */; };
+		809EF9741509058600CEA29E /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 80F08A6014FBD62C0022183D /* Shader.vsh */; };
+		809EF9751509058600CEA29E /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 80F08A5F14FBD62C0022183D /* Shader.fsh */; };
+		809EF9761509058600CEA29E /* Control_Up_Background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8ECD2435135334000067D02E /* Control_Up_Background@2x.png */; };
+		809EF9771509058600CEA29E /* Control_Down_Background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8ECD2434135334000067D02E /* Control_Down_Background@2x.png */; };
+		809EF9781509058600CEA29E /* Play@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8ECD2447135334000067D02E /* Play@2x.png */; };
+		809EF9791509058600CEA29E /* Pause@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8ECD2443135334000067D02E /* Pause@2x.png */; };
+		809EF97A1509058600CEA29E /* Forward@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8ECD243A135334000067D02E /* Forward@2x.png */; };
+		809EF97B1509058600CEA29E /* Backward@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8ECD2433135334000067D02E /* Backward@2x.png */; };
 		80A04B5A14E955820041B567 /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 80A04B5914E955820041B567 /* libbz2.dylib */; };
 		80A04B5C14E955E10041B567 /* Test.flv in Resources */ = {isa = PBXBuildFile; fileRef = 80A04B5B14E955E10041B567 /* Test.flv */; };
 		80A1132814BDCC8A006E7D1A /* SmiSubTitleReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 80A1132614BDCC8A006E7D1A /* SmiSubTitleReader.cpp */; };
@@ -70,7 +81,6 @@
 		80A1134E14BDE34F006E7D1A /* AVLocalPlayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = C3A9D3D514A5983400FBBB38 /* AVLocalPlayer.mm */; };
 		80A1134F14BDE34F006E7D1A /* LocalPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3A9D3DC14A5983400FBBB38 /* LocalPlayer.cpp */; };
 		80A1135014BDE34F006E7D1A /* PacketQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3A9D3E114A5983500FBBB38 /* PacketQueue.cpp */; };
-		80A1135114BDE34F006E7D1A /* PlayerException.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3A9D3E314A5983500FBBB38 /* PlayerException.cpp */; };
 		80A1135314BDE34F006E7D1A /* SrtSubTitleReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3A9D3E814A5983500FBBB38 /* SrtSubTitleReader.cpp */; };
 		80A1135414BDE34F006E7D1A /* TextFileReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C3A9D3EA14A5983600FBBB38 /* TextFileReader.cpp */; };
 		80A1135514BDE34F006E7D1A /* Common1.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8EF38C54138AAEE400854811 /* Common1.mm */; };
@@ -165,6 +175,7 @@
 		809E30DE14E6ADC200426E33 /* 1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = 1.png; path = Picture/1.png; sourceTree = "<group>"; };
 		809E30E214E6C3EF00426E33 /* PlayerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerView.h; sourceTree = "<group>"; };
 		809E30E314E6C3EF00426E33 /* PlayerView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PlayerView.mm; sourceTree = "<group>"; };
+		809EF969150903E500CEA29E /* Shader_RGB.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = Shader_RGB.fsh; path = Classes/Shader_RGB.fsh; sourceTree = "<group>"; };
 		80A04B5914E955820041B567 /* libbz2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.dylib; path = usr/lib/libbz2.dylib; sourceTree = SDKROOT; };
 		80A04B5B14E955E10041B567 /* Test.flv */ = {isa = PBXFileReference; lastKnownFileType = file; path = Test.flv; sourceTree = "<group>"; };
 		80A1132614BDCC8A006E7D1A /* SmiSubTitleReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SmiSubTitleReader.cpp; sourceTree = "<group>"; };
@@ -220,8 +231,6 @@
 		C3A9D3DD14A5983500FBBB38 /* LocalPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalPlayer.h; sourceTree = "<group>"; };
 		C3A9D3E114A5983500FBBB38 /* PacketQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = PacketQueue.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		C3A9D3E214A5983500FBBB38 /* PacketQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PacketQueue.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		C3A9D3E314A5983500FBBB38 /* PlayerException.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = PlayerException.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
-		C3A9D3E414A5983500FBBB38 /* PlayerException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PlayerException.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		C3A9D3E514A5983500FBBB38 /* SampleFmt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SampleFmt.c; sourceTree = "<group>"; };
 		C3A9D3E614A5983500FBBB38 /* SampleFmt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SampleFmt.h; sourceTree = "<group>"; };
 		C3A9D3E714A5983500FBBB38 /* SplitString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SplitString.h; sourceTree = "<group>"; };
@@ -287,8 +296,6 @@
 				C3A9D3DD14A5983500FBBB38 /* LocalPlayer.h */,
 				C3A9D3E214A5983500FBBB38 /* PacketQueue.h */,
 				C3A9D3E114A5983500FBBB38 /* PacketQueue.cpp */,
-				C3A9D3E414A5983500FBBB38 /* PlayerException.h */,
-				C3A9D3E314A5983500FBBB38 /* PlayerException.cpp */,
 				C3A9D3E614A5983500FBBB38 /* SampleFmt.h */,
 				C3A9D3E514A5983500FBBB38 /* SampleFmt.c */,
 				C3A9D3E714A5983500FBBB38 /* SplitString.h */,
@@ -336,6 +343,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				809EF969150903E500CEA29E /* Shader_RGB.fsh */,
 				80F08A6014FBD62C0022183D /* Shader.vsh */,
 				80F08A5F14FBD62C0022183D /* Shader.fsh */,
 				809E30DE14E6ADC200426E33 /* 1.png */,
@@ -504,6 +512,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				809EF9701509055C00CEA29E /* Shader_RGB.fsh in Resources */,
 				802D950714FBE14900813DAB /* Shader.fsh in Resources */,
 				802D950814FBE14900813DAB /* Shader.vsh in Resources */,
 				80D9A8BE14C47B5100102863 /* Backward@2x.png in Resources */,
@@ -532,6 +541,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				809EF9721509058600CEA29E /* Shader_RGB.fsh in Resources */,
+				809EF9741509058600CEA29E /* Shader.vsh in Resources */,
+				809EF9751509058600CEA29E /* Shader.fsh in Resources */,
+				809EF9761509058600CEA29E /* Control_Up_Background@2x.png in Resources */,
+				809EF9771509058600CEA29E /* Control_Down_Background@2x.png in Resources */,
+				809EF9781509058600CEA29E /* Play@2x.png in Resources */,
+				809EF9791509058600CEA29E /* Pause@2x.png in Resources */,
+				809EF97A1509058600CEA29E /* Forward@2x.png in Resources */,
+				809EF97B1509058600CEA29E /* Backward@2x.png in Resources */,
 				80B287EC14E430490046304C /* Backward.png in Resources */,
 				80B287EE14E430490046304C /* Control_Down_Background.png in Resources */,
 				80B287F014E430490046304C /* Control_Up_Background.png in Resources */,
@@ -571,7 +589,6 @@
 				8078AA7A14BF339C005D6F52 /* AVLocalPlayer.mm in Sources */,
 				8078AA7B14BF339C005D6F52 /* LocalPlayer.cpp in Sources */,
 				8078AA7C14BF339C005D6F52 /* PacketQueue.cpp in Sources */,
-				8078AA7D14BF339C005D6F52 /* PlayerException.cpp in Sources */,
 				8078AA7E14BF339C005D6F52 /* SampleFmt.c in Sources */,
 				8078AA7F14BF339C005D6F52 /* Common1.mm in Sources */,
 				8078AA8214BF339C005D6F52 /* PlayerViewControllerImp.mm in Sources */,
@@ -588,6 +605,7 @@
 				80F08A6414FBD62C0022183D /* Shader.vsh in Sources */,
 				80F08A6914FBDAA60022183D /* GLSLShader.cpp in Sources */,
 				80F08A6E14FBDE250022183D /* FileAccess.cpp in Sources */,
+				809EF96C150903E500CEA29E /* Shader_RGB.fsh in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -602,7 +620,6 @@
 				80A1134E14BDE34F006E7D1A /* AVLocalPlayer.mm in Sources */,
 				80A1134F14BDE34F006E7D1A /* LocalPlayer.cpp in Sources */,
 				80A1135014BDE34F006E7D1A /* PacketQueue.cpp in Sources */,
-				80A1135114BDE34F006E7D1A /* PlayerException.cpp in Sources */,
 				80A1135314BDE34F006E7D1A /* SrtSubTitleReader.cpp in Sources */,
 				80A1135414BDE34F006E7D1A /* TextFileReader.cpp in Sources */,
 				80A1135514BDE34F006E7D1A /* Common1.mm in Sources */,
@@ -615,6 +632,7 @@
 				80F08A6314FBD62C0022183D /* Shader.vsh in Sources */,
 				80F08A6814FBDAA60022183D /* GLSLShader.cpp in Sources */,
 				80F08A6D14FBDE250022183D /* FileAccess.cpp in Sources */,
+				809EF96B150903E500CEA29E /* Shader_RGB.fsh in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

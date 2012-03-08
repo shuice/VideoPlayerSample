@@ -198,8 +198,6 @@
     [super viewDidLoad];
     [self insertSubViews];
     [self setSubViewPos];
-    NSString* str = [[NSBundle mainBundle] pathForResource:@"Test" ofType:@"rmvb"];
-    [self performSelector:@selector(open:) withObject:str afterDelay:2.0f];
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
@@ -587,16 +585,24 @@ void ShowAlartMessage(string strMessage)
         return ePlayerStatusError;
     }
 	m_iControlLife = bHasVideo ? AUTO_CONTROL_HIDDEN_TIME : ALWAYS_SHOW_TIME;
-	m_pLocalPlayer->Start();
 	[self SetPauseVisiable:YES];
 	[self SetPlayVisiable:NO];
 	[self SetControlVisiable:YES];
     return ePlayerStatusOk;
 }
 
+
 - (EnumPlayerStatus) play
 {
-    return [self pause];
+    if ((m_pLocalPlayer != NULL) && !m_pLocalPlayer->IsStarted())
+    {
+        m_pLocalPlayer->Start();
+        return ePlayerStatusOk;
+    }
+    else
+    {
+        return [self pause];
+    }
 }
 - (EnumPlayerStatus) pause
 {
