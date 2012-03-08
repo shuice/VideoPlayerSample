@@ -45,8 +45,13 @@
 		
         glGenTextures(1, &_texture);
 		glBindTexture(GL_TEXTURE_2D, _texture);
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);	
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+#if USE_RGB_TEXTURE
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+#else
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4, 0);	
+        
+#endif
         
         glBindTexture(GL_TEXTURE_2D, _texture);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -57,9 +62,12 @@
         glGenBuffers(2, _bufferObject);
 
         
-        
-        NSString *vShader = [[NSBundle mainBundle] pathForResource:@"Shader" ofType:@"vsh"];
+#if USE_RGB_TEXTURE
+		NSString *fShader = [[NSBundle mainBundle] pathForResource:@"Shader_RGB" ofType:@"fsh"];
+#else
 		NSString *fShader = [[NSBundle mainBundle] pathForResource:@"Shader" ofType:@"fsh"];
+#endif
+        NSString *vShader = [[NSBundle mainBundle] pathForResource:@"Shader" ofType:@"vsh"];
         _mainShader = new GLSLShader([vShader fileSystemRepresentation], [fShader fileSystemRepresentation], kShaderDataTypeSourceFile);
         _mainShader->compile();
 		_mainShader->beginShader();
@@ -269,10 +277,13 @@
     
     int w = m_sRenderParam.sizeMovieResized.width;
     int h = m_sRenderParam.sizeMovieResized.height;
-    
+#if USE_RGB_TEXTURE
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, m_pData[0]);
+#else
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w/2, h, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4, m_pData[0]);
     glTexSubImage2D(GL_TEXTURE_2D, 0, w / 2, 0, w / 4, h / 2, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4, m_pData[1]);
     glTexSubImage2D(GL_TEXTURE_2D, 0, w / 2 + w / 4, 0, w / 4, h / 2, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4, m_pData[2]);
+#endif
     
     glBindFramebuffer(GL_FRAMEBUFFER, glFramebuffer);
     glClear(GL_COLOR_BUFFER_BIT);

@@ -38,6 +38,7 @@
 
 #define TEXTURE_WIDTH 1024.0f
 #define TEXTURE_HEIGHT 1024.0f
+#define USE_RGB_TEXTURE 1
 
 typedef struct SRenderParam
 {

@@ -291,7 +291,11 @@ CVideoLocalPlayerSDL::CVideoLocalPlayerSDL()
 	m_iDesHeight = 0;
     m_iWindow = 0;
 	m_pSwsContext = NULL;
+#if USE_RGB_TEXTURE
+    m_pixelFormat = PIX_FMT_RGBA;
+#else
     m_pixelFormat = PIX_FMT_YUV420P;
+#endif
 	memset(m_pRGBAData, 0, sizeof(m_pRGBAData));
 }
 
