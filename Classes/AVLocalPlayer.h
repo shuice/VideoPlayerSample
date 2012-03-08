@@ -28,6 +28,7 @@ public:
 	virtual void UpdateData(AVFrame* pAvFrame, int iCacheIndex) = 0;
 	virtual void Show(int iCacheIndex) = 0;
 	virtual void Close() = 0;
+    virtual void PlayFinish() = 0;
 	wstring m_wstrSubTitle;	// BAD
 };
 
@@ -72,6 +73,7 @@ public:
 	virtual void UpdateData(AVFrame* pAvFrame, int iCacheIndex);
 	virtual void Show(int iCacheIndex);
 	virtual void Close();
+    virtual void PlayFinish();
 private:
     void CalcDesSize();
 	unsigned char* m_pRGBAData[MAX_CACHE_COUNT];

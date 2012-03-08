@@ -10,13 +10,17 @@
 #import "PlayerViewDefine.h"
 
 @protocol PlayerViewControllerDelegate
+@required
+- (void) playFinish; // restore ui after pla finish
 @end
 
 @interface PlayerViewController : UIViewController 
 
 +(PlayerViewController*) sharedPlayer;
 
-- (EnumPlayerStatus) open:(NSString*)strFileName; 
+- (EnumPlayerStatus) open:(NSString*)strFileName
+              andDelegate:(id<PlayerViewControllerDelegate>)delegate; 
+- (EnumPlayerStatus) setSubTitle:(NSString*)strSubTitleName andCodePage:(int)iCodePage;
 - (EnumPlayerStatus) play;
 - (EnumPlayerStatus) pause;
 - (EnumPlayerStatus) close;

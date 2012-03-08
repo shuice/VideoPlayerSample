@@ -27,6 +27,7 @@ using namespace std;
     UIButton* buttonPause;
     UIButton* buttonBackward;
     UIButton* buttonForward;
+    UIButton* buttonExit;
     UILabel* labelPlayed;
     UILabel* labelLeft;
     UISlider* uiSliderProgress;
@@ -45,8 +46,7 @@ using namespace std;
 	int socketCache;
 	BOOL m_bInSeek;
 	unsigned long m_iSeekPos;
-	string m_strSrtPath;
-	int m_iCodePage;
+    id<PlayerViewControllerDelegate> m_delegate;
 }
 
 @property (nonatomic, retain) PlayerView* playerView;
@@ -59,14 +59,11 @@ using namespace std;
 @property (nonatomic, retain) UIButton* buttonPause;
 @property (nonatomic, retain) UIButton* buttonBackward;
 @property (nonatomic, retain) UIButton* buttonForward;
+@property (nonatomic, retain) UIButton* buttonExit;
 @property (nonatomic, retain) UILabel* labelPlayed;
 @property (nonatomic, retain) UILabel* labelLeft;
 @property (nonatomic, retain) UIButton* buttonChangeAspect;
 @property (nonatomic, retain) UILabel* uiLabelSubTitle;
-
-@property (nonatomic, assign) string m_strSrtPath;
-@property (nonatomic, assign) int m_iCodePage;
-
 
 @property (nonatomic, retain) UISlider* uiSliderProgress;
 @property (nonatomic, retain) UISlider* uiSliderSound;
@@ -77,4 +74,5 @@ using namespace std;
 
 
 - (void) showWithSubTitle:(NSString*)str;
+- (void) playFinish;
 @end

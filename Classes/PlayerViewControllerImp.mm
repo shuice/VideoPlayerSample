@@ -35,6 +35,7 @@
 @synthesize buttonPause;
 @synthesize buttonBackward;
 @synthesize buttonForward;
+@synthesize buttonExit;
 @synthesize labelPlayed;
 @synthesize labelLeft;
 @synthesize nsTimer;
@@ -42,8 +43,6 @@
 @synthesize uiSliderSound;
 @synthesize m_pLocalPlayer;
 @synthesize m_iControlLife;
-@synthesize m_strSrtPath;
-@synthesize m_iCodePage;
 @synthesize buttonChangeAspect;
 @synthesize imageViewControlProgress;
 @synthesize imageViewControlSound;
@@ -77,6 +76,10 @@
     [buttonBackward addTarget:self action:@selector(onTouchUpInsideBackword:) forControlEvents:UIControlEventTouchUpInside];
     self.buttonForward = [UIButton buttonWithType:UIButtonTypeCustom];
     [buttonForward addTarget:self action:@selector(onTouchUpInsideForward:) forControlEvents:UIControlEventTouchUpInside];
+    self.buttonExit = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [buttonExit setTitle:@"Exit" forState:UIControlStateNormal];
+    [buttonExit setTintColor:[UIColor blackColor]];
+    [buttonExit addTarget:self action:@selector(onTouchUpInsideExit:) forControlEvents:UIControlEventTouchUpInside];
     self.labelPlayed = [[[UILabel alloc] initWithFrame:CGRectZero] autorelease];
     [labelPlayed setFont:[UIFont systemFontOfSize:12.0f]];
     [labelPlayed setTextColor:[UIColor whiteColor]];
@@ -117,6 +120,7 @@
     [[self view] addSubview:buttonChangeAspect];
     
     [viewControlProgress addSubview:imageViewControlProgress];
+    [viewControlProgress addSubview:buttonExit];
     [viewControlProgress addSubview:labelPlayed];
     [viewControlProgress addSubview:labelLeft];
     [viewControlProgress addSubview:uiSliderProgress];
@@ -145,6 +149,7 @@
 - (void) setSubViewPos
 {
     [playerView setFrame:[[self view] bounds]];
+    [controlControls setFrame:[[self view] bounds]];
     [viewControlProgress setAlpha:0.0f];
     [viewControlSound setAlpha:0.0f];
     CRect rectRet(0, 0, 0, 0);
@@ -164,10 +169,11 @@
         const CGFloat fMarginWidth = 5.0f;
         const CGFloat fHeightOfLabel = 18.0f;
         const CGFloat fWidthOfLabel = 40.0f;
-        [labelPlayed setFrame:CGRectMake(fMarginWidth, (fHeightOfUpControlelr-fHeightOfLabel)/2, fWidthOfLabel, fHeightOfLabel)];
+        [buttonExit setFrame:CGRectMake(fMarginWidth, (fHeightOfUpControlelr-fHeightOfLabel)/2, fWidthOfLabel, fHeightOfLabel)];
+        [labelPlayed setFrame:CGRectMake(fMarginWidth+fWidthOfLabel, (fHeightOfUpControlelr-fHeightOfLabel)/2, fWidthOfLabel, fHeightOfLabel)];
         [labelLeft setFrame:CGRectMake(fWidth - fMarginWidth - fWidthOfLabel, (fHeightOfUpControlelr-fHeightOfLabel)/2, fWidthOfLabel, fHeightOfLabel)];
         const CGFloat fHeightOfProgress = 10.0f;
-        [uiSliderProgress setFrame:CGRectMake(fMarginWidth + fWidthOfLabel + fMarginWidth, (fHeightOfUpControlelr-fHeightOfProgress)/2, fWidth - 2*(fMarginWidth + fWidthOfLabel + fMarginWidth), fHeightOfProgress)];
+        [uiSliderProgress setFrame:CGRectMake(fMarginWidth + fWidthOfLabel + fMarginWidth + fWidthOfLabel + fMarginWidth, (fHeightOfUpControlelr-fHeightOfProgress)/2, fWidth - 3*(fMarginWidth + fWidthOfLabel + fMarginWidth), fHeightOfProgress)];
         
     }
     
@@ -197,6 +203,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self insertSubViews];
+    [self setSubViewPos];
+}
+
+- (void) viewDidAppear:(BOOL)animated
+{
     [self setSubViewPos];
 }
 
@@ -278,10 +289,6 @@
     [super dealloc];
 }
 
--(string) GetSrtFileName
-{
-    return [[[NSBundle mainBundle] pathForResource:@"1" ofType:@"smi"] UTF8String];
-}
 
 -(void) Close
 {
@@ -300,7 +307,7 @@
 	labelPlayed.text = @"";
 	labelLeft.text = @"";
 	uiSliderProgress.value = 0.0;
-	// FIXME close timer
+    [m_delegate playFinish];
 }
 
 -(void) Exit
@@ -308,9 +315,9 @@
 	[self Close];
 }
 
--(void) buttonExit:(id)sender
+-(void) onTouchUpInsideExit:(id)sender
 {
-	[self Exit];
+	[self Close];
 }
 
 
@@ -552,8 +559,20 @@ void ShowAlartMessage(string strMessage)
 }
 
 #pragma mark interface imp
-- (EnumPlayerStatus) open:(NSString*)strFileName
+- (EnumPlayerStatus) setSubTitle:(NSString*)strSubTitleName andCodePage:(int)iCodePage
 {
+    if (m_pLocalPlayer == NULL)
+    {
+        return ePlayerStatusError;
+    }
+    return m_pLocalPlayer->SetSubTitle([strSubTitleName UTF8String], iCodePage);
+}
+
+
+- (EnumPlayerStatus) open:(NSString*)strFileName
+              andDelegate:(id<PlayerViewControllerDelegate>)delegate; 
+{
+    m_delegate = delegate;
 	m_strFileName = [strFileName UTF8String] ;
     // init all controls
 	labelPlayed.text = @"";
@@ -567,8 +586,6 @@ void ShowAlartMessage(string strMessage)
     {
         return ePlayerStatusNotEnoughMemory;
     }
-    m_pLocalPlayer->m_strSubTitleLocal = [self GetSrtFileName];
-    m_pLocalPlayer->m_iCodePage = m_iCodePage;
     
     RETURN_STATUS_IF_ERROR(m_pLocalPlayer->Open(m_strFileName, (int)playerView));
     uiSliderSound.value = [[UserDefaultHelper getValue:USER_DEFAULT_VOLUME] intValue] / 100.0f;
@@ -731,6 +748,11 @@ void ShowAlartMessage(string strMessage)
         fTop = fBottom - fHeihgt;
     }
     [uiLabelSubTitle setFrame:CGRectMake(0.0f, fTop, rectScreen.Width(), fHeihgt)];
+}
+
+- (void) playFinish
+{
+    [self Close];
 }
 
 

@@ -171,6 +171,7 @@ typedef struct VideoState
 	AVCodecContext* m_pCodecContextVideo;
     EnumPlaySpeed m_ePlaySpeed;
     bool m_bStarted;
+    pthread_mutex_t m_mutexSubTitle;
 } VideoState;
 typedef VideoState SVideoState;
 
@@ -185,6 +186,7 @@ public:
 	CLocalPlayer();
 	~CLocalPlayer();
 	EnumPlayerStatus Open(const string& strFileName, long iWindow);
+    EnumPlayerStatus SetSubTitle(const string& strFileNam, int iCodePage);
     bool IsStarted();
 	bool Start();
 	bool Play();
@@ -195,6 +197,7 @@ public:
 	void SetVolume(int iVolume);
 	bool HasVideo();
 	bool IsPaused();
+    
     void SetPlaySpeed(EnumPlaySpeed ePlaySpeed);
     EnumPlaySpeed GetPlaySpeed();
 	
@@ -241,6 +244,8 @@ private:
 	int AudioWriteGetBufSize();
 	double ComputeTargetTime(double frame_current_pts);
 	void DealWithUnNormalSpeed(unsigned int& iAudioBufSize, int8_t * pData);
+    EnumPlayerStatus CrateSubTitleReaderBySubTitleFileName(const string& strSubTitleName);
 	static inline int ComputeMod(int a, int b);
+    
 	static bool m_bDecodeAbortRequest;
 };

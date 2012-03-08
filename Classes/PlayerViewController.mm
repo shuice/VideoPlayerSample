@@ -17,9 +17,16 @@
 }
 
 - (EnumPlayerStatus) open:(NSString*)strFileName
+              andDelegate:(id<PlayerViewControllerDelegate>)delegate; 
 {
     return ePlayerStatusNotImp;
 }
+
+- (EnumPlayerStatus) setSubTitle:(NSString*)strSubTitleName andCodePage:(int)iCodePage
+{
+    return ePlayerStatusNotImp;
+}
+
 - (EnumPlayerStatus) play
 {
     return ePlayerStatusNotImp;

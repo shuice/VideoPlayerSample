@@ -15,6 +15,8 @@ typedef enum EnumPlayerStatus
     ePlayerStatusNoMediaStream,
     ePlayerStatusCanNotInitialAudioDevice,
     ePlayerStatusCanNotInitialVideoDevice,
+    ePlayerStatusBadSubTitleFileName,
+    ePlayerStatusBadSubTitleFile,
 }EnumPlayerStatus;
 
 typedef enum EnumAspectRatio

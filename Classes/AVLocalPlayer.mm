@@ -389,7 +389,13 @@ void CVideoLocalPlayerSDL::Show(int iCacheIndex)
 
 void CVideoLocalPlayerSDL::Close()
 {
-	
+	PlayerView* playerView = (PlayerView*)m_iWindow;
+    [playerView performSelectorOnMainThread:@selector(playFinish:) withObject:nil waitUntilDone:NO];
+}
+
+void CVideoLocalPlayerSDL::PlayFinish()
+{
+    
 }
 
 void AddLog(const char* pszFormat, ...)

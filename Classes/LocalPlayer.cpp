@@ -22,6 +22,7 @@
 
 #include "LocalPlayer.h"
 #include <fcntl.h>
+#include <stdio.h>
 
 bool CLocalPlayer::m_bDecodeAbortRequest = false;
 CLocalPlayer::CLocalPlayer()
@@ -97,6 +98,7 @@ CLocalPlayer::CLocalPlayer()
 	
     m_pConditionPictQueue = new pthread_cond_t;
     pthread_cond_init(m_pConditionPictQueue, NULL);
+    pthread_mutex_init(&m_mutexSubTitle, NULL);
 
 	img_convert_ctx = NULL;
 		
@@ -133,7 +135,72 @@ CLocalPlayer::~CLocalPlayer()
         delete m_pSubTitleReader;
         m_pSubTitleReader = NULL;
     }
+    pthread_mutex_destroy(&m_mutexSubTitle);
     
+}
+
+EnumPlayerStatus CLocalPlayer::SetSubTitle(const string& strFileName, int iCodePage)
+{
+    pthread_mutex_lock(&m_mutexSubTitle);
+    EnumPlayerStatus ePlayerStatus = CrateSubTitleReaderBySubTitleFileName(strFileName);
+    if (m_pSubTitleReader != NULL)
+    {
+        m_pSubTitleReader->SetCodePage(iCodePage);
+    }
+    pthread_mutex_unlock(&m_mutexSubTitle);
+    return ePlayerStatus;
+}
+
+EnumPlayerStatus CLocalPlayer::CrateSubTitleReaderBySubTitleFileName(const string& strSubTitleName)
+{
+    if (m_pSubTitleReader != NULL)
+    {
+        delete m_pSubTitleReader;
+        m_pSubTitleReader = NULL;
+    }
+    
+    if (m_pSubTitleReader != NULL)
+    {
+        m_pSubTitleReader->LoadFile(m_strSubTitleLocal);
+        m_pSubTitleReader->SetCodePage(936);
+    }
+    size_t iSize = strSubTitleName.size();
+    if (iSize < 4)
+    {
+        return ePlayerStatusBadSubTitleFileName;
+    }
+    char szLast4[5] = {strSubTitleName[iSize-4], strSubTitleName[iSize-3],
+                        strSubTitleName[iSize-2], strSubTitleName[iSize-1],
+                        0};
+    for (int i = 0; i < sizeof(szLast4); i++)
+    {
+        if (szLast4[i]>='A' && szLast4[i]<='Z')
+        {
+            szLast4[i] = tolower((int)szLast4);
+        }
+    }
+    if (strncmp(szLast4, ".srt", 4) == 0)
+    {
+        m_pSubTitleReader = new CSrtSubTitleReader;
+    }
+    else if (strncmp(szLast4, ".smi", 4) == 0)
+    {
+        m_pSubTitleReader = new CSmiSubTitleReader;
+    }
+    else
+    {
+        return ePlayerStatusBadSubTitleFileName;
+    }
+    
+    if (m_pSubTitleReader == NULL)
+    {
+        return ePlayerStatusNotEnoughMemory;
+    }
+    if (!m_pSubTitleReader->LoadFile(strSubTitleName))
+    {
+        return ePlayerStatusBadSubTitleFile;
+    }
+    return ePlayerStatusOk;
 }
 
 // sFileName is filekey
@@ -142,11 +209,6 @@ EnumPlayerStatus CLocalPlayer::Open(const string& strFileName, long iWindow1)
     iWindow = iWindow1;
     RETURN_STATUS_IF_ERROR(InitData(strFileName));
     RETURN_STATUS_IF_ERROR(InitUIAndAudioDevice());
-    
-    
-    m_pSubTitleReader = new CSmiSubTitleReader;
-	m_pSubTitleReader->LoadFile(m_strSubTitleLocal);
-	m_pSubTitleReader->SetCodePage(936);
 	return ePlayerStatusOk;
 }
 
@@ -174,7 +236,6 @@ bool CLocalPlayer::Play()
 
 void CLocalPlayer::Close()
 {
-
 	audioq.Abort();
 	audioq.End();
 	// close audio
@@ -515,13 +576,18 @@ int CLocalPlayer::QueuePicture(AVFrame *src_frame, double pts1)
 	{
         return -1;
 	}
-	{
-		// update subtitle
-		SSubTitleFormat sSubTitleFormat;
-		wstring wstrSubTitle;
-		m_pSubTitleReader->GetString(pts1 * 1000, wstrSubTitle, &sSubTitleFormat);
-		m_pVideoLocalPlayer->m_wstrSubTitle = wstrSubTitle;
-	}
+    
+    pthread_mutex_lock(&m_mutexSubTitle);
+    if (m_pSubTitleReader != NULL)
+    {
+        // update subtitle
+        SSubTitleFormat sSubTitleFormat;
+        wstring wstrSubTitle;
+        m_pSubTitleReader->GetString(pts1 * 1000, wstrSubTitle, &sSubTitleFormat);
+        m_pVideoLocalPlayer->m_wstrSubTitle = wstrSubTitle;
+    }
+    pthread_mutex_unlock(&m_mutexSubTitle);
+    
     m_pVideoLocalPlayer->UpdateData(src_frame, pictq_windex);
 	//m_pVideoLocalPlayer->UpdateData(src_frame, pictq_windex);
 
@@ -823,7 +889,7 @@ void* CLocalPlayer::ThreadReadRoute()
 	    }
 	    AddLog("read wait until end\n");
 	    /* wait until the end */
-	
+        m_pVideoLocalPlayer->PlayFinish();
 		while (!abort_request) 
 		{
 			usleep(100000);

@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@interface ViewController : UIViewController
+#import "PlayerViewController.h"
+@interface ViewController : UIViewController<PlayerViewControllerDelegate>
 
 @end

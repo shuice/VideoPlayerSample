@@ -311,5 +311,9 @@
     m_bRoating = false;
 }
 
+- (void) playFinish:(id)object
+{
+    [playerViewControllerImp playFinish];
+}
 
 @end
