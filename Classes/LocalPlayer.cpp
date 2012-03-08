@@ -21,7 +21,6 @@
  */
 
 #include "LocalPlayer.h"
-#include "PlayerException.h"
 #include <fcntl.h>
 
 bool CLocalPlayer::m_bDecodeAbortRequest = false;
@@ -91,29 +90,14 @@ CLocalPlayer::CLocalPlayer()
 	pictq_rindex = 0;
 	pictq_windex = 0;
 	reformat_ctx = NULL;
-	m_pBufferReaded = NULL;
 	m_pCodecContextVideo = NULL;
 
 	m_pMutexPictQueue = new pthread_mutex_t;
-    if (m_pMutexPictQueue == NULL)
-    {
-        throw new CPlayerException("new pthread_mutex_t return NULL");
-    }
     pthread_mutex_init(m_pMutexPictQueue, NULL);
 	
     m_pConditionPictQueue = new pthread_cond_t;
-	if (m_pConditionPictQueue == NULL)
-	{
-		throw new CPlayerException("new pthread_cond_t return NULL");
-	}
     pthread_cond_init(m_pConditionPictQueue, NULL);
-	
-	m_pBufferReaded = new char[512 * 1024];
-	if (m_pBufferReaded == NULL)
-	{
-		throw new CPlayerException("new m_pBufferReaded return NULL");
-	}
-    
+
 	img_convert_ctx = NULL;
 		
 		
@@ -403,7 +387,7 @@ int CLocalPlayer::OpenStream(int stream_index)
         //	set_context_opts(pAvCodecContext, avcodec_opts[pAvCodecContext->codec_type], 0, pAvCodec);
 	    if ((pAvCodec == NULL) || (avcodec_open(pAvCodecContext, pAvCodec) < 0))
 		{
-			throw new CPlayerException("avcodec_open failed");
+			return -1;
 		}
 	
 	    ic->streams[stream_index]->discard = AVDISCARD_DEFAULT;

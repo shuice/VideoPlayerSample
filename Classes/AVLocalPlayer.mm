@@ -102,8 +102,8 @@ bool CAudioLocalPlayerSDL::Init(int iChannel, int iSampleRate, int iSizePerCall,
 	OSStatus result = AudioSessionInitialize(NULL, NULL, interruptionListener, this);
 	if ((result != 0) && (result != kAudioSessionAlreadyInitialized))
 	{
-		throw new CPlayerException("Error initializing audio session! %d\n", result);
-		return false;
+        NSLog(@"AudioSessionInitialize return %lu", (unsigned long)result);
+        return false;
 	}
 	else
 	{
@@ -115,7 +115,7 @@ bool CAudioLocalPlayerSDL::Init(int iChannel, int iSampleRate, int iSizePerCall,
 										 &iPodIsPlaying);
 		if (result)
 		{
-			throw new CPlayerException("Error getting other audio playing property! %d", result);
+            NSLog(@"AudioSessionInitialize return %lu", (unsigned long)result);
 			return false;
 		}
 		
@@ -133,7 +133,7 @@ bool CAudioLocalPlayerSDL::Init(int iChannel, int iSampleRate, int iSizePerCall,
 		result = AudioSessionSetActive(true);
 		if (result)
 		{
-			throw new CPlayerException("Error setting audio session active! %d\n", result);
+            NSLog(@"AudioSessionInitialize return %lu", (unsigned long)result);
 			return false;
 		}
 	}
@@ -148,24 +148,19 @@ bool CAudioLocalPlayerSDL::Init(int iChannel, int iSampleRate, int iSizePerCall,
 	}
 
 	m_pALCContext = alcCreateContext(m_pALCDevice, NULL);
-	if (m_pALCContext == NULL)
-	{
-		throw new CPlayerException("alcCreateContext return NULL");
-		return false;
-	}
 	alcMakeContextCurrent(m_pALCContext);
 
 	alGenBuffers(NUMBER_BUFFER, m_buffer);
 	if((error = alGetError()) != AL_NO_ERROR)
 	{
-		throw new CPlayerException("Error Generating Buffers: %x", error);
+		NSLog(@"AudioSessionInitialize return %lu", (unsigned long)result);
 		return false;
 	}
 	
 	alGenSources(1, &m_source);
 	if(alGetError() != AL_NO_ERROR) 
 	{
-		throw new CPlayerException("Error generating sources! %x\n", error);
+		NSLog(@"AudioSessionInitialize return %lu", (unsigned long)result);
 		return false;
 	}
 	
@@ -341,7 +336,6 @@ bool CVideoLocalPlayerSDL::Init(long iWindow, int iMediaWidth, int iMediaHeight,
 {
 	if (iCacheCount > MAX_CACHE_COUNT)
 	{
-		throw new CPlayerException("iCacheCount > MAX_CACHE_COUNT");
 		return false;
 	}
     m_iWindow = iWindow;
@@ -357,7 +351,6 @@ bool CVideoLocalPlayerSDL::Init(long iWindow, int iMediaWidth, int iMediaHeight,
 								   SWS_FAST_BILINEAR, NULL, NULL, NULL);
 	if (m_pSwsContext == NULL) 
 	{
-		throw new CPlayerException("sws_getContext return NULL");
 		return false;
 	}
 	

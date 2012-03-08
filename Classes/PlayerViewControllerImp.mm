@@ -293,16 +293,7 @@
 	}
 	if (m_pLocalPlayer != NULL)
 	{
-		try 
-		{
-			m_pLocalPlayer->Close();
-		}
-		catch (CPlayerException* e)
-		{
-			//ShowAlartMessage(e->m_strDescription);
-			delete e;
-		}
-		
+        m_pLocalPlayer->Close();
 		delete m_pLocalPlayer;
 		m_pLocalPlayer = NULL;
 	}

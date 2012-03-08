@@ -8,7 +8,6 @@
  */
 #pragma once
 #include "common.h"
-#include "PlayerException.h"
 #import <OpenAL/al.h>
 #import <OpenAL/alc.h>
 class CAudioLocalPlayer

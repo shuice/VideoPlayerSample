@@ -167,7 +167,6 @@ typedef struct VideoState
     bool m_bRefreshed;
 	int step;
 	long iWindow;
-	char* m_pBufferReaded;
 	AVCodecContext* m_pCodecContextAudio;
 	AVCodecContext* m_pCodecContextVideo;
     EnumPlaySpeed m_ePlaySpeed;
