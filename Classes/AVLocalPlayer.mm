@@ -95,7 +95,7 @@ void CAudioLocalPlayerSDL::SetVolume(int iVolume)
 
 bool CAudioLocalPlayerSDL::Init(int iChannel, int iSampleRate, int iSizePerCall, void* pContext)
 {
-    if (iSizePerCall == 0)
+   //if (iSizePerCall == 0)
     {
         iSizePerCall = iSampleRate*iChannel / 10;
     }
