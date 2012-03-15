@@ -125,7 +125,7 @@
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glBindTexture(GL_TEXTURE_2D, 0);
-    glDeleteTextures(1, &glTexture);
+    glDeleteTextures(1, &_texture);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glDeleteBuffers(2, _bufferObject);
